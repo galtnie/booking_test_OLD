@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 // import { Link } from 'react-router-dom';
 import ButtonAppBar from './components/HomeUpperBar';
-import DayBar from './components/HomeDayBar';
+import HomeDayCard from './components/HomeDayCard';
+
 import { RedFree, RedBusy } from './components/Rooms'
 import './css/Home.css'
 
@@ -30,6 +31,8 @@ export default class Home extends Component {
     state= {
         myClasses: styles
     }
+
+    
     
     render() {
         
@@ -57,7 +60,8 @@ export default class Home extends Component {
                     <div className="manual-div">
                             <RedBusy /> <span className="manual-par"> The red room is reserved at this time </span>
                     </div>
-                    <DayBar />        
+                    <HomeDayCard />
+                           
                         
                         
                 </div>

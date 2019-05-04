@@ -21,7 +21,7 @@ const styles = {
   },
 };
 
-function DayBar(props) {
+function HomeDayBar(props) {
   const { classes } = props;
   return (
     <div className={classes.root}>
@@ -38,8 +38,8 @@ function DayBar(props) {
   );
 }
 
-DayBar.propTypes = {
+HomeDayBar.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(DayBar);
+export default withStyles(styles)(HomeDayBar);
