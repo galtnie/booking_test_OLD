@@ -1,12 +1,24 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Route } from 'react-router-dom';
+import Home from './Home';
+import Login from './Login';
+import Booking from './Booking';
+
+//import logo from './logo.svg';
+import './css/App.css';
+
 
 function App() {
   return (
-    <main>
-      
-    </main>  
+    <div>
+      <BrowserRouter >
+        <div>
+          <Route path="/" exact component={Home} />
+          <Route path="/login" component={Login} />
+          <Route path='/booking' component={Booking} />
+        </div>
+      </BrowserRouter>
+    </div>  
   );
 }
 
@@ -29,7 +41,5 @@ export default App;
 //     </Button>
 //   );
 // }
-
-// ReactDOM.render(<App />, document.querySelector('#app'));
 
 // export default App;
