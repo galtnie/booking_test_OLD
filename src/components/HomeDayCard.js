@@ -8,7 +8,7 @@ export default class HomeDayCard extends Component{
 
         return (
             <div>
-                <HomeDayBar getDate={this.props.getDate} counter={this.props.counter} />
+                <HomeDayBar date={this.props.date} />
                 Rooms will be here
             </div> 
             

@@ -34,19 +34,33 @@ export default class Home extends Component {
         myClasses: styles
     }
 
-    calculateDate(counter) {        //
-        let date = new Date();
-        var nextDate = date.getDate() + counter;
-        date.setDate(nextDate);
-        var newDate = date.toLocaleString();
-        return newDate;
+    calculateDate(counter) {        
+        let fullDate = new Date();
+        let nextDate = fullDate.getDate() + counter;
+        fullDate.setDate(nextDate);
+        const monthOption = { month: 'long'};
+        const weekdayOption = { weekday: 'long'};
+        const date =  fullDate.getDate()
+        const month = new Intl.DateTimeFormat('en-GB', monthOption).format(fullDate)
+        const weekday = new Intl.DateTimeFormat('en-GB', weekdayOption).format(fullDate) 
+        const keyDate = date.toString().length === 2 ? date : "0"+date;
+        const keyMonth = (fullDate.getMonth() + 1).toString().length === 2 ? (fullDate.getMonth() + 1) : "0"+ (fullDate.getMonth() + 1);
+        const keyYear = fullDate.getYear().toString().slice(1)
+        
+        return ({
+            date: `${date} ${month}, ${weekday}`,
+            key: `${keyDate}${keyMonth}${keyYear}`,
+        });
     }
 
     renderDayCards() {
         let days = []
         for(let i=1; i<32; i++) {
-            days.push(<HomeDayCard getDate={this.calculateDate} counter={i}/>)
+            const cardDate = this.calculateDate(i).date;
+            const cardKey = this.calculateDate(i).key;
+            days.push(<HomeDayCard date={cardDate} key={cardKey} />)
         }
+        console.log(days)
         return days
     }
     

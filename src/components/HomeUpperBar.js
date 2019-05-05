@@ -28,29 +28,49 @@ const styles = {
   }
 };
 
-function ButtonAppBar(props) {
-    const { classes } = props;
-    return (
-      <div className={classes.root}>
-        <AppBar position="static">
-          <Toolbar>
-            <div className="ui input" style={{ paddingRight: '1em' }}>
-              <input type='date' style={{ padding: 0, lineHeight: '1em', background: '#FBFBFF' }} />
-            </div>
-            <div className={classes.grow} />
-            <Link to="/login">
-              <Button className={classes.loginButton}>
-                Login
-            </Button>
-            </Link>
-          </Toolbar>
-        </AppBar>
-      </div>
-    );
+function dateLimit() {
+  let date1 = new Date();
+  let date2 = new Date();
+  let minLimit = (date1.getDate() + 1) 
+  date1.setDate(minLimit)
+  let maxLimit = (date2.getDate() + 31)
+  date2.setDate(maxLimit)
+  return {
+    minDate: (date1.toISOString().split("T")[0]),
+    maxDate: (date2.toISOString().split("T")[0])
   }
+}
+  
+function onDateInput(value) {
+  
+  let a = value.slice(-2) + value.slice(5,7) + value.slice(2,4)
+  console.log(a)
+}
 
-  ButtonAppBar.propTypes = {
-    classes: PropTypes.object.isRequired,
-  };
+function ButtonAppBar(props) {
+  const { classes } = props;
 
-  export default withStyles(styles)(ButtonAppBar);
+  return (
+    <div className={classes.root}>
+      <AppBar position="static">
+        <Toolbar>
+          <div className="ui input" style={{ paddingRight: '1em' }}>
+            <input type='date' min={dateLimit().minDate} max={dateLimit().maxDate} onChange={(e)=>onDateInput(e.target.value)} style={{ padding: 0, lineHeight: '1em', background: '#FBFBFF' }} />
+          </div>
+          <div className={classes.grow} />
+          <Link to="/login">
+            <Button className={classes.loginButton}>
+              Login
+            </Button>
+          </Link>
+        </Toolbar>
+      </AppBar>
+    </div>
+  );
+}
+
+ButtonAppBar.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(ButtonAppBar);

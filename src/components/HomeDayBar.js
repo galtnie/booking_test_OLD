@@ -11,27 +11,16 @@ import '../css/HomeDayBar.css'
 
 export default class HomeDayBar extends Component {
   state = {}
-
-  cardDate() {
-    const fullDate = new Date(this.props.getDate(this.props.counter))
-    const monthOption = { month: 'long'};
-    const weekdayOption = { weekday: 'long'};
-    const date =  fullDate.getDate()
-    const month = new Intl.DateTimeFormat('en-GB', monthOption).format(fullDate)
-    const weekday = new Intl.DateTimeFormat('en-GB', weekdayOption).format(fullDate) 
-    return (`${date} ${month}, ${weekday}`)
-  }
-  
+ 
   render() {
     return (
       <div className='root'>
         <AppBar position="static" >
-          <Toolbar className='toolbar'>
-            
+          <Toolbar className='toolbar'>   
             <Typography variant="h6" className='grow'>
-              {this.cardDate()}
+              {this.props.date}
             </Typography>
-            <a href="#top">Back to Top</a> 
+            <a href="#top" className='toolbarTop'>Back to Top</a> 
           </Toolbar>
         </AppBar>
       </div>
