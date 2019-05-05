@@ -26,7 +26,7 @@ function HomeDayBar(props) {
   return (
     <div className={classes.root}>
       <AppBar position="static" >
-        <Toolbar style={{padding:0, margin:0, minHeight: '40px'}}>
+        <Toolbar style={{padding:0, margin:0, minHeight: '40px', background: '#4d5ec1'}}>
           
           <Typography variant="h6" color="inherit" className={classes.grow} style={{padding:0, margin:0}}>
             News

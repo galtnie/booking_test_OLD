@@ -10,14 +10,16 @@ const styles = {
     main: {
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'flex-start'
+        justifyContent: 'flex-start',
+        
+
     },
     title: {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'flex-start', 
         alignItems: 'center',
-        color: '#0D0106',
+        color: '#7D6B91',
         paddingTop: '2em',
         paddingBottom: '1em',
         marginLeft: "0.5em",
@@ -32,6 +34,14 @@ export default class Home extends Component {
         myClasses: styles
     }
 
+    calculateDate(counter) {
+        let date = new Date();
+        var nextDate = date.getDate() + counter;
+        date.setDate(nextDate);
+        var newDate = date.toLocaleString();
+        console.log(newDate);
+        return newDate;
+    }
     
     
     render() {
