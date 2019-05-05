@@ -1,45 +1,40 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import React, { Component } from 'react';
+// import PropTypes from 'prop-types';
+// import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
+// import Button from '@material-ui/core/Button';
+// import IconButton from '@material-ui/core/IconButton';
+// import MenuIcon from '@material-ui/icons/Menu';
+import '../css/HomeDayBar.css'
 
-const styles = {
-  root: {
-    flexGrow: 1,
-  },
-  grow: {
-    flexGrow: 1,
-  },
-  menuButton: {
-    marginLeft: -12,
-    marginRight: 20,
-  },
-};
+export default class HomeDayBar extends Component {
+  state = {}
 
-function HomeDayBar(props) {
-  const { classes } = props;
-  return (
-    <div className={classes.root}>
-      <AppBar position="static" >
-        <Toolbar style={{padding:0, margin:0, minHeight: '40px', background: '#4d5ec1'}}>
-          
-          <Typography variant="h6" color="inherit" className={classes.grow} style={{padding:0, margin:0}}>
-            News
-          </Typography>
-         
-        </Toolbar>
-      </AppBar>
-    </div>
-  );
+  cardDate() {
+    const fullDate = new Date(this.props.getDate(this.props.counter))
+    const monthOption = { month: 'long'};
+    const weekdayOption = { weekday: 'long'};
+    const date =  fullDate.getDate()
+    const month = new Intl.DateTimeFormat('en-GB', monthOption).format(fullDate)
+    const weekday = new Intl.DateTimeFormat('en-GB', weekdayOption).format(fullDate) 
+    return (`${date} ${month}, ${weekday}`)
+  }
+  
+  render() {
+    return (
+      <div className='root'>
+        <AppBar position="static" >
+          <Toolbar className='toolbar'>
+            
+            <Typography variant="h6" className='grow'>
+              {this.cardDate()}
+            </Typography>
+           
+          </Toolbar>
+        </AppBar>
+      </div>
+    );
+  }
 }
-
-HomeDayBar.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
-
-export default withStyles(styles)(HomeDayBar);

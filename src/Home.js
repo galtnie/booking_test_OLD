@@ -39,8 +39,15 @@ export default class Home extends Component {
         var nextDate = date.getDate() + counter;
         date.setDate(nextDate);
         var newDate = date.toLocaleString();
-        console.log(newDate);
         return newDate;
+    }
+
+    renderDayCards() {
+        let a = []
+        for(let i=1; i<32; i++) {
+            a.push(<HomeDayCard getDate={this.calculateDate} counter={i}/>)
+        }
+        return a
     }
     
     
@@ -70,12 +77,8 @@ export default class Home extends Component {
                     <div className="manual-div">
                             <RedBusy /> <span className="manual-par"> The red room is reserved at this time </span>
                     </div>
-                    <HomeDayCard />
-                           
-                        
-                        
-                </div>
-                
+                    {this.renderDayCards()}                        
+                </div>             
             </div>
         )
     }
