@@ -31,7 +31,7 @@ export default class HomeDayBar extends Component {
             <Typography variant="h6" className='grow'>
               {this.cardDate()}
             </Typography>
-           
+            <a href="#top">Back to Top</a> 
           </Toolbar>
         </AppBar>
       </div>

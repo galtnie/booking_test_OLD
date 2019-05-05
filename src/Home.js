@@ -34,7 +34,7 @@ export default class Home extends Component {
         myClasses: styles
     }
 
-    calculateDate(counter) {
+    calculateDate(counter) {        //
         let date = new Date();
         var nextDate = date.getDate() + counter;
         date.setDate(nextDate);
@@ -43,11 +43,11 @@ export default class Home extends Component {
     }
 
     renderDayCards() {
-        let a = []
+        let days = []
         for(let i=1; i<32; i++) {
-            a.push(<HomeDayCard getDate={this.calculateDate} counter={i}/>)
+            days.push(<HomeDayCard getDate={this.calculateDate} counter={i}/>)
         }
-        return a
+        return days
     }
     
     
@@ -55,6 +55,7 @@ export default class Home extends Component {
         
         return (
             <div className={this.state.myClasses.main}> 
+                <a name='top'></a>
                 <ButtonAppBar />
                 <div style={this.state.myClasses.title}>
                     <div>
