@@ -1,0 +1,19 @@
+.title-div{
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+}
+
+.manual-par {
+    font-size: 1.2em;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+    margin-top: 0;
+    margin-bottom: 0;
+    color: #272838;
+}
+
+.manual-div {
+    display: flex; 
+    flex-direction: row;
+    align-items: center;
+}
