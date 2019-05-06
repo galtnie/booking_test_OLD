@@ -11,13 +11,13 @@ const styles = {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'flex-start',
-        
+
 
     },
     title: {
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'flex-start', 
+        justifyContent: 'flex-start',
         alignItems: 'center',
         color: '#7D6B91',
         paddingTop: '2em',
@@ -29,71 +29,81 @@ const styles = {
 
 
 export default class Home extends Component {
-     
-    state= {
-        myClasses: styles
+
+    state = {
+        myClasses: styles,
+        dayCardsID: "initial"
     }
 
-    calculateDate(counter) {        
+    calculateDate(counter) {
         let fullDate = new Date();
         let nextDate = fullDate.getDate() + counter;
         fullDate.setDate(nextDate);
-        const monthOption = { month: 'long'};
-        const weekdayOption = { weekday: 'long'};
-        const date =  fullDate.getDate()
+        const monthOption = { month: 'long' };
+        const weekdayOption = { weekday: 'long' };
+        const date = fullDate.getDate()
         const month = new Intl.DateTimeFormat('en-GB', monthOption).format(fullDate)
-        const weekday = new Intl.DateTimeFormat('en-GB', weekdayOption).format(fullDate) 
-        const keyDate = date.toString().length === 2 ? date : "0"+date;
-        const keyMonth = (fullDate.getMonth() + 1).toString().length === 2 ? (fullDate.getMonth() + 1) : "0"+ (fullDate.getMonth() + 1);
+        const weekday = new Intl.DateTimeFormat('en-GB', weekdayOption).format(fullDate)
+        const keyDate = date.toString().length === 2 ? date : "0" + date;
+        const keyMonth = (fullDate.getMonth() + 1).toString().length === 2 ? (fullDate.getMonth() + 1) : "0" + (fullDate.getMonth() + 1);
         const keyYear = fullDate.getYear().toString().slice(1)
-        
+
         return ({
             date: `${date} ${month}, ${weekday}`,
             key: `${keyDate}${keyMonth}${keyYear}`,
         });
     }
 
-    renderDayCards() {
-        let days = []
-        for(let i=1; i<32; i++) {
+    renderDayCards() {                                                                                                                                                                                                                                                                                                                          
+        let days = [];
+        let IDs = [];
+        for (let i = 1; i < 32; i++) {
             const cardDate = this.calculateDate(i).date;
-            const cardKey = this.calculateDate(i).key;
-            days.push(<HomeDayCard date={cardDate} key={cardKey} />)
+            const cardKey = this.calculateDate(i).key;                                                                                                                                                                                                                      
+            days.push(<HomeDayCard date={cardDate} key={cardKey} anchor={cardKey} id={cardKey} />)
+            IDs.push(cardKey)
         }
-        console.log(days)
-        return days
+        return { 
+            days: days,
+            dayCardsID: IDs 
+        }     
     }
     
+    componentDidMount() {
+        this.setState({ dayCardsID: [...this.renderDayCards().dayCardsID] })      
+    }
     
-    render() {
-        
+    render() {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
         return (
-            <div className={this.state.myClasses.main}> 
-                <a name='top'></a>
+            <div className={this.state.myClasses.main}>
                 <ButtonAppBar />
                 <div style={this.state.myClasses.title}>
                     <div>
-                        <h1 className="ui header" style={{color: 'inherit'}}>Conference Venue Booking</h1>
+                        <h1 className="ui header" style={{ color: 'inherit' }}>Conference Venue Booking</h1>
                     </div>
                 </div>
-                <div>
-                    <p className="manual-par"> 
-                        Enter a date or scroll down the page. 
+                <div className="manual">
+                    <div>
+                        <p className="manual-par">
+                            Enter a date or scroll down the page.
                     </p>
-                    <p className="manual-par"> 
-                        Only logged in users can make reservations.
+                        <p className="manual-par">
+                            Only logged in users can make reservations.
                     </p>
-                    <p className="manual-par"> 
-                        9" means 9:00-10:00; 10" means 10:00-11:00.
+                        <p className="manual-par">
+                            9" means 9:00-10:00; 10" means 10:00-11:00.
                     </p>
-                    <div className="manual-div">
+                    </div>
+                    <div>
+                        <div className="manual-div">
                             <RedFree />  <span className="manual-par"> The red room is free at this time </span>
-                    </div>
-                    <div className="manual-div">
+                        </div>
+                        <div className="manual-div">
                             <RedBusy /> <span className="manual-par"> The red room is reserved at this time </span>
+                        </div>
                     </div>
-                    {this.renderDayCards()}                        
-                </div>             
+                </div>
+                    {this.renderDayCards().days}  
             </div>
         )
     }
