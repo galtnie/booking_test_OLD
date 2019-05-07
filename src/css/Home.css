@@ -3,6 +3,16 @@
     margin-right: 0.5em;
 }
 
+.manual{
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-left: 2em;
+    margin-right: 2em;
+    margin-bottom: 1.5em;
+    margin-top: 1em;
+}
+
 .manual-par {
     font-size: 1.2em;
     margin-left: 0.5em;

@@ -42,10 +42,18 @@ function dateLimit() {
 }
   
 function onDateInput(value) {
+  if (value < dateLimit().minDate || value > dateLimit().maxDate ) {
+    alert('The date must be within 30-day period starting with tomorrow')
+  } else {
+    let id = value.slice(-2) + value.slice(5,7) + value.slice(2,4)
+    console.log(value, dateLimit().minDate, dateLimit().maxDate)
+    let distance = document.getElementById(id).offsetTop
+    window.scrollBy(0, distance)
+  }
   
-  let a = value.slice(-2) + value.slice(5,7) + value.slice(2,4)
-  console.log(a)
 }
+
+// ComponentDidMount
 
 function ButtonAppBar(props) {
   const { classes } = props;

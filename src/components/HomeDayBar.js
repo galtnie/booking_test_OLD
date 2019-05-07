@@ -20,7 +20,8 @@ export default class HomeDayBar extends Component {
             <Typography variant="h6" className='grow'>
               {this.props.date}
             </Typography>
-            <a href="#top" className='toolbarTop'>Back to Top</a> 
+            {/* <a href="#top" className='toolbarTop'>Back to Top</a>  */}
+            <span onClick={()=>window.scrollTo(0,0)} className='toolbarTop'>Back to Top</span> 
           </Toolbar>
         </AppBar>
       </div>
