@@ -58,9 +58,10 @@ export default class Home extends Component {
         for(let i=1; i<32; i++) {
             const cardDate = this.calculateDate(i).date;
             const cardKey = this.calculateDate(i).key;
-            days.push(<HomeDayCard date={cardDate} key={cardKey} />)
+             
+            days.push(<HomeDayCard date={cardDate} key={cardKey} anchor={cardKey} />)
         }
-        console.log(days)
+        
         return days
     }
     

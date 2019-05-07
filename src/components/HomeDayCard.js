@@ -4,12 +4,29 @@ import HomeDayBar from './HomeDayBar';
 export default class HomeDayCard extends Component{
     state={}
 
-    render() {
+    // renderHourCards() {
+    //     let hours = []
+    //     for (let i = 0; i<=23; i++){
+    //         hours.push(
+    //         <div> 
+    //             `${i}"`
+    //         </div>
+    //         )
+            
+    //     }
+        
+    //     return  
+    //         hours
+        
+    // }
 
+    render() {
+        console.log('anchor name' + this.props.anchor)
         return (
-            <div>
+            <div> 
+                <a href={this.props.anchor}></a>
                 <HomeDayBar date={this.props.date} />
-                Rooms will be here
+                {/* {this.renderHourCards()} */}
             </div> 
             
         );
