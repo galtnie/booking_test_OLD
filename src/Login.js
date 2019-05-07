@@ -18,7 +18,7 @@ import { Link } from 'react-router-dom';
 //     }
 // } 
 
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -65,12 +65,28 @@ const styles = theme => ({
   },
 });
 
-// function checkLoginDetails() {
-//   document.getElementById(login)
-// }
+
 
 function SignIn(props) {
   const { classes } = props;
+  let loginInput;
+  let passInput;
+  let loginInputted = '';
+  let passInputted = '';
+
+  function checkLoginDetails(loginInputted, passInputted) {
+    const realLogin = 'Mike@nowhere.net'
+    const realPass = '1111'
+    if (loginInputted === realLogin && passInputted === realPass) {
+      console.log('the login details are right')
+      loginInput.value = ''
+      passInput.value = ''
+      props.history.push('/booking')
+    } else {
+      console.log('the login details are WRONG')
+    }
+  }
+
 
   return (
     <main className={classes.main}>
@@ -85,11 +101,21 @@ function SignIn(props) {
         <form className={classes.form}>
           <FormControl margin="normal" required fullWidth>
             <InputLabel htmlFor="email">Email Address</InputLabel>
-            <Input id="email" name="email" autoComplete="email" autoFocus /> 
+            <Input id="email" name="email" autoComplete="email" autoFocus onChange={
+              (e) => {
+                loginInput = e.target
+                loginInputted = e.target.value;
+              }
+            } />
           </FormControl>
           <FormControl margin="normal" required fullWidth>
             <InputLabel htmlFor="password">Password</InputLabel>
-            <Input name="password" type="password" id="password" autoComplete="current-password" />
+            <Input name="password" type="password" id="password" autoComplete="current-password" onChange={
+              (e) => {
+                passInput = e.target
+                passInputted = e.target.value;
+              }
+            } />
           </FormControl>
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
@@ -101,20 +127,23 @@ function SignIn(props) {
             variant="contained"
             color="primary"
             className={classes.submit}
+            onClick={(e) => {
+              e.preventDefault()
+              console.log('login button clicked')
+              checkLoginDetails(loginInputted, passInputted)
+
+            }}
           >
             Sign in
           </Button>
         </form>
         <Link to="/">
-          <p style={{ marginTop: "1.5em", color:'darkblue',  textDecoration:'underline'}}>Return to Home page</p>
+          <p style={{ marginTop: "1.5em", color: 'darkblue', textDecoration: 'underline' }}>Return to Home page</p>
         </Link>
       </Paper>
-
-      <Link to="/booking">
-        <button> Booking</button>
-      </Link>
     </main>
   );
+
 }
 
 SignIn.propTypes = {
@@ -122,3 +151,60 @@ SignIn.propTypes = {
 };
 
 export default withStyles(styles)(SignIn);
+
+
+// class SignIn extends Component {
+//   state = {
+//     main: this.props.main,
+//     paper: this.props.paper,
+//     avatar: this.props.avatar,
+//     form: this.props.form,
+//     submit: this.props.submit,
+//   }
+
+//   render() {
+//     return (
+//       <main className={this.state.main}>
+//         <CssBaseline />
+//         <Paper className={this.state.paper}>
+//           <Avatar className={this.state.avatar}>
+//             <LockOutlinedIcon />
+//           </Avatar>
+//           <Typography component="h1" variant="h5">
+//             Sign in
+//         </Typography>
+//           <form className={this.state.form}>
+//             <FormControl margin="normal" required fullWidth>
+//               <InputLabel htmlFor="email">Email Address</InputLabel>
+//               <Input id="email" name="email" autoComplete="email" autoFocus />
+//             </FormControl>
+//             <FormControl margin="normal" required fullWidth>
+//               <InputLabel htmlFor="password">Password</InputLabel>
+//               <Input name="password" type="password" id="password" autoComplete="current-password" />
+//             </FormControl>
+//             <FormControlLabel
+//               control={<Checkbox value="remember" color="primary" />}
+//               label="Remember me"
+//             />
+//             <Button
+//               type="submit"
+//               fullWidth
+//               variant="contained"
+//               color="primary"
+//               className={this.state.submit}
+//             >
+//               Sign in
+//           </Button>
+//           </form>
+//           <Link to="/">
+//             <p style={{ marginTop: "1.5em", color: 'darkblue', textDecoration: 'underline' }}>Return to Home page</p>
+//           </Link>
+//         </Paper>
+
+//         <Link to="/booking">
+//           <button> Booking</button>
+//         </Link>
+//       </main>
+//     );
+//   }
+// }
