@@ -61,18 +61,17 @@ function SignIn(props) {
   function getInsideBooking(username) {
     loginInput.value = ''
     passInput.value = ''
-    localStorage.setItem('LoggedIn', username)
+    sessionStorage.setItem('LoggedIn', username)
     props.history.push('/booking')
-
   }
 
   function checkLoginDetails(loginInputted, passInputted) {
     const error = document.getElementById('errorMessage');
 
     let loginDetailsList = JSON.parse(localStorage.getItem('loginDetails'))
-    for(let i = 0; i < loginDetailsList.length; i++) {
+    for (let i = 0; i < loginDetailsList.length; i++) {
 
-      if(loginInputted.toLowerCase() === loginDetailsList[i].username.toLowerCase() && passInputted === loginDetailsList[i].password) {
+      if (loginInputted.toLowerCase() === loginDetailsList[i].username.toLowerCase() && passInputted === loginDetailsList[i].password) {
         getInsideBooking(loginDetailsList[i].username.toLowerCase())
         break;
       } else {
@@ -88,7 +87,7 @@ function SignIn(props) {
   return (
     <main className={classes.main}>
       <CssBaseline />
-      <Paper className={classes.paper}>
+      <Paper className={classes.paper} >
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
         </Avatar>
@@ -139,9 +138,9 @@ function SignIn(props) {
           </Button>
         </form>
         <Link to="/">
-          <p style={{ marginTop: "1.5em", color: 'darkblue', textDecoration: 'underline' }}>Return to Home page</p>
+        <p style={{ marginTop: "1.5em", color: 'darkblue', textDecoration: 'underline' }} >Return to Home page</p>
         </Link>
-      </Paper>
+      </Paper>    
     </main>
   );
 }

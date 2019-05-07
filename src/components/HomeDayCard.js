@@ -10,24 +10,24 @@ export default class HomeDayCard extends Component {
         return <div style={{ paddingLeft: "0.38em" }}>{hour}"</div>
     }
 
-    renderRooms(colour) {
+    renderRooms(colour, date, time) {
         switch (colour) {
             case "red":
                 return (
                     <div>
-                        <RedFreeHome />
+                        <RedFreeHome id={`${date}${time}red`}/>
                     </div>
                 );
             case "blue":
                 return (
                     <div>
-                        <BlueFreeHome />
+                        <BlueFreeHome id={`${date}${time}blu`}/>
                     </div>
                 );
             case "green":
                 return (
                     <div>
-                        <GreenFreeHome />
+                        <GreenFreeHome id={`${date}${time}gre`}/>
                     </div>
                 );
             default:
@@ -42,7 +42,7 @@ export default class HomeDayCard extends Component {
             hours.push(
                 <div key={this.props.anchor + hourForKeyName} className='home-one-hour-countainer'>
                     {this.renderHour(i)}
-                    {this.renderRooms('red')}
+                    {this.renderRooms('red', this.props.date, i)}
                     {this.renderRooms('blue')}
                     {this.renderRooms('green')}
                 </div>

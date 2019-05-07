@@ -1,11 +1,12 @@
 import React from 'react';
-import { BrowserRouter, Route } from 'react-router-dom';
+import { BrowserRouter, Route, Redirect } from 'react-router-dom';
 import Home from './Home';
 import Login from './Login';
 import Booking from './Booking';
 
 //import logo from './logo.svg';
 import './css/App.css';
+
 
 
 function App() {
@@ -26,16 +27,20 @@ function App() {
     ]
   ))
 
-  let loginDetailsList = JSON.parse(localStorage.getItem('loginDetails'))
-  console.log(loginDetailsList);
+//  let loginDetailsList = JSON.parse(localStorage.getItem('loginDetails'))
+
+
 
   return (
     <div>
       <BrowserRouter >
         <div>
-          <Route path="/" exact component={Home} />
-          <Route path="/login" component={Login} />
-          <Route path='/booking' component={Booking} />
+          
+            <Route path="/login" component={Login} />
+            <Route path="/" exact component={Home} />
+            <Route path='/booking' component={Booking} />
+          
+
         </div>
       </BrowserRouter>
     </div>

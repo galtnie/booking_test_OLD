@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 // import { Link } from 'react-router-dom';
 import ButtonAppBar from './components/HomeUpperBar';
 import HomeDayCard from './components/HomeDayCard';
-
+import { BrowserRouter, Route, Redirect } from 'react-router-dom';
 import { RedFree, RedBusy } from './components/Rooms'
 import './css/Home.css'
 
@@ -52,57 +52,63 @@ export default class Home extends Component {
         });
     }
 
-    renderDayCards() {                                                                                                                                                                                                                                                                                                                          
+    renderDayCards() {
         let days = [];
         let IDs = [];
         for (let i = 1; i < 32; i++) {
             const cardDate = this.calculateDate(i).date;
-            const cardKey = this.calculateDate(i).key;                                                                                                                                                                                                                      
+            const cardKey = this.calculateDate(i).key;
             days.push(<HomeDayCard date={cardDate} key={cardKey} anchor={cardKey} id={cardKey} />)
             IDs.push(cardKey)
         }
-        return { 
+        return {
             days: days,
-            dayCardsID: IDs 
-        }     
+            dayCardsID: IDs
+        }
     }
-    
+
     componentDidMount() {
-        this.setState({ dayCardsID: [...this.renderDayCards().dayCardsID] })      
+        this.setState({ dayCardsID: [...this.renderDayCards().dayCardsID] })
     }
-    
-    render() {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-        return (
-            <div className={this.state.myClasses.main}>
-                <ButtonAppBar />
-                <div style={this.state.myClasses.title}>
-                    <div>
-                        <h1 className="ui header" style={{ color: 'inherit' }}>Conference Venue Booking</h1>
-                    </div>
-                </div>
-                <div className="manual">
-                    <div>
-                        <p className="manual-par">
-                            Enter a date or scroll down the page.
-                    </p>
-                        <p className="manual-par">
-                            Only logged in users can make reservations.
-                    </p>
-                        <p className="manual-par">
-                            9" means 9:00-10:00; 10" means 10:00-11:00.
-                    </p>
-                    </div>
-                    <div>
-                        <div className="manual-div">
-                            <RedFree />  <span className="manual-par"> The red room is free at this time </span>
-                        </div>
-                        <div className="manual-div">
-                            <RedBusy /> <span className="manual-par"> The red room is reserved at this time </span>
+
+    render() {
+
+        if (typeof sessionStorage.getItem('LoggedIn') !== "string") {
+
+            return (
+                <div className={this.state.myClasses.main}>
+                    <ButtonAppBar />
+                    <div style={this.state.myClasses.title}>
+                        <div>
+                            <h1 className="ui header" style={{ color: 'inherit' }}>Conference Venue Booking</h1>
                         </div>
                     </div>
+                    <div className="manual">
+                        <div>
+                            <p className="manual-par">
+                                Enter a date or scroll down the page.
+                    </p>
+                            <p className="manual-par">
+                                Only logged in users can make reservations.
+                    </p>
+                            <p className="manual-par">
+                                9" means 9:00-10:00; 10" means 10:00-11:00.
+                    </p>
+                        </div>
+                        <div>
+                            <div className="manual-div">
+                                <RedFree />  <span className="manual-par"> The red room is free at this time </span>
+                            </div>
+                            <div className="manual-div">
+                                <RedBusy /> <span className="manual-par"> The red room is reserved at this time </span>
+                            </div>
+                        </div>
+                    </div>
+                    {this.renderDayCards().days}
                 </div>
-                    {this.renderDayCards().days}  
-            </div>
-        )
+            )
+        } else {
+            return <Redirect to='/booking' />
+        }
     }
-} 
+}

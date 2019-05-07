@@ -53,11 +53,14 @@ function onDateInput(value) {
   
 }
 
-// ComponentDidMount
-
-function ButtonAppBar(props) {
+function ButtonAppBarBooking(props) {
   const { classes } = props;
 
+  function signOut(){
+    props.history.push('/login')
+    sessionStorage.removeItem('LoggedIn');
+  }
+  
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -66,19 +69,18 @@ function ButtonAppBar(props) {
             <input type='date' min={dateLimit().minDate} max={dateLimit().maxDate} onChange={(e)=>onDateInput(e.target.value)} style={{ padding: 0, lineHeight: '1em', background: '#FBFBFF' }} />
           </div>
           <div className={classes.grow} />
-          <Link to="/login">
-            <Button className={classes.loginButton}>
+            <Button className={classes.loginButton} onClick={()=> {signOut()}}>
               Log out
             </Button>
-          </Link>
         </Toolbar>
       </AppBar>
     </div>
   );
 }
 
-ButtonAppBar.propTypes = {
+ButtonAppBarBooking.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(ButtonAppBar);
+export default withStyles(styles)(ButtonAppBarBooking);
+
