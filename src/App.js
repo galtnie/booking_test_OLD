@@ -9,6 +9,26 @@ import './css/App.css';
 
 
 function App() {
+  localStorage.setItem('loginDetails', JSON.stringify(
+    [
+      {
+        username: 'Mike@nowhere.net',
+        password: '1111',
+      },
+      {
+        username: 'Pete@nowhere.net',
+        password: '2222',
+      },
+      {
+        username: 'linda@nowhere.net',
+        password: '3333',
+      },
+    ]
+  ))
+
+  let loginDetailsList = JSON.parse(localStorage.getItem('loginDetails'))
+  console.log(loginDetailsList);
+
   return (
     <div>
       <BrowserRouter >
@@ -18,7 +38,7 @@ function App() {
           <Route path='/booking' component={Booking} />
         </div>
       </BrowserRouter>
-    </div>  
+    </div>
   );
 }
 

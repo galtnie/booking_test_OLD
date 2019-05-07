@@ -1,24 +1,6 @@
-// import React, { Component } from 'react'
+import React from 'react'
+//import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-
-// import @material-ui/core
-// import @material-ui/icons
-
-// export default class Login extends Component {
-//     state={}
-
-//     render() {
-//         return (
-//             <div> Login page
-// <Link to="/booking"> 
-//     <button> Booking</button> 
-// </Link> 
-//             </div>
-//         );
-//     }
-// } 
-
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -32,6 +14,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
+import ls from 'local-storage'
 
 const styles = theme => ({
   main: {
@@ -66,24 +49,38 @@ const styles = theme => ({
 });
 
 
-
 function SignIn(props) {
   const { classes } = props;
+
+
   let loginInput;
   let passInput;
   let loginInputted = '';
   let passInputted = '';
 
+  function getInsideBooking(username) {
+    loginInput.value = ''
+    passInput.value = ''
+    localStorage.setItem('LoggedIn', username)
+    props.history.push('/booking')
+
+  }
+
   function checkLoginDetails(loginInputted, passInputted) {
-    const realLogin = 'Mike@nowhere.net'
-    const realPass = '1111'
-    if (loginInputted === realLogin && passInputted === realPass) {
-      console.log('the login details are right')
-      loginInput.value = ''
-      passInput.value = ''
-      props.history.push('/booking')
-    } else {
-      console.log('the login details are WRONG')
+    const error = document.getElementById('errorMessage');
+
+    let loginDetailsList = JSON.parse(localStorage.getItem('loginDetails'))
+    for(let i = 0; i < loginDetailsList.length; i++) {
+
+      if(loginInputted.toLowerCase() === loginDetailsList[i].username.toLowerCase() && passInputted === loginDetailsList[i].password) {
+        getInsideBooking(loginDetailsList[i].username.toLowerCase())
+        break;
+      } else {
+        error.style.display = "flex"
+        setTimeout(() => {
+          error.style.display = "none"
+        }, 5000)
+      }
     }
   }
 
@@ -105,6 +102,7 @@ function SignIn(props) {
               (e) => {
                 loginInput = e.target
                 loginInputted = e.target.value;
+                document.getElementById('errorMessage').style.display = "none";
               }
             } />
           </FormControl>
@@ -114,6 +112,7 @@ function SignIn(props) {
               (e) => {
                 passInput = e.target
                 passInputted = e.target.value;
+                document.getElementById('errorMessage').style.display = "none";
               }
             } />
           </FormControl>
@@ -121,6 +120,10 @@ function SignIn(props) {
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
           />
+          <div style={{ display: "flex", justifyContent: "center", margin: 0, padding: 0, height: "1em" }} >
+            <div style={{ color: "red", display: "none", }} id="errorMessage"> The login or password is wrong. </div>
+          </div>
+
           <Button
             type="submit"
             fullWidth
@@ -129,9 +132,7 @@ function SignIn(props) {
             className={classes.submit}
             onClick={(e) => {
               e.preventDefault()
-              console.log('login button clicked')
               checkLoginDetails(loginInputted, passInputted)
-
             }}
           >
             Sign in
@@ -143,7 +144,6 @@ function SignIn(props) {
       </Paper>
     </main>
   );
-
 }
 
 SignIn.propTypes = {
