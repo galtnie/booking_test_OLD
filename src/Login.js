@@ -157,7 +157,6 @@ export default withStyles(styles)(SignIn);
 //     main: this.props.main,
 //     paper: this.props.paper,
 //     avatar: this.props.avatar,
-//     form: this.props.form,
 //     submit: this.props.submit,
 //   }
 
