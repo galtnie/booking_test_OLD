@@ -11,8 +11,6 @@ const styles = {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'flex-start',
-
-
     },
     title: {
         display: 'flex',

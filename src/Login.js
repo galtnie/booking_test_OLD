@@ -1,5 +1,5 @@
 // import React, { Component } from 'react'
-// import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 // import @material-ui/core
 // import @material-ui/icons
@@ -10,9 +10,9 @@
 //     render() {
 //         return (
 //             <div> Login page
-//                 <Link to="/booking"> 
-//                     <button> Booking</button> 
-//                 </Link> 
+// <Link to="/booking"> 
+//     <button> Booking</button> 
+// </Link> 
 //             </div>
 //         );
 //     }
@@ -65,6 +65,10 @@ const styles = theme => ({
   },
 });
 
+// function checkLoginDetails() {
+//   document.getElementById(login)
+// }
+
 function SignIn(props) {
   const { classes } = props;
 
@@ -81,7 +85,7 @@ function SignIn(props) {
         <form className={classes.form}>
           <FormControl margin="normal" required fullWidth>
             <InputLabel htmlFor="email">Email Address</InputLabel>
-            <Input id="email" name="email" autoComplete="email" autoFocus />
+            <Input id="email" name="email" autoComplete="email" autoFocus /> 
           </FormControl>
           <FormControl margin="normal" required fullWidth>
             <InputLabel htmlFor="password">Password</InputLabel>
@@ -101,7 +105,14 @@ function SignIn(props) {
             Sign in
           </Button>
         </form>
+        <Link to="/">
+          <p style={{ marginTop: "1.5em", color:'darkblue',  textDecoration:'underline'}}>Return to Home page</p>
+        </Link>
       </Paper>
+
+      <Link to="/booking">
+        <button> Booking</button>
+      </Link>
     </main>
   );
 }

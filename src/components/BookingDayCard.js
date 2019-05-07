@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import HomeDayBar from './HomeDayBar';
 import '../css/HomeDayCard.css';
-import { RedFreeHome, RedBusy, BlueFreeHome, BlueBusy, GreenFreeHome, GreenBusy } from './Rooms'
+import { RedFree, RedBusy, BlueFree, BlueBusy, GreenFree, GreenBusy } from './Rooms'
 
-export default class HomeDayCard extends Component {
+export default class BookingDayCard extends Component {
     state = {}
 
     renderHour(hour) {
@@ -15,19 +15,19 @@ export default class HomeDayCard extends Component {
             case "red":
                 return (
                     <div>
-                        <RedFreeHome />
+                        <RedFree />
                     </div>
                 );
             case "blue":
                 return (
                     <div>
-                        <BlueFreeHome />
+                        <BlueFree />
                     </div>
                 );
             case "green":
                 return (
                     <div>
-                        <GreenFreeHome />
+                        <GreenFree />
                     </div>
                 );
             default:
