@@ -10,41 +10,63 @@ export default class HomeDayCard extends Component {
         return <div style={{ paddingLeft: "0.38em" }}>{hour}"</div>
     }
 
-    renderRooms(colour, date, time) {
+    renderRooms(date, hour, colour) {
         switch (colour) {
             case "red":
-                return (
-                    <div>
-                        <RedFreeHome id={`${date}${time}red`}/>
-                    </div>
-                );
+                if (this.props.checkReservation(date + hour + "colour:red")) {
+                    return (
+                        <div>
+                            <RedBusy id={date + hour + "colour:red"} />
+                        </div>
+                    )
+                } else {
+                    return (
+                        <div>
+                            <RedFreeHome id={date + hour + "colour:red"} chooseSlot={this.props.chooseSlot} />
+                        </div>
+                    );
+                }
             case "blue":
+            if (this.props.checkReservation(date + hour + "colour:blu")) {
                 return (
                     <div>
-                        <BlueFreeHome id={`${date}${time}blu`}/>
+                        <BlueBusy id={date + hour + "colour:blu"} />
+                    </div>
+                )
+            } else {
+                return (
+                    <div>
+                        <BlueFreeHome id={date + hour + "colour:blu"} chooseSlot={this.props.chooseSlot} />
                     </div>
                 );
+            }
             case "green":
+            if (this.props.checkReservation(date + hour + "colour:gre")) {
                 return (
                     <div>
-                        <GreenFreeHome id={`${date}${time}gre`}/>
+                        <GreenBusy id={date + hour + "colour:gre"} />
                     </div>
                 );
-            default:
-                return <div>room</div>;
+            } else {
+                return (
+                    <div>
+                        <GreenFreeHome id={date + hour + "colour:gre"} chooseSlot={this.props.chooseSlot} />
+                    </div>
+                );
+            }
         }
     }
-
     renderOneHourContainer() {
         let hours = []
         for (let i = 0; i <= 23; i++) {
-            let hourForKeyName = String(i).length === 1 ? "0" + i : i;
+            let hourForIdName = String(i).length === 1 ? "hour:" + "0" + i : "hour:" + i;
+
             hours.push(
-                <div key={this.props.anchor + hourForKeyName} className='home-one-hour-countainer'>
+                <div id={this.props.id + hourForIdName} key={`${this.id}${hourForIdName}`} className='home-one-hour-countainer'>
                     {this.renderHour(i)}
-                    {this.renderRooms('red', this.props.date, i)}
-                    {this.renderRooms('blue')}
-                    {this.renderRooms('green')}
+                    {this.renderRooms(this.props.id, hourForIdName, 'red')}
+                    {this.renderRooms(this.props.id, hourForIdName, 'blue')}
+                    {this.renderRooms(this.props.id, hourForIdName, 'green')}
                 </div>
             );
         }

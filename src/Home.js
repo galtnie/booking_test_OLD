@@ -30,7 +30,8 @@ export default class Home extends Component {
 
     state = {
         myClasses: styles,
-        dayCardsID: "initial"
+        dayCardsID: "initial",
+        reservedSlots: []
     }
 
     calculateDate(counter) {
@@ -58,11 +59,12 @@ export default class Home extends Component {
         for (let i = 1; i < 32; i++) {
             const cardDate = this.calculateDate(i).date;
             const cardKey = this.calculateDate(i).key;
-            days.push(<HomeDayCard 
-                date={cardDate} 
-                key={cardKey} 
-                anchor={cardKey} 
-                id={cardKey} 
+            days.push(<HomeDayCard
+                date={cardDate}
+                key={cardKey}
+                anchor={cardKey}
+                id={"date:" + cardKey}
+                checkReservation={this.checkReservation.bind(this)}
             />)
             IDs.push(cardKey)
         }
@@ -72,12 +74,24 @@ export default class Home extends Component {
         }
     }
 
+    checkReservation(slotID) {
+        console.log(this.state.reservedSlots)
+        if (this.state.reservedSlots.includes(slotID)) {
+            console.log('fu')
+        } 
+        
+        return this.state.reservedSlots.includes(slotID)
+    }
+
     componentDidMount() {
         this.setState({ dayCardsID: [...this.renderDayCards().dayCardsID] })
+        if (localStorage.getItem('bookedSlots') !== null) {
+           this.setState({ reservedSlots: JSON.parse(localStorage.getItem('bookedSlots')) })
+        }
+    
     }
 
     render() {
-
         if (typeof sessionStorage.getItem('LoggedIn') !== "string") {
             return (
                 <div className={this.state.myClasses.main}>

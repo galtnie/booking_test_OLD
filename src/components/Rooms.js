@@ -4,42 +4,42 @@ import '../css/Rooms.css'
 export class RedFreeHome extends Component {
     state = {}
     render() {
-        return <div className="red-room-free-home">F</div>;
+        return <div className="red-room-free-home" id={this.props.id}>F</div>;
     }
 }
 
 export class BlueFreeHome extends Component {
     state = {}
     render() {
-        return <div className="blue-room-free-home">F</div>;
+        return <div className="blue-room-free-home" id={this.props.id}>F</div>;
     }
 }
 
 export class GreenFreeHome extends Component {
     state = {}
     render() {
-        return <div className="green-room-free-home">F</div>;
+        return <div className="green-room-free-home" id={this.props.id}>F</div>;
     }
 }
 
 export class RedBusy extends Component {
     state = {}
     render() {
-        return <div className="red-room-reserved">R</div>;
+        return <div className="red-room-reserved" id={this.props.id}>R</div>;
     }
 }
 
 export class BlueBusy extends Component {
     state = {}
     render() {
-        return <div className="blue-room-reserved">R</div>;
+        return <div className="blue-room-reserved" id={this.props.id}>R</div>;
     }
 }
 
 export class GreenBusy extends Component {
     state = {}
     render() {
-        return <div className="green-room-reserved">R</div>;
+        return <div className="green-room-reserved" id={this.props.id}>R</div>;
     }
 }
 

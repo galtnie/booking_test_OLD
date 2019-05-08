@@ -95,7 +95,7 @@ export default class Booking extends Component {
                 chooseSlot={this.chooseSlot.bind(this)}
                 checkSlot={this.checkSlot.bind(this)}
                 deselect={this.deselect.bind(this)}
-                checkReservation = {this.checkReservation.bind(this)}
+                checkReservation={this.checkReservation.bind(this)}
             />)
             IDs.push(cardKey)
         }
@@ -113,7 +113,7 @@ export default class Booking extends Component {
             let chosenHalls = JSON.parse(sessionStorage.getItem('chosenSlots')) // I CAN MAKE A LIST AS A MESSAGE FOR CONFIRMATION IF I HAVE TIME
             let confirm = window.confirm('Do you confirm your order?')
 
-            if (confirm) { 
+            if (confirm) {
                 let ReservationsToSave
                 if (localStorage.getItem('bookedSlots') !== null) {
                     let alreadySavedReservations = JSON.parse(localStorage.getItem('bookedSlots'))
@@ -121,8 +121,8 @@ export default class Booking extends Component {
                 }
                 localStorage.setItem('bookedSlots', JSON.stringify(ReservationsToSave))
                 sessionStorage.removeItem('chosenSlots')
-                this.setState ({ reservedSlots : JSON.parse(localStorage.getItem('bookedSlots')) })
-            }    
+                this.setState({ reservedSlots: JSON.parse(localStorage.getItem('bookedSlots')) })
+            }
             else { console.log('no') }
         }
     }
@@ -131,8 +131,6 @@ export default class Booking extends Component {
 
     componentDidMount() {
         this.setState({ dayCardsID: [...this.renderDayCards().dayCardsID] })
-
-
         if (sessionStorage.getItem('chosenSlots') !== null) {
             this.setState({ chosenSlots: JSON.parse(sessionStorage.getItem('chosenSlots')) })
         }
@@ -147,8 +145,6 @@ export default class Booking extends Component {
     }
 
     render() {
-
-
         if (typeof sessionStorage.getItem('LoggedIn') === "string" && sessionStorage.getItem('LoggedIn').length > 2) {
             return (
                 <div>

@@ -19,8 +19,7 @@ export default class BookingDayCard extends Component {
                             <RedBusy id={date + hour + "colour:red"} />
                         </div>
                     )
-                }
-                if (this.props.checkSlot(date + hour + "colour:red")) {
+                } else if (this.props.checkSlot(date + hour + "colour:red")) {
                     return (
                         <div>
                             <RedChosen id={date + hour + "colour:red"} deselect={this.props.deselect} />
@@ -34,14 +33,13 @@ export default class BookingDayCard extends Component {
                     );
                 }
             case "blue":
-            if (this.props.checkReservation(date + hour + "colour:blu")) {
-                return (
-                    <div>
-                        <BlueBusy id={date + hour + "colour:blu"} />
-                    </div>
-                )
-            }
-                if (this.props.checkSlot(date + hour + "colour:blu")) {
+                if (this.props.checkReservation(date + hour + "colour:blu")) {
+                    return (
+                        <div>
+                            <BlueBusy id={date + hour + "colour:blu"} />
+                        </div>
+                    )
+                } else if (this.props.checkSlot(date + hour + "colour:blu")) {
                     return (
                         <div>
                             <BlueChosen id={date + hour + "colour:blu"} deselect={this.props.deselect} />
@@ -55,14 +53,13 @@ export default class BookingDayCard extends Component {
                     );
                 }
             case "green":
-            if (this.props.checkReservation(date + hour + "colour:gre")) {
-                return (
-                    <div>
-                        <GreenBusy id={date + hour + "colour:gre"} />
-                    </div>
-                )
-            }
-                if (this.props.checkSlot(date + hour + "colour:gre")) {
+                if (this.props.checkReservation(date + hour + "colour:gre")) {
+                    return (
+                        <div>
+                            <GreenBusy id={date + hour + "colour:gre"} />
+                        </div>
+                    )
+                } else if (this.props.checkSlot(date + hour + "colour:gre")) {
                     return (
                         <div>
                             <GreenChosen id={date + hour + "colour:gre"} deselect={this.props.deselect} />
