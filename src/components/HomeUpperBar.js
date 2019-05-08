@@ -66,9 +66,12 @@ function ButtonAppBar(props) {
             <input type='date' min={dateLimit().minDate} max={dateLimit().maxDate} onChange={(e)=>onDateInput(e.target.value)} style={{ padding: 0, lineHeight: '1em', background: '#FBFBFF' }} />
           </div>
           <div className={classes.grow} />
+          <Button className={classes.loginButton}>
+              Sign up
+          </Button>
           <Link to="/login">
-            <Button className={classes.loginButton}>
-              Login
+            <Button className={classes.loginButton} style={{color: "#15cda8", fontWeight: "bold"}}>
+              Sign in
             </Button>
           </Link>
         </Toolbar>
