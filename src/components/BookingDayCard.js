@@ -13,7 +13,13 @@ export default class BookingDayCard extends Component {
     renderRooms(date, hour, colour) {
         switch (colour) {
             case "red":
-                // console.log(this.props.checkSlot(date+hour+"colour:red").bind(this))
+                if (this.props.checkReservation(date + hour + "colour:red")) {
+                    return (
+                        <div>
+                            <RedBusy id={date + hour + "colour:red"} />
+                        </div>
+                    )
+                }
                 if (this.props.checkSlot(date + hour + "colour:red")) {
                     return (
                         <div>
@@ -28,6 +34,13 @@ export default class BookingDayCard extends Component {
                     );
                 }
             case "blue":
+            if (this.props.checkReservation(date + hour + "colour:blu")) {
+                return (
+                    <div>
+                        <BlueBusy id={date + hour + "colour:blu"} />
+                    </div>
+                )
+            }
                 if (this.props.checkSlot(date + hour + "colour:blu")) {
                     return (
                         <div>
@@ -42,7 +55,13 @@ export default class BookingDayCard extends Component {
                     );
                 }
             case "green":
-
+            if (this.props.checkReservation(date + hour + "colour:gre")) {
+                return (
+                    <div>
+                        <GreenBusy id={date + hour + "colour:gre"} />
+                    </div>
+                )
+            }
                 if (this.props.checkSlot(date + hour + "colour:gre")) {
                     return (
                         <div>

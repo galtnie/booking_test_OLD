@@ -44,6 +44,10 @@ export default class Booking extends Component {
         return this.state.chosenSlots.includes(slotID)
     }
 
+    checkReservation(slotID) {
+        return this.state.reservedSlots.includes(slotID)
+    }
+
     deselect(slotID) {
 
         let arrayToAlter = this.state.chosenSlots.slice(0)
@@ -91,6 +95,7 @@ export default class Booking extends Component {
                 chooseSlot={this.chooseSlot.bind(this)}
                 checkSlot={this.checkSlot.bind(this)}
                 deselect={this.deselect.bind(this)}
+                checkReservation = {this.checkReservation.bind(this)}
             />)
             IDs.push(cardKey)
         }
@@ -101,27 +106,24 @@ export default class Booking extends Component {
     }
 
     confirmReservation() {
-
-        localStorage.setItem('test', 'test')
-
         if (sessionStorage.getItem('chosenSlots') === null || JSON.parse(sessionStorage.getItem('chosenSlots')).length === 0) {
             alert('There is nothing to confirm. Please choose rooms you like to book first.')
         } else if (JSON.parse(sessionStorage.getItem('chosenSlots').length > 0)) {
 
-            let selectionList = JSON.parse(sessionStorage.getItem('chosenSlots')) // I CAN MAKE A LIST AS A MESSAGE FOR CONFIRMATION IF I HAVE TIME
-            console.log(selectionList)
+            let chosenHalls = JSON.parse(sessionStorage.getItem('chosenSlots')) // I CAN MAKE A LIST AS A MESSAGE FOR CONFIRMATION IF I HAVE TIME
             let confirm = window.confirm('Do you confirm your order?')
 
             if (confirm) { 
-                localStorage.setItem('bookedSlots', JSON.stringify(selectionList))
-                console.log(JSON.stringify(selectionList))
-
+                let ReservationsToSave
+                if (localStorage.getItem('bookedSlots') !== null) {
+                    let alreadySavedReservations = JSON.parse(localStorage.getItem('bookedSlots'))
+                    ReservationsToSave = [...alreadySavedReservations, ...chosenHalls]
+                }
+                localStorage.setItem('bookedSlots', JSON.stringify(ReservationsToSave))
                 sessionStorage.removeItem('chosenSlots')
-                this.state.reservedSlots = JSON.parse(sessionStorage.getItem('bookedSlots'))
+                this.setState ({ reservedSlots : JSON.parse(localStorage.getItem('bookedSlots')) })
             }    
             else { console.log('no') }
-
-
         }
     }
 
