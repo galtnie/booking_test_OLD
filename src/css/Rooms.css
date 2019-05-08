@@ -130,3 +130,48 @@
 .green-room-free:hover {
     background:rgba(112, 251, 31, 0.6);
 }
+
+
+/* CHOSEN */
+
+.red-room-chosen {
+    width: 2em;
+    height: 2em;
+    border: solid 4px rgb(178,34,34);
+    border-radius: 0.4em;
+    /* background:rgba(240,128,128,0.1); */
+    background: orange;
+    color: rgb(178,34,34);
+    margin: 0.5em;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.green-room-chosen {
+    width: 2em;
+    height: 2em;
+    border: solid 4px rgba(19, 55, 11, 0.9);
+    border-radius: 0.4em;
+    /* background:rgba(193, 241, 183, 0.1);  */
+    background: orange;
+    color: rgba(19, 55, 11, 0.9);
+    margin: 0.5em;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.blue-room-chosen {
+    width: 2em;
+    height: 2em;
+    border: solid 4px rgb(18, 11, 120);
+    border-radius: 0.4em;
+    /* background:rgba(97, 143, 236, 0.1);  */
+    background: orange;
+    color: rgb(18, 11, 120);
+    margin: 0.5em;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}

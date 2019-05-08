@@ -59,6 +59,7 @@ function ButtonAppBarBooking(props) {
   function signOut(){
     props.history.push('/login')
     sessionStorage.removeItem('LoggedIn');
+    sessionStorage.removeItem('chosenSlots');
   }
   
   return (
@@ -68,7 +69,11 @@ function ButtonAppBarBooking(props) {
           <div className="ui input" style={{ paddingRight: '1em' }}>
             <input type='date' min={dateLimit().minDate} max={dateLimit().maxDate} onChange={(e)=>onDateInput(e.target.value)} style={{ padding: 0, lineHeight: '1em', background: '#FBFBFF' }} />
           </div>
+
           <div className={classes.grow} />
+          <Button className={classes.loginButton} style={{color: "#15cda8", fontWeight: "bold"}} onClick={props.confirm}>
+              Payment
+            </Button>
             <Button className={classes.loginButton} onClick={()=> {signOut()}}>
               Log out
             </Button>

@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import ButtonAppBarBooking from './components/BookingUpperBar';
 import BookingDayCard from './components/BookingDayCard';
-import { RedFree, RedBusy } from './components/Rooms'
+import { RedFree, RedBusy, RedChosen } from './components/Rooms'
 import './css/Home.css'
 
 const styles = {
@@ -29,7 +29,33 @@ export default class Booking extends Component {
 
     state = {
         myClasses: styles,
-        dayCardsID: "initial"
+        dayCardsID: "initial",
+        chosenSlots: [],
+        reservedSlots: []
+    }
+
+    chooseSlot(slotID) {
+        sessionStorage.setItem('chosenSlots', JSON.stringify([...this.state.chosenSlots, slotID]))
+        this.setState({ chosenSlots: [...this.state.chosenSlots, slotID] })
+
+    }
+
+    checkSlot(slotID) {
+        return this.state.chosenSlots.includes(slotID)
+    }
+
+    deselect(slotID) {
+
+        let arrayToAlter = this.state.chosenSlots.slice(0)
+        for (var i = 0; i < arrayToAlter.length; i++) {
+            if (arrayToAlter[i] === slotID) {
+                arrayToAlter.splice(i, 1);
+            }
+        }
+        sessionStorage.removeItem('chosenSlots')
+        sessionStorage.setItem('chosenSlots', JSON.stringify(arrayToAlter))
+
+        this.setState({ chosenSlots: arrayToAlter })
     }
 
     calculateDate(counter) {
@@ -57,7 +83,15 @@ export default class Booking extends Component {
         for (let i = 1; i < 32; i++) {
             const cardDate = this.calculateDate(i).date;
             const cardKey = this.calculateDate(i).key;
-            days.push(<BookingDayCard date={cardDate} key={cardKey} anchor={cardKey} id={cardKey} />)
+            days.push(<BookingDayCard
+                date={cardDate}
+                key={cardKey}
+                anchor={cardKey}
+                id={"date:" + cardKey}
+                chooseSlot={this.chooseSlot.bind(this)}
+                checkSlot={this.checkSlot.bind(this)}
+                deselect={this.deselect.bind(this)}
+            />)
             IDs.push(cardKey)
         }
         return {
@@ -66,8 +100,44 @@ export default class Booking extends Component {
         }
     }
 
+    confirmReservation() {
+
+        localStorage.setItem('test', 'test')
+
+        if (sessionStorage.getItem('chosenSlots') === null || JSON.parse(sessionStorage.getItem('chosenSlots')).length === 0) {
+            alert('There is nothing to confirm. Please choose rooms you like to book first.')
+        } else if (JSON.parse(sessionStorage.getItem('chosenSlots').length > 0)) {
+
+            let selectionList = JSON.parse(sessionStorage.getItem('chosenSlots')) // I CAN MAKE A LIST AS A MESSAGE FOR CONFIRMATION IF I HAVE TIME
+            console.log(selectionList)
+            let confirm = window.confirm('Do you confirm your order?')
+
+            if (confirm) { 
+                localStorage.setItem('bookedSlots', JSON.stringify(selectionList))
+                console.log(JSON.stringify(selectionList))
+
+                sessionStorage.removeItem('chosenSlots')
+                this.state.reservedSlots = JSON.parse(sessionStorage.getItem('bookedSlots'))
+            }    
+            else { console.log('no') }
+
+
+        }
+    }
+
+
+
     componentDidMount() {
         this.setState({ dayCardsID: [...this.renderDayCards().dayCardsID] })
+
+
+        if (sessionStorage.getItem('chosenSlots') !== null) {
+            this.setState({ chosenSlots: JSON.parse(sessionStorage.getItem('chosenSlots')) })
+        }
+        if (localStorage.getItem('bookedSlots') !== null) {
+            this.setState({ reservedSlots: JSON.parse(localStorage.getItem('bookedSlots')) })
+        }
+
     }
 
     redirect() {
@@ -75,11 +145,13 @@ export default class Booking extends Component {
     }
 
     render() {
+
+
         if (typeof sessionStorage.getItem('LoggedIn') === "string" && sessionStorage.getItem('LoggedIn').length > 2) {
             return (
                 <div>
                     <div className={this.state.myClasses.main}>
-                        <ButtonAppBarBooking history={this.props.history} />
+                        <ButtonAppBarBooking history={this.props.history} confirm={this.confirmReservation.bind(this)} />
                         <div style={this.state.myClasses.title}>
                             <div>
                                 <h1 className="ui header" style={{ color: 'inherit' }}>Conference Venue Booking</h1>
@@ -96,6 +168,15 @@ export default class Booking extends Component {
                                 <p className="manual-par">
                                     9" means 9:00-10:00; 10" means 10:00-11:00.
                         </p>
+                                <p className='manual-par'>
+                                    Once you have selected all the rooms you would like to book
+                        </p>
+                                <p className='manual-par'>
+                                    click payment button in order to make reservation
+                        </p>
+                                <p className='manual-par'>
+                                    in the upper bar and confirm your order.
+                        </p>
                             </div>
                             <div>
                                 <div className="manual-div">
@@ -104,15 +185,18 @@ export default class Booking extends Component {
                                 <div className="manual-div">
                                     <RedBusy /> <span className="manual-par"> The red room is reserved at this time </span>
                                 </div>
+                                <div className="manual-div">
+                                    <RedChosen /> <span className="manual-par"> The red room is selected at this time, but not yet reserved. </span>
+                                </div>
                             </div>
                         </div>
-                        {this.renderDayCards().days}  
+                        {this.renderDayCards(this.chosenSlots).days}
                     </div>
                 </div>
             );
         }
         else {
             return <Redirect to='/login' />
-        }        
+        }
     }
 } 

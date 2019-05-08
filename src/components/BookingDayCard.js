@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import HomeDayBar from './HomeDayBar';
 import '../css/HomeDayCard.css';
-import { RedFree, RedBusy, BlueFree, BlueBusy, GreenFree, GreenBusy } from './Rooms'
+import { RedFree, RedBusy, RedChosen, BlueFree, BlueBusy, BlueChosen, GreenFree, GreenBusy, GreenChosen } from './Rooms'
 
 export default class BookingDayCard extends Component {
     state = {}
@@ -10,26 +10,52 @@ export default class BookingDayCard extends Component {
         return <div style={{ paddingLeft: "0.38em" }}>{hour}"</div>
     }
 
-    renderRooms(colour) {
+    renderRooms(date, hour, colour) {
         switch (colour) {
             case "red":
-                return (
-                    <div>
-                        <RedFree />
-                    </div>
-                );
+                // console.log(this.props.checkSlot(date+hour+"colour:red").bind(this))
+                if (this.props.checkSlot(date + hour + "colour:red")) {
+                    return (
+                        <div>
+                            <RedChosen id={date + hour + "colour:red"} deselect={this.props.deselect} />
+                        </div>
+                    );
+                } else {
+                    return (
+                        <div>
+                            <RedFree id={date + hour + "colour:red"} chooseSlot={this.props.chooseSlot} />
+                        </div>
+                    );
+                }
             case "blue":
-                return (
-                    <div>
-                        <BlueFree />
-                    </div>
-                );
+                if (this.props.checkSlot(date + hour + "colour:blu")) {
+                    return (
+                        <div>
+                            <BlueChosen id={date + hour + "colour:blu"} deselect={this.props.deselect} />
+                        </div>
+                    );
+                } else {
+                    return (
+                        <div>
+                            <BlueFree id={date + hour + "colour:blu"} chooseSlot={this.props.chooseSlot} />
+                        </div>
+                    );
+                }
             case "green":
-                return (
-                    <div>
-                        <GreenFree />
-                    </div>
-                );
+
+                if (this.props.checkSlot(date + hour + "colour:gre")) {
+                    return (
+                        <div>
+                            <GreenChosen id={date + hour + "colour:gre"} deselect={this.props.deselect} />
+                        </div>
+                    );
+                } else {
+                    return (
+                        <div>
+                            <GreenFree id={date + hour + "colour:gre"} chooseSlot={this.props.chooseSlot} />
+                        </div>
+                    );
+                }
             default:
                 return <div>room</div>;
         }
@@ -38,13 +64,14 @@ export default class BookingDayCard extends Component {
     renderOneHourContainer() {
         let hours = []
         for (let i = 0; i <= 23; i++) {
-            let hourForKeyName = String(i).length === 1 ? "0" + i : i;
+            let hourForIdName = String(i).length === 1 ? "hour:" + "0" + i : "hour:" + i;
+
             hours.push(
-                <div key={this.props.anchor + hourForKeyName} className='home-one-hour-countainer'>
+                <div id={this.props.id + hourForIdName} key={`${this.id}${hourForIdName}`} className='home-one-hour-countainer'>
                     {this.renderHour(i)}
-                    {this.renderRooms('red')}
-                    {this.renderRooms('blue')}
-                    {this.renderRooms('green')}
+                    {this.renderRooms(this.props.id, hourForIdName, 'red')}
+                    {this.renderRooms(this.props.id, hourForIdName, 'blue')}
+                    {this.renderRooms(this.props.id, hourForIdName, 'green')}
                 </div>
             );
         }
