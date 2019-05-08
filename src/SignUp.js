@@ -121,16 +121,16 @@ handlePasswordConfirmationChange(e) {
                 variant="outlined"
                 onChange={this.handlePasswordConfirmationChange.bind(this)}
               />
-              <div>
+              <div style={{marginRight: "15em"}}>
+
                 <Checkbox
                   checked={this.state.checkedB}
-                  // onChange={this.handleChange("checkedB")}
+                  
                   value="checkedB"
-                  color="primary"
+                  color="primary"  
                 />
                 <span>Show password</span>
               </div>
-
               <Button
                 type="submit"
                 variant="contained"
