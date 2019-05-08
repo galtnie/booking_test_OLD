@@ -80,7 +80,7 @@ export default class BookingDayCard extends Component {
     renderOneHourContainer() {
         let hours = []
         for (let i = 0; i <= 23; i++) {
-            let hourForIdName = String(i).length === 1 ? "hour:" + "0" + i : "hour:" + i;
+            let hourForIdName = String(i).length === 1 ? "hour:0" + i : "hour:" + i;
 
             hours.push(
                 <div id={this.props.id + hourForIdName} key={`${this.id}${hourForIdName}`} className='home-one-hour-countainer'>

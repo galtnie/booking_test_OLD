@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 // import { Link } from 'react-router-dom';
 import ButtonAppBar from './components/HomeUpperBar';
 import HomeDayCard from './components/HomeDayCard';
-import { BrowserRouter, Route, Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import { RedFree, RedBusy } from './components/Rooms'
 import './css/Home.css';
 import axios from 'axios';
@@ -93,7 +93,7 @@ export default class Home extends Component {
             console.log(res);
           })
         
-        axios.get()
+        // axios.get()
         
 
         this.setState({ dayCardsID: [...this.renderDayCards().dayCardsID] })
@@ -117,20 +117,26 @@ export default class Home extends Component {
                         <div>
                             <p className="manual-par">
                                 Enter a date or scroll down the page.
-                    </p>
+                            </p>
                             <p className="manual-par">
                                 Only logged in users can make reservations.
-                    </p>
+                            </p>
                             <p className="manual-par">
                                 9" means 9:00-10:00; 10" means 10:00-11:00.
-                    </p>
+                            </p>
                         </div>
                         <div>
                             <div className="manual-div">
-                                <RedFree />  <span className="manual-par"> The red room is free at this time </span>
+                                <RedFree />  
+                                <span className="manual-par"> 
+                                    The red room is free at this time 
+                                </span>
                             </div>
                             <div className="manual-div">
-                                <RedBusy /> <span className="manual-par"> The red room is reserved at this time </span>
+                                <RedBusy /> 
+                                <span className="manual-par"> 
+                                    The red room is reserved at this time 
+                                </span>
                             </div>
                         </div>
                     </div>

@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
-import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import ButtonAppBarBooking from './components/BookingUpperBar';
 import BookingDayCard from './components/BookingDayCard';
 import { RedFree, RedBusy, RedChosen } from './components/Rooms'

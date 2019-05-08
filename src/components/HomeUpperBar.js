@@ -31,7 +31,7 @@ const styles = {
 function dateLimit() {
   let date1 = new Date();
   let date2 = new Date();
-  let minLimit = (date1.getDate() + 1) 
+  let minLimit = (date1.getDate() + 1)
   date1.setDate(minLimit)
   let maxLimit = (date2.getDate() + 31)
   date2.setDate(maxLimit)
@@ -40,17 +40,17 @@ function dateLimit() {
     maxDate: (date2.toISOString().split("T")[0])
   }
 }
-  
+
 function onDateInput(value) {
-  if (value < dateLimit().minDate || value > dateLimit().maxDate ) {
+  if (value < dateLimit().minDate || value > dateLimit().maxDate) {
     alert('The date must be within 30-day period starting with tomorrow')
   } else {
-    let id = value.slice(-2) + value.slice(5,7) + value.slice(2,4)
+    let id = value.slice(-2) + value.slice(5, 7) + value.slice(2, 4)
     console.log(value, dateLimit().minDate, dateLimit().maxDate)
     let distance = document.getElementById(id).offsetTop
     window.scrollBy(0, distance)
   }
-  
+
 }
 
 // ComponentDidMount
@@ -63,14 +63,16 @@ function ButtonAppBar(props) {
       <AppBar position="static">
         <Toolbar>
           <div className="ui input" style={{ paddingRight: '1em' }}>
-            <input type='date' min={dateLimit().minDate} max={dateLimit().maxDate} onChange={(e)=>onDateInput(e.target.value)} style={{ padding: 0, lineHeight: '1em', background: '#FBFBFF' }} />
+            <input type='date' min={dateLimit().minDate} max={dateLimit().maxDate} onChange={(e) => onDateInput(e.target.value)} style={{ padding: 0, lineHeight: '1em', background: '#FBFBFF' }} />
           </div>
           <div className={classes.grow} />
-          <Button className={classes.loginButton}>
+          <Link to="/signup">
+            <Button className={classes.loginButton}>
               Sign up
           </Button>
+          </Link>
           <Link to="/login">
-            <Button className={classes.loginButton} style={{color: "#15cda8", fontWeight: "bold"}}>
+            <Button className={classes.loginButton} style={{ color: "#15cda8", fontWeight: "bold", marginLeft: "0.5em", border: "solid 0.25em #15cda8" }}>
               Sign in
             </Button>
           </Link>
