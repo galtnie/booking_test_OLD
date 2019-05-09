@@ -1,5 +1,5 @@
 import React from "react";
-import PropTypes from "prop-types";
+// import PropTypes from "prop-types";
 // import classNames from "classnames";
 import { withStyles } from "@material-ui/core/styles";
 // import MenuItem from "@material-ui/core/MenuItem";
@@ -55,28 +55,44 @@ class SignUpForm extends React.Component {
     email: '',
     password: '',
     confirmPass: '',
-
+    passwordInputType: 'password',
+    errorDisplay: "none"
   };
 
 
-handleEmailChange(e) {
-  return this.setState ({ email: e.target.value})
-}
+  handleEmailChange(e) {
+    return this.setState({ email: e.target.value })
+  }
 
-handlePasswordChange(e) {
-  return this.setState ({ paddword: e.target.value})
-}
+  handlePasswordChange(e) {
+    if (this.state.errorDisplay === 'block') {
+      this.setState({ errorDisplay: "none" })
+    }
+    return this.setState({ password: e.target.value })
+  }
 
-handlePasswordConfirmationChange(e) {
-  return this.setState ({ confirmPass: e.target.value})
-}
+  handlePasswordConfirmationChange(e) {
+    if (this.state.errorDisplay === 'block') {
+      this.setState({ errorDisplay: "none" })
+    }
+    return this.setState({ confirmPass: e.target.value })
+  }
 
+  handleCheckboxClick(e) {
+    if (e.target.checked)
+      return this.setState({ passwordInputType: 'text' })
+    else
+      return this.setState({ passwordInputType: 'password' })
+  }
+
+  handleSubmit(e) {
+    if (this.state.confirmPass !== this.state.password) {
+      e.preventDefault();
+      this.setState({ errorDisplay: 'block' })
+    }
+  }
 
   render() {
-    console.log(this.state.email)
-    console.log(this.state.password)
-    console.log(this.state.confirmPass)
-
     if (typeof sessionStorage.getItem('LoggedIn') !== "string") {
       const { classes } = this.props;
       return (
@@ -98,44 +114,57 @@ handlePasswordConfirmationChange(e) {
                 margin="normal"
                 variant="outlined"
                 onChange={this.handleEmailChange.bind(this)}
+                value={this.state.email}
               />
 
               <TextField
                 id="outlined-password-input"
                 label="New password"
                 className={classes.textField}
-                type="password"
+                type={this.state.passwordInputType}
                 autoComplete="current-password"
                 margin="normal"
                 variant="outlined"
                 onChange={this.handlePasswordChange.bind(this)}
+                value={this.state.password}
               />
 
               <TextField
                 id="outlined-password-confirm-input"
                 label="Confirm new password"
                 className={classes.textField}
-                type="password"
+                type={this.state.passwordInputType}
                 autoComplete="current-password"
                 margin="normal"
                 variant="outlined"
                 onChange={this.handlePasswordConfirmationChange.bind(this)}
+                value={this.state.confirmPass}
               />
-              <div style={{marginRight: "15em"}}>
+              <div style={{ marginRight: "15em" }}>
 
                 <Checkbox
-                  checked={this.state.checkedB}
-                  
+                  // checked={this.state.checkedB}
+                  // checked
+                  onClick={this.handleCheckboxClick.bind(this)}
                   value="checkedB"
-                  color="primary"  
+                  color="primary"
                 />
                 <span>Show password</span>
+              </div>
+              <div style={{height: "2em"}}>
+                <div style={{
+                  color: "red",
+                  display: this.state.errorDisplay
+                }}>
+                  You password and confirmation password do not match
+                </div>
               </div>
               <Button
                 type="submit"
                 variant="contained"
                 color="primary"
                 className={classes.button}
+                onClick={this.handleSubmit.bind(this)}
               >
                 Create account
         </Button>
@@ -154,8 +183,8 @@ handlePasswordConfirmationChange(e) {
   }
 }
 
-SignUpForm.propTypes = {
-  classes: PropTypes.object.isRequired
-};
+// SignUpForm.propTypes = {
+//   classes: PropTypes.object.isRequired
+// };
 
 export default withStyles(styles)(SignUpForm);

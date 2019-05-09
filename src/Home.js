@@ -100,7 +100,6 @@ export default class Home extends Component {
         if (localStorage.getItem('bookedSlots') !== null) {
            this.setState({ reservedSlots: JSON.parse(localStorage.getItem('bookedSlots')) })
         }
-        
     }
 
     render() {
