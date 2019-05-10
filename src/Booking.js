@@ -27,6 +27,8 @@ const styles = {
 export default class Booking extends Component {
 
     state = {
+        user_id: '',
+        token: '',
         myClasses: styles,
         dayCardsID: "initial",
         chosenSlots: [],
@@ -129,6 +131,9 @@ export default class Booking extends Component {
 
 
     componentDidMount() {
+
+        // the following is the old code to review
+        
         this.setState({ dayCardsID: [...this.renderDayCards().dayCardsID] })
         if (sessionStorage.getItem('chosenSlots') !== null) {
             this.setState({ chosenSlots: JSON.parse(sessionStorage.getItem('chosenSlots')) })
@@ -137,6 +142,20 @@ export default class Booking extends Component {
             this.setState({ reservedSlots: JSON.parse(localStorage.getItem('bookedSlots')) })
         }
 
+        //the following is the new code
+        
+        if (localStorage.getItem('user_id') !== null || localStorage.getItem('user_id') !== '' ||  
+        localStorage.getItem('user_id') !== undefined || localStorage.getItem('user_id') !== []) {
+            
+            this.setState ({ user_id : localStorage.getItem('user_id')})
+            localStorage.removeItem ('user_id')
+        }
+        if (localStorage.getItem('token') !== null || localStorage.getItem('token') !== '' ||  
+        localStorage.getItem('token') !== undefined || localStorage.getItem('token') !== []) {
+       
+            this.setState ({ token : localStorage.getItem('token')})
+            localStorage.removeItem ('token')
+        }
     }
 
     redirect() {
@@ -145,6 +164,7 @@ export default class Booking extends Component {
 
     render() {
         if (typeof sessionStorage.getItem('LoggedIn') === "string" && sessionStorage.getItem('LoggedIn').length > 2) {
+
             return (
                 <div>
                     <div className={this.state.myClasses.main}>
@@ -158,22 +178,22 @@ export default class Booking extends Component {
                             <div>
                                 <p className="manual-par">
                                     Enter a date or scroll down the page.
-                        </p>
+                                </p>
                                 <p className="manual-par">
                                     Only logged in users can make reservations.
-                        </p>
+                                </p>
                                 <p className="manual-par">
                                     9" means 9:00-10:00; 10" means 10:00-11:00.
-                        </p>
+                                </p>
                                 <p className='manual-par'>
                                     Once you have selected all the rooms you would like to book
-                        </p>
+                                </p>
                                 <p className='manual-par'>
                                     click payment button in order to make reservation
-                        </p>
+                                </p>
                                 <p className='manual-par'>
                                     in the upper bar and confirm your order.
-                        </p>
+                                </p>
                             </div>
                             <div>
                                 <div className="manual-div">

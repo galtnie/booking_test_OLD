@@ -52,57 +52,40 @@ const styles = theme => ({
 
 class SignIn extends React.Component {
 	state = {
-		loginInputValue: '',
-		passInputValue: '',
 		loginInputted: '',
 		passInputted: '',
 		errorDisplay: 'none',
 		loginDetailsList: ''
 	}
 
-
-
-
-	getInsideBooking(username) {
-		this.setState({ loginInputValue: '' })
-		this.setState({ passInputValue: '' })
+	getInsideBooking(username, user_id, token) {
+		this.setState({ loginInputted: '' })
+		this.setState({ passInputted: '' })
 		sessionStorage.setItem('LoggedIn', username)
+		localStorage.setItem('user_id', user_id)
+		localStorage.setItem('token', token)
 		this.props.history.push('/booking')
 	}
 
 	checkLoginDetails() {
-		console.log(this.state.loginInputted)
-		console.log(this.state.passInputted)
-
-		axios.post('http://ec2-3-84-16-108.compute-1.amazonaws.com:4000/signIn', 
-			{headers: {'Content-Type': 'application/x-www-form-urlencoded'}},
-			{data: {email: this.state.loginInputted, password: this.state.passInputted}}
-		)
-		.then(res => {
-		  console.log(res);
-		})
-		.catch(res => {
-			console.log(res);
-			this.setState({ errorDisplay: "flex" })
-				setTimeout(() => {this.setState({ errorDisplay: "none" }) }, 3000)
+		axios.post('http://ec2-3-84-16-108.compute-1.amazonaws.com:4000/signIn',
+			{ headers: { 'Content-Type': 'application/x-www-form-urlencoded' } },
+			{ data: { email: this.state.loginInputted, password: this.state.passInputted } }
+			)
+			.then(res => {
+				localStorage.setItem('user_id', res.data._id)
+				localStorage.setItem('token', res.data.token)
+				this.getInsideBooking(this.state.loginInputted.toLocaleLowerCase(), res.data._id, res.data.token)
+				//this.getInsideBooking(this.state.loginDetailsList[i].username.toLowerCase())
 			})
-		}
-
-
-
-		// this.setState({ loginDetailsList: JSON.parse(localStorage.getItem('loginDetails')) })
-		// for (let i = 0; i < this.state.loginDetailsList.length; i++) {
-
-		// 	if (this.state.loginInputted.toLowerCase() === this.state.loginDetailsList[i].username.toLowerCase() && this.state.passInputted === this.state.loginDetailsList[i].password) {
-		// 		this.getInsideBooking(this.state.loginDetailsList[i].username.toLowerCase())
-		// 		break;
-		// 	} else {
-				// this.setState({ errorDisplay: "flex" })
-				// setTimeout(() => {
-				// 	this.setState({ errorDisplay: "none" })
-				// }, 3000)
-		// 	}
-		// }
+			.catch(res => {
+				if (res.message === "Request failed with status code 401") {
+					this.setState({ errorDisplay: "flex" })
+					setTimeout(() => { this.setState({ errorDisplay: "none" }) }, 3000)
+				}
+			}
+		)
+	}
 
 	render() {
 		const { classes } = this.props;
@@ -123,7 +106,7 @@ class SignIn extends React.Component {
 								value={this.state.loginInputted}
 								onChange={
 									(e) => {
-										this.setState({ loginInput: e.target })
+										//this.setState({ loginInput: e.target })
 										this.setState({ loginInputted: e.target.value })
 										this.setState({ errorDisplay: "none" });
 									}

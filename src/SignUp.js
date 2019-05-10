@@ -89,6 +89,8 @@ class SignUpForm extends React.Component {
     if (this.state.confirmPass !== this.state.password) {
       e.preventDefault();
       this.setState({ errorDisplay: 'block' })
+    } else {
+      console.log('it works')
     }
   }
 
@@ -143,8 +145,6 @@ class SignUpForm extends React.Component {
               <div style={{ marginRight: "15em" }}>
 
                 <Checkbox
-                  // checked={this.state.checkedB}
-                  // checked
                   onClick={this.handleCheckboxClick.bind(this)}
                   value="checkedB"
                   color="primary"
