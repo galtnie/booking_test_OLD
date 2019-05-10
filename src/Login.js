@@ -76,7 +76,6 @@ class SignIn extends React.Component {
 				localStorage.setItem('user_id', res.data._id)
 				localStorage.setItem('token', res.data.token)
 				this.getInsideBooking(this.state.loginInputted.toLocaleLowerCase(), res.data._id, res.data.token)
-				//this.getInsideBooking(this.state.loginDetailsList[i].username.toLowerCase())
 			})
 			.catch(res => {
 				if (res.message === "Request failed with status code 401") {
@@ -106,7 +105,6 @@ class SignIn extends React.Component {
 								value={this.state.loginInputted}
 								onChange={
 									(e) => {
-										//this.setState({ loginInput: e.target })
 										this.setState({ loginInputted: e.target.value })
 										this.setState({ errorDisplay: "none" });
 									}

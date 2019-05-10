@@ -10,6 +10,7 @@ import Button from "@material-ui/core/Button";
 import Paper from '@material-ui/core/Paper';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { Link, Redirect } from 'react-router-dom';
+import axios from 'axios';
 
 const styles = theme => ({
   main: {
@@ -56,24 +57,31 @@ class SignUpForm extends React.Component {
     password: '',
     confirmPass: '',
     passwordInputType: 'password',
-    errorDisplay: "none"
+	errorDisplay: "none",
+	errorValue: ''
   };
 
 
   handleEmailChange(e) {
-    return this.setState({ email: e.target.value })
+	if (this.state.errorDisplay === 'block') {
+		this.setState({ errorDisplay: "none" })
+		this.setState({ errorValue: '' })
+	}
+	return this.setState({ email: e.target.value })
   }
 
   handlePasswordChange(e) {
     if (this.state.errorDisplay === 'block') {
-      this.setState({ errorDisplay: "none" })
+	  this.setState({ errorDisplay: "none" })
+	  this.setState({ errorValue: '' })
     }
     return this.setState({ password: e.target.value })
   }
 
   handlePasswordConfirmationChange(e) {
     if (this.state.errorDisplay === 'block') {
-      this.setState({ errorDisplay: "none" })
+		this.setState({ errorDisplay: "none" })
+		this.setState({ errorValue: '' })
     }
     return this.setState({ confirmPass: e.target.value })
   }
@@ -88,13 +96,43 @@ class SignUpForm extends React.Component {
   handleSubmit(e) {
     if (this.state.confirmPass !== this.state.password) {
       e.preventDefault();
-      this.setState({ errorDisplay: 'block' })
+	  this.setState({ errorDisplay: 'block' })
+	  this.setState({ errorValue: 'You password and confirmation password do not match'})
     } else {
-      console.log('it works')
-    }
-  }
 
-  render() {
+		// console.log(this.state.email)
+		// console.log(this.state.password)
+		e.preventDefault();
+     	axios.post('http://ec2-3-84-16-108.compute-1.amazonaws.com:4000/signUp',
+			{ headers: { 'Content-Type': 'application/x-www-form-urlencoded' } },
+			{ data: { email: this.state.email, password: this.state.password } }
+			)
+			.then(res => {
+				this.props.history.push('/login')
+				// localStorage.setItem('user_id', res.data._id)
+				// localStorage.setItem('token', res.data.token)
+				// this.getInsideBooking(this.state.loginInputted.toLocaleLowerCase(), res.data._id, res.data.token)
+				//this.getInsideBooking(this.state.loginDetailsList[i].username.toLowerCase())
+			})
+			.catch(res => {
+				if (res.message === "Request failed with status code 500") {
+					this.setState({ errorDisplay: 'block' })
+					this.setState({ errorValue: 'This email is already registered. Enter a unique one.'})
+					this.setState({ email: ''})
+					
+					setTimeout( 
+						()=>{
+						this.setState({ errorDisplay: "none" }) 
+						this.setState({ errorValue: "" }) 
+						}, 3000
+					)
+				}
+			}
+		)
+    }
+}
+
+  	render() {
     if (typeof sessionStorage.getItem('LoggedIn') !== "string") {
       const { classes } = this.props;
       return (
@@ -156,7 +194,7 @@ class SignUpForm extends React.Component {
                   color: "red",
                   display: this.state.errorDisplay
                 }}>
-                  You password and confirmation password do not match
+                  {this.state.errorValue}
                 </div>
               </div>
               <Button

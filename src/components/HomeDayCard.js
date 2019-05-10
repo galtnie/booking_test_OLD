@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import HomeDayBar from './HomeDayBar';
 import '../css/HomeDayCard.css';
-import { RedFreeHome, RedBusy, BlueFreeHome, BlueBusy, GreenFreeHome, GreenBusy } from './Rooms'
+import { RedFreeHome, RedBusy, BlueFreeHome, BlueBusy, GreenFreeHome, GreenBusy, VioletFreeHome, VioletBusy, BrownFreeHome, BrownBusy } from './Rooms'
 
 export default class HomeDayCard extends Component {
     state = {}
@@ -54,6 +54,35 @@ export default class HomeDayCard extends Component {
                     </div>
                 );
             }
+            case "violet":
+            if (this.props.checkReservation(date + hour + "colour:vio")) {
+                return (
+                    <div>
+                        <VioletBusy id={date + hour + "colour:vio"} />
+                    </div>
+                );
+            } else {
+                return (
+                    <div>
+                        <VioletFreeHome id={date + hour + "colour:vio"} chooseSlot={this.props.chooseSlot} />
+                    </div>
+                );
+            }
+            case "brown":
+            if (this.props.checkReservation(date + hour + "colour:bro")) {
+                return (
+                    <div>
+                        <BrownBusy id={date + hour + "colour:bro"} />
+                    </div>
+                );
+            } else {
+                return (
+                    <div>
+                        <BrownFreeHome id={date + hour + "colour:bro"} chooseSlot={this.props.chooseSlot} />
+                    </div>
+                );
+            }
+
             default: 
                 return (
                     <div>
@@ -70,9 +99,11 @@ export default class HomeDayCard extends Component {
             hours.push(
                 <div id={this.props.id + hourForIdName} key={`${this.id}${hourForIdName}`} className='home-one-hour-countainer'>
                     {this.renderHour(i)}
-                    {this.renderRooms(this.props.id, hourForIdName, 'red')}
                     {this.renderRooms(this.props.id, hourForIdName, 'blue')}
                     {this.renderRooms(this.props.id, hourForIdName, 'green')}
+                    {this.renderRooms(this.props.id, hourForIdName, 'red')}
+                    {this.renderRooms(this.props.id, hourForIdName, 'violet')}
+                    {this.renderRooms(this.props.id, hourForIdName, 'brown')}
                 </div>
             );
         }

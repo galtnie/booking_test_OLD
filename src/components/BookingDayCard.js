@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import HomeDayBar from './HomeDayBar';
 import '../css/HomeDayCard.css';
-import { RedFree, RedBusy, RedChosen, BlueFree, BlueBusy, BlueChosen, GreenFree, GreenBusy, GreenChosen } from './Rooms'
+import { RedFree, RedBusy, RedChosen, BlueFree, BlueBusy, BlueChosen, GreenFree, GreenBusy, GreenChosen, VioletFree, VioletBusy, VioletChosen, BrownFree, BrownBusy, BrownChosen } from './Rooms'
 
 export default class BookingDayCard extends Component {
     state = {}
@@ -72,6 +72,50 @@ export default class BookingDayCard extends Component {
                         </div>
                     );
                 }
+
+
+            case "violet":
+                if (this.props.checkReservation(date + hour + "colour:vio")) {
+                    return (
+                        <div>
+                            <VioletBusy id={date + hour + "colour:vio"} />
+                        </div>
+                    )
+                } else if (this.props.checkSlot(date + hour + "colour:vio")) {
+                    return (
+                        <div>
+                            <VioletChosen id={date + hour + "colour:vio"} deselect={this.props.deselect} />
+                        </div>
+                    );
+                } else {
+                    return (
+                        <div>
+                            <VioletFree id={date + hour + "colour:vio"} chooseSlot={this.props.chooseSlot} />
+                        </div>
+                    );
+                }
+
+
+            case "brown":
+                if (this.props.checkReservation(date + hour + "colour:bro")) {
+                    return (
+                        <div>
+                            <BrownBusy id={date + hour + "colour:bro"} />
+                        </div>
+                    )
+                } else if (this.props.checkSlot(date + hour + "colour:bro")) {
+                    return (
+                        <div>
+                            <BrownChosen id={date + hour + "colour:bro"} deselect={this.props.deselect} />
+                        </div>
+                    );
+                } else {
+                    return (
+                        <div>
+                            <BrownFree id={date + hour + "colour:bro"} chooseSlot={this.props.chooseSlot} />
+                        </div>
+                    );
+                }
             default:
                 return <div>room</div>;
         }
@@ -85,9 +129,11 @@ export default class BookingDayCard extends Component {
             hours.push(
                 <div id={this.props.id + hourForIdName} key={`${this.id}${hourForIdName}`} className='home-one-hour-countainer'>
                     {this.renderHour(i)}
-                    {this.renderRooms(this.props.id, hourForIdName, 'red')}
                     {this.renderRooms(this.props.id, hourForIdName, 'blue')}
                     {this.renderRooms(this.props.id, hourForIdName, 'green')}
+                    {this.renderRooms(this.props.id, hourForIdName, 'red')}
+                    {this.renderRooms(this.props.id, hourForIdName, 'violet')}
+                    {this.renderRooms(this.props.id, hourForIdName, 'brown')}
                 </div>
             );
         }

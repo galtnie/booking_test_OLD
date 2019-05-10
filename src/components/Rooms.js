@@ -22,6 +22,22 @@ export class GreenFreeHome extends Component {
     }
 }
 
+export class VioletFreeHome extends Component {
+    state = {}
+    render() {
+        return <div className="violet-room-free-home" id={this.props.id}>F</div>;
+    }
+}
+
+export class BrownFreeHome extends Component {
+    state = {}
+    render() {
+        return <div className="brown-room-free-home" id={this.props.id}>F</div>;
+    }
+}
+
+// RESERVED SLOTS:
+
 export class RedBusy extends Component {
     state = {}
     render() {
@@ -43,7 +59,19 @@ export class GreenBusy extends Component {
     }
 }
 
+export class VioletBusy extends Component {
+    state = {}
+    render() {
+        return <div className="violet-room-reserved" id={this.props.id}>R</div>;
+    }
+}
 
+export class BrownBusy extends Component {
+    state = {}
+    render() {
+        return <div className="brown-room-reserved" id={this.props.id}>R</div>;
+    }
+}
 
 // BOOKING FREE CLASSES
 
@@ -75,6 +103,24 @@ export class GreenFree extends Component {
     }
 }
 
+export class VioletFree extends Component {
+    state = {}
+    render() {
+        return <div className="violet-room-free" id={this.props.id}
+            onClick={() => { this.props.chooseSlot(this.props.id) }}
+        >F</div>;
+    }
+}
+
+export class BrownFree extends Component {
+    state = {}
+    render() {
+        return <div className="brown-room-free" id={this.props.id}
+            onClick={() => { this.props.chooseSlot(this.props.id) }}
+        >F</div>;
+    }
+}
+
 // BOOKING CHOSEN CLASSES
 
 export class RedChosen extends Component {
@@ -100,6 +146,24 @@ export class GreenChosen extends Component {
     state = {}
     render() {
         return <div className="green-room-chosen" id={this.props.id}
+            onClick={() => { this.props.deselect(this.props.id) }}
+        >C</div>;
+    }
+}
+
+export class VioletChosen extends Component {
+    state = {}
+    render() {
+        return <div className="violet-room-chosen" id={this.props.id}
+            onClick={() => { this.props.deselect(this.props.id) }}
+        >C</div>;
+    }
+}
+
+export class BrownChosen extends Component {
+    state = {}
+    render() {
+        return <div className="brown-room-chosen" id={this.props.id}
             onClick={() => { this.props.deselect(this.props.id) }}
         >C</div>;
     }

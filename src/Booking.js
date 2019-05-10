@@ -38,7 +38,8 @@ export default class Booking extends Component {
     chooseSlot(slotID) {
         sessionStorage.setItem('chosenSlots', JSON.stringify([...this.state.chosenSlots, slotID]))
         this.setState({ chosenSlots: [...this.state.chosenSlots, slotID] })
-
+        
+        
     }
 
     checkSlot(slotID) {
@@ -122,6 +123,7 @@ export default class Booking extends Component {
                 }
                 localStorage.setItem('bookedSlots', JSON.stringify(ReservationsToSave))
                 sessionStorage.removeItem('chosenSlots')
+                this.setState({chosenSlots: []})
                 this.setState({ reservedSlots: JSON.parse(localStorage.getItem('bookedSlots')) })
             }
             else { console.log('no') }
@@ -131,6 +133,8 @@ export default class Booking extends Component {
 
 
     componentDidMount() {
+     
+
 
         // the following is the old code to review
         
@@ -165,6 +169,8 @@ export default class Booking extends Component {
     render() {
         if (typeof sessionStorage.getItem('LoggedIn') === "string" && sessionStorage.getItem('LoggedIn').length > 2) {
 
+
+            console.log(this.state.chosenSlots)
             return (
                 <div>
                     <div className={this.state.myClasses.main}>

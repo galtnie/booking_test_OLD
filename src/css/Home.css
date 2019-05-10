@@ -27,3 +27,40 @@
     flex-direction: row;
     align-items: center;
 }
+
+.hall-info-container {
+    margin: 0.1em 0.5em 0.1em 0.5em ;
+    font-size: 1.2em;
+    padding: 1em;
+    border-radius: 1em;
+}
+
+.hall-title {
+    font-size: 1.3em   
+}
+
+.blue-hall {
+    border: solid 4px rgba(31, 21, 182,0.9);
+    background:rgb(18, 11, 120);
+    color: rgba(206, 221, 252, 1);
+}
+.red-hall {
+    border: solid 4px rgba(220,20,60,1);
+    background:rgb(178,34,34);
+    color: rgb(252, 200, 208);
+}
+.brown-hall {
+    border: solid 4px rgba(139, 93, 93, 1);
+    background:rgba(109, 57, 57, 1); 
+    color: rgba(255,  236, 236, 1);
+}
+.green-hall {
+    border: solid 4px rgba(33, 100, 19, 1);
+    background:rgba(19, 55, 11, 0.9);
+    color: rgba(216, 255, 206, 1); 
+}
+.violet-hall {
+    border: solid 4px rgb(107, 90, 241);
+    background:rgba(108, 92, 231, 0.9); 
+    color: rgba(255,  245,  255, 1);
+}
