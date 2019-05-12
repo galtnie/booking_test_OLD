@@ -1,3 +1,26 @@
+/* For mobile phones:
+[class*="col-"] {
+    width: 100%;
+  }
+  
+  @media only screen and (min-width: 768px) {
+     For desktop: 
+    .col-1 {width: 8.33%;}
+    .col-2 {width: 16.66%;}
+    .col-3 {width: 25%;}
+    .col-4 {width: 33.33%;}
+    .col-5 {width: 41.66%;}
+    .col-6 {width: 50%;}
+    .col-7 {width: 58.33%;}
+    .col-8 {width: 66.66%;}
+    .col-9 {width: 75%;}
+    .col-10 {width: 83.33%;}
+    .col-11 {width: 91.66%;}
+    .col-12 {width: 100%;}
+  }
+
+ */
+
 .title-div{
     margin-left: 0.5em;
     margin-right: 0.5em;
@@ -5,10 +28,11 @@
 
 .manual{
     display:flex;
+    /* flex-direction: column; */
     flex-wrap: wrap;
     justify-content: space-between;
-    margin-left: 2em;
-    margin-right: 2em;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
     margin-bottom: 1.5em;
     margin-top: 1em;
 }
@@ -29,38 +53,45 @@
 }
 
 .hall-info-container {
-    margin: 0.1em 0.5em 0.1em 0.5em ;
+    margin-top: 0.1em;
+    margin-bottom: 0.1em;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
     font-size: 1.2em;
     padding: 1em;
     border-radius: 1em;
+    display: flex;
+    flex-direction: 'row';
+    flex-wrap: wrap;
+    width: 100%;
 }
 
 .hall-title {
     font-size: 1.3em   
 }
 
-.blue-hall {
-    border: solid 4px rgba(31, 21, 182,0.9);
+.blu-hall {
+    /* border: solid 4px rgba(31, 21, 182,0.9); */
     background:rgb(18, 11, 120);
     color: rgba(206, 221, 252, 1);
 }
 .red-hall {
-    border: solid 4px rgba(220,20,60,1);
+    /* border: solid 4px rgba(220,20,60,1); */
     background:rgb(178,34,34);
     color: rgb(252, 200, 208);
 }
-.brown-hall {
-    border: solid 4px rgba(139, 93, 93, 1);
+.bro-hall {
+    /* border: solid 4px rgba(139, 93, 93, 1); */
     background:rgba(109, 57, 57, 1); 
     color: rgba(255,  236, 236, 1);
 }
-.green-hall {
-    border: solid 4px rgba(33, 100, 19, 1);
+.gre-hall {
+    /* border: solid 4px rgba(33, 100, 19, 1); */
     background:rgba(19, 55, 11, 0.9);
     color: rgba(216, 255, 206, 1); 
 }
-.violet-hall {
-    border: solid 4px rgb(107, 90, 241);
+.vio-hall {
+    /* border: solid 4px rgb(107, 90, 241); */
     background:rgba(108, 92, 231, 0.9); 
     color: rgba(255,  245,  255, 1);
 }

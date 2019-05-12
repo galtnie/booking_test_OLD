@@ -14,110 +14,50 @@ export default class BookingDayCard extends Component {
         switch (colour) {
             case "red":
                 if (this.props.checkReservation(date + hour + "colour:red")) {
-                    return (
-                        <div>
-                            <RedBusy id={date + hour + "colour:red"} />
-                        </div>
-                    )
+                    return <RedBusy id={date + hour + "colour:red"} />;
                 } else if (this.props.checkSlot(date + hour + "colour:red")) {
-                    return (
-                        <div>
-                            <RedChosen id={date + hour + "colour:red"} deselect={this.props.deselect} />
-                        </div>
-                    );
+                    return <RedChosen id={date + hour + "colour:red"} deselect={this.props.deselect} />;
                 } else {
-                    return (
-                        <div>
-                            <RedFree id={date + hour + "colour:red"} chooseSlot={this.props.chooseSlot} />
-                        </div>
-                    );
+                    return <RedFree id={date + hour + "colour:red"} chooseSlot={this.props.chooseSlot} />;
                 }
             case "blue":
                 if (this.props.checkReservation(date + hour + "colour:blu")) {
-                    return (
-                        <div>
-                            <BlueBusy id={date + hour + "colour:blu"} />
-                        </div>
-                    )
+                    return <BlueBusy id={date + hour + "colour:blu"} />;
                 } else if (this.props.checkSlot(date + hour + "colour:blu")) {
-                    return (
-                        <div>
-                            <BlueChosen id={date + hour + "colour:blu"} deselect={this.props.deselect} />
-                        </div>
-                    );
+                    return <BlueChosen id={date + hour + "colour:blu"} deselect={this.props.deselect} />;
                 } else {
-                    return (
-                        <div>
-                            <BlueFree id={date + hour + "colour:blu"} chooseSlot={this.props.chooseSlot} />
-                        </div>
-                    );
+                    return <BlueFree id={date + hour + "colour:blu"} chooseSlot={this.props.chooseSlot} />;
                 }
             case "green":
                 if (this.props.checkReservation(date + hour + "colour:gre")) {
-                    return (
-                        <div>
-                            <GreenBusy id={date + hour + "colour:gre"} />
-                        </div>
-                    )
+                    return <GreenBusy id={date + hour + "colour:gre"} />;
                 } else if (this.props.checkSlot(date + hour + "colour:gre")) {
-                    return (
-                        <div>
-                            <GreenChosen id={date + hour + "colour:gre"} deselect={this.props.deselect} />
-                        </div>
-                    );
+                    return <GreenChosen id={date + hour + "colour:gre"} deselect={this.props.deselect} />;
                 } else {
-                    return (
-                        <div>
-                            <GreenFree id={date + hour + "colour:gre"} chooseSlot={this.props.chooseSlot} />
-                        </div>
-                    );
+                    return <GreenFree id={date + hour + "colour:gre"} chooseSlot={this.props.chooseSlot} />
                 }
 
 
             case "violet":
                 if (this.props.checkReservation(date + hour + "colour:vio")) {
-                    return (
-                        <div>
-                            <VioletBusy id={date + hour + "colour:vio"} />
-                        </div>
-                    )
+                    return <VioletBusy id={date + hour + "colour:vio"} />;
                 } else if (this.props.checkSlot(date + hour + "colour:vio")) {
-                    return (
-                        <div>
-                            <VioletChosen id={date + hour + "colour:vio"} deselect={this.props.deselect} />
-                        </div>
-                    );
+                    return <VioletChosen id={date + hour + "colour:vio"} deselect={this.props.deselect} />;
                 } else {
-                    return (
-                        <div>
-                            <VioletFree id={date + hour + "colour:vio"} chooseSlot={this.props.chooseSlot} />
-                        </div>
-                    );
+                    return <VioletFree id={date + hour + "colour:vio"} chooseSlot={this.props.chooseSlot} />;
                 }
 
 
             case "brown":
                 if (this.props.checkReservation(date + hour + "colour:bro")) {
-                    return (
-                        <div>
-                            <BrownBusy id={date + hour + "colour:bro"} />
-                        </div>
-                    )
+                    return <BrownBusy id={date + hour + "colour:bro"} />;
                 } else if (this.props.checkSlot(date + hour + "colour:bro")) {
-                    return (
-                        <div>
-                            <BrownChosen id={date + hour + "colour:bro"} deselect={this.props.deselect} />
-                        </div>
-                    );
+                    return <BrownChosen id={date + hour + "colour:bro"} deselect={this.props.deselect} />;
                 } else {
-                    return (
-                        <div>
-                            <BrownFree id={date + hour + "colour:bro"} chooseSlot={this.props.chooseSlot} />
-                        </div>
-                    );
+                    return <BrownFree id={date + hour + "colour:bro"} chooseSlot={this.props.chooseSlot} />;
                 }
             default:
-                return <div>room</div>;
+                return "room";
         }
     }
 
@@ -128,12 +68,21 @@ export default class BookingDayCard extends Component {
 
             hours.push(
                 <div id={this.props.id + hourForIdName} key={`${this.id}${hourForIdName}`} className='home-one-hour-countainer'>
-                    {this.renderHour(i)}
-                    {this.renderRooms(this.props.id, hourForIdName, 'blue')}
-                    {this.renderRooms(this.props.id, hourForIdName, 'green')}
-                    {this.renderRooms(this.props.id, hourForIdName, 'red')}
-                    {this.renderRooms(this.props.id, hourForIdName, 'violet')}
-                    {this.renderRooms(this.props.id, hourForIdName, 'brown')}
+                    <div>
+                        {this.renderRooms(this.props.id, hourForIdName, 'blue')}
+                    </div>
+                    <div>
+                        {this.renderRooms(this.props.id, hourForIdName, 'green')}
+                    </div>
+                    <div>
+                        {this.renderRooms(this.props.id, hourForIdName, 'red')}
+                    </div>
+                    <div>
+                        {this.renderRooms(this.props.id, hourForIdName, 'violet')}
+                    </div>
+                    <div>
+                        {this.renderRooms(this.props.id, hourForIdName, 'brown')}
+                    </div>
                 </div>
             );
         }

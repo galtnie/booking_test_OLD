@@ -8,7 +8,6 @@ import axios from 'axios';
 import CircularProgress from './components/CircularProgress'
 import HallCard from './components/HallCard'
 
-
 const styles = {
     main: {
         display: 'flex',
@@ -25,8 +24,7 @@ const styles = {
         paddingBottom: '1em',
         marginLeft: "0.5em",
         marginRight: "0.5em",
-		},
-
+    }
 }
 
 export default class Booking extends Component {
@@ -39,11 +37,8 @@ export default class Booking extends Component {
         chosenSlots: [],
         reservedSlots: [],
         halls: [],
-        colours: ['bro', 'gre', 'red', 'blu', 'vio'],
-				displayDayCards: false,
-				ordersListForTickets: '',
-				ordersListForRendering: '',
-				paymentQuestion: false
+        colours: ['brown', 'green', 'red', 'blue', 'violet'],
+        displayDayCards: false,
     }
 
     chooseSlot(slotID) {
@@ -119,77 +114,32 @@ export default class Booking extends Component {
         }
     }
 
-    convertSlotIDsToTimeAndHalls(slots_id) {
-        let OrdersListForTickets = []
-        let OrdersListForRendering = []
-        const timeOptionsForRendering = {
-            day: 'numeric',
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            hour: 'numeric',
-            minute: 'numeric',
-        }
-
-        for (let i = 0; i < slots_id.length; i++) {
-            let orderForTicket = {
-                hall_id: this.state.halls[this.state.colours.indexOf(slots_id[i].slice(-3))]._id,
-                from: Date.parse(`20${slots_id[i].slice(9, 11)}-${slots_id[i].slice(7, 9)}-${slots_id[i].slice(5, 7)}T${slots_id[i].slice(16, 18)}:00:00`),
-                to: Date.parse(`20${slots_id[i].slice(9, 11)}-${slots_id[i].slice(7, 9)}-${slots_id[i].slice(5, 7)}T${slots_id[i].slice(16, 18)}:59:00`),
-            }
-            OrdersListForTickets.push(orderForTicket)
-
-            let orderForRendering = {
-                hall_title: this.state.halls[this.state.colours.indexOf(slots_id[i].slice(-3))].title,
-                from: new Intl.DateTimeFormat('en-GB', timeOptionsForRendering).format(orderForTicket.from),
-                to: new Intl.DateTimeFormat('en-GB', timeOptionsForRendering).format(orderForTicket.to),
-            }
-            OrdersListForRendering.push(orderForRendering)
-        }
-
-				this.setState({ordersListForTickets: OrdersListForTickets})
-				this.setState({ordersListForRendering: OrdersListForRendering})
-				this.setState({paymentQuestion: true})
-        return {
-            forTicket: OrdersListForTickets,
-            forRendering: OrdersListForRendering,
-        }
-    }
-
     confirmReservation() {
         if (sessionStorage.getItem('chosenSlots') === null || JSON.parse(sessionStorage.getItem('chosenSlots')).length === 0) {
             alert('There is nothing to confirm. Please choose rooms you like to book first.')
         } else if (JSON.parse(sessionStorage.getItem('chosenSlots').length > 0)) {
 
             let chosenHalls = JSON.parse(sessionStorage.getItem('chosenSlots')) // I CAN MAKE A LIST AS A MESSAGE FOR CONFIRMATION IF I HAVE TIME
-	 
-						this.convertSlotIDsToTimeAndHalls(chosenHalls)
-		
-		//        function chosenHallsList(slots_id) {
-    //            let line = ''
-    //            for (let i = 0; i < slots_id.length; i++) {
-    //                line += (slots_id[i] + " ")
-    //            }
-    //            return line
-    //        }
-					
-    //        let confirm = window.confirm(
-    //            `You've chosen: ${chosenHallsList(chosenHalls)}
-    //        Do you confirm your order?`)
+            let confirm = window.confirm('Do you confirm your order?')
 
-    //        if (confirm) {
-    //            let ReservationsToSave
-    //            if (localStorage.getItem('bookedSlots') !== null) {
-    //                let alreadySavedReservations = JSON.parse(localStorage.getItem('bookedSlots'))
-    //                ReservationsToSave = [...alreadySavedReservations, ...chosenHalls]
-    //            }
-    //            localStorage.setItem('bookedSlots', JSON.stringify(ReservationsToSave))
-    //            sessionStorage.removeItem('chosenSlots')
-    //            this.setState({ chosenSlots: [] })
-    //            this.setState({ reservedSlots: JSON.parse(localStorage.getItem('bookedSlots')) })
-    //        }
-    //        else { console.log('no') }
-         }
+            if (confirm) {
+                let ReservationsToSave
+                if (localStorage.getItem('bookedSlots') !== null) {
+                    let alreadySavedReservations = JSON.parse(localStorage.getItem('bookedSlots'))
+                    ReservationsToSave = [...alreadySavedReservations, ...chosenHalls]
+                }
+                localStorage.setItem('bookedSlots', JSON.stringify(ReservationsToSave))
+                sessionStorage.removeItem('chosenSlots')
+                this.setState({ chosenSlots: [] })
+                this.setState({ reservedSlots: JSON.parse(localStorage.getItem('bookedSlots')) })
+            }
+            else { console.log('no') }
+        }
+    }
+
+
+    checkReservation(slotID) {
+        return this.state.reservedSlots.includes(slotID)
     }
 
     convertTimeIntoSlotID(fullRecord) {
@@ -212,7 +162,7 @@ export default class Booking extends Component {
     addColourToID(hall_id) {
         let arraysHallsID = this.state.halls.map(i => i._id)
         let hallNumber = arraysHallsID.indexOf(hall_id)
-        return `colour:${this.state.colours[hallNumber]}`
+        return `colour:${this.state.colours[hallNumber].slice(0, 3)}`
     }
 
     addSlotToReservationList(time, hall_id) {
@@ -275,30 +225,34 @@ export default class Booking extends Component {
         Promise.all([
             axios.get('http://ec2-3-84-16-108.compute-1.amazonaws.com:4000/halls'),         // to get all halls
             axios.get('http://ec2-3-84-16-108.compute-1.amazonaws.com:4000/tickets')        // to get all tickets
-        ])
+          ])
             .then(res => {
-                this.setState({ halls: res[0].data.halls })
-                this.setState({ tickets: res[1].data })
-                //for (let i = 0; i < res[1].data.length; i++) {
-                //console.log(res[1].data[i]._id)               // REVEALS THE TICKETS' TIME
-                //console.log(new Date(res[1].data[i].from))
-                //console.log(new Date(res[1].data[i].to))
-                //}
+              this.setState({ halls: res[0].data.halls })
+              this.setState({ tickets: res[1].data })
+              //for (let i = 0; i < res[1].data.length; i++) {
+              //console.log(res[1].data[i]._id)               // REVEALS THE TICKETS' TIME
+              //console.log(new Date(res[1].data[i].from))
+              //console.log(new Date(res[1].data[i].to))
+              //}
             })
             .then(() => {
-                this.calculateSlotsReserved()
+              this.calculateSlotsReserved()
             })
             .then(() => this.setState({ displayDayCards: true }))
+            // .then(() => console.log(this.state.reservedSlots))
             .catch((e) => console.log(e))
 
-        // the following is to keep chosen slots in session storage
+        // the following is the old code to review
 
         this.setState({ dayCardsID: [...this.renderDayCards().dayCardsID] })
         if (sessionStorage.getItem('chosenSlots') !== null) {
             this.setState({ chosenSlots: JSON.parse(sessionStorage.getItem('chosenSlots')) })
         }
+        // if (localStorage.getItem('bookedSlots') !== null) {
+        //     this.setState({ reservedSlots: JSON.parse(localStorage.getItem('bookedSlots')) })
+        // }
 
-        //the following is to take user_id and token out of local storage into state properties and clean local storage
+        //the following is the new code
 
         if (localStorage.getItem('user_id') !== null || localStorage.getItem('user_id') !== '' ||
             localStorage.getItem('user_id') !== undefined || localStorage.getItem('user_id') !== []) {
@@ -318,153 +272,58 @@ export default class Booking extends Component {
         this.props.history.push('/login')
     }
 
-		issueTicket() {
-			console.log('write a ticket')
-			this.setState({paymentQuestion: false})
-		}
- 
-
-
     render() {
-        return (
-            (typeof sessionStorage.getItem('LoggedIn') === "string" && sessionStorage.getItem('LoggedIn').length > 2)
+        if (typeof sessionStorage.getItem('LoggedIn') === "string" && sessionStorage.getItem('LoggedIn').length > 2) {
 
-                ?
-
-                <div className={this.state.myClasses.main}>
-                    <ButtonAppBarBooking history={this.props.history} confirm={this.confirmReservation.bind(this)} />
-                    <div style={this.state.myClasses.title}>
-                        <div>
-                            <h1 className="ui header" style={{ color: 'inherit' }}>
-                                Conference Venue Booking
-                            </h1>
-                        </div>
-                    </div>
-                    <div className="manual">
-                        <div>
-                            <p className="manual-par">
-                                Enter a date or scroll down the page.
-                                Only logged in users can make reservations.
-                                </p>
-                            <p className="manual-par">
-                                9" means 9:00-10:00; 10" means 10:00-11:00.
-                                </p>
-                            <p className='manual-par'>
-                                Once you have selected all the rooms you would like to book
-                                click payment button
-                                </p>
-                            <p className='manual-par'>
-                                in order to make reservation
-                                in the upper bar and confirm your order.
-                                </p>
-                        </div>
-                        <div>
-                            <div className="manual-div">
-                                <RedFree />  <span className="manual-par"> The red room is free at this time </span>
-                            </div>
-                            <div className="manual-div">
-                                <RedBusy /> <span className="manual-par"> The red room is reserved at this time </span>
-                            </div>
-                            <div className="manual-div">
-                                <RedChosen /> <span className="manual-par"> The red room is selected at this time, but not yet reserved. </span>
+            return (
+                <div>
+                    <div className={this.state.myClasses.main}>
+                        <ButtonAppBarBooking history={this.props.history} confirm={this.confirmReservation.bind(this)} />
+                        <div style={this.state.myClasses.title}>
+                            <div>
+                                <h1 className="ui header" style={{ color: 'inherit' }}>Conference Venue Booking</h1>
                             </div>
                         </div>
-
-
-
-												{
-													this.state.paymentQuestion
-
-														?
-
-														<div className="ui fluid container" style={{position:"fixed", background: "blue", color:"white", top: "1em", padding: "2em", marginRight: "2em", marginLeft: "2em", borderRadius: "1em"}}>
-																<p>Do you confirm the following order?</p>
-																{this.state.ordersListForRendering.map((i, index) => {
-																				return (
-																					<div key={index}>
-																						<p>
-																							HALL: {this.state.ordersListForRendering[index].hall_title} <br /> 
-																							FROM: {this.state.ordersListForRendering[index].from} <br />
-																							TO: {this.state.ordersListForRendering[index].to}
-																						</p>
-																						<p></p>
-																					</div>																																			
-																				 ); 																
-																	})		
-																}
-																<div style={{width:"100%", display:"flex", flexDirection:"row", justifyContent: "space-between"}}>
-																	<button className="ui primary button" onClick={()=>{this.issueTicket()}}>
-																		Confirm
-																	</button>
-																	<button className="ui button" onClick={()=>{this.setState({paymentQuestion: false})}}>
-																		Cancel
-																	</button>
-																</div>	
-														</div>
-
-														:
-
-														null
-												}
-													
-
-
-
-
-
-
-
-
-                        {
-                            this.state.halls.length > 0
-
-                                ?
-
-                                <div style={{ display: 'flex', flexDirection: 'row', flexFlow: 'wrap', justifyConter: "space-between" }}>
-                                    {this.state.halls.map((i, index) => {
-                                        return (
-                                            <div key={index} >
-                                                <HallCard image={i.imageURL} title={i.title} description={i.description} cssClass={`${this.state.colours[index]}-hall`} />
-                                            </div>
-                                        )
-                                    })}
+                        <div className="manual">
+                            <div>
+                                <p className="manual-par">
+                                    Enter a date or scroll down the page.
+                                </p>
+                                <p className="manual-par">
+                                    Only logged in users can make reservations.
+                                </p>
+                                <p className="manual-par">
+                                    9" means 9:00-10:00; 10" means 10:00-11:00.
+                                </p>
+                                <p className='manual-par'>
+                                    Once you have selected all the rooms you would like to book
+                                </p>
+                                <p className='manual-par'>
+                                    click payment button in order to make reservation
+                                </p>
+                                <p className='manual-par'>
+                                    in the upper bar and confirm your order.
+                                </p>
+                            </div>
+                            <div>
+                                <div className="manual-div">
+                                    <RedFree />  <span className="manual-par"> The red room is free at this time </span>
                                 </div>
-                                :
-
-                                <div> </div>
-                        }
-
-                    </div>
-
-											
-
-
-
-
-
-
-
-
-                    {this.state.displayDayCards
-
-                        ?
-
-                        this.renderDayCards(this.chosenSlot).days
-
-                        :
-
-                        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between", paddingTop: "3em" }}>
-                            <CircularProgress />
+                                <div className="manual-div">
+                                    <RedBusy /> <span className="manual-par"> The red room is reserved at this time </span>
+                                </div>
+                                <div className="manual-div">
+                                    <RedChosen /> <span className="manual-par"> The red room is selected at this time, but not yet reserved. </span>
+                                </div>
+                            </div>
                         </div>
-                    }
-
+                        {this.renderDayCards(this.chosenSlots).days}
+                    </div>
                 </div>
-
-
-
-
-                :
-                <Redirect to='/login' />
-        );
+            );
+        }
+        else {
+            return <Redirect to='/login' />
+        }
     }
 } 

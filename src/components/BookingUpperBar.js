@@ -1,14 +1,10 @@
-import React from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-// import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-// import IconButton from '@material-ui/core/IconButton';
-// import MenuIcon from '@material-ui/icons/Menu';
-// import DatePickers from './DateInputNOTNEEDED'
-// import { Link } from 'react-router-dom';
+
 
 
 const styles = {
@@ -28,12 +24,18 @@ const styles = {
   }
 };
 
-function dateLimit() {
+class ButtonAppBarBooking extends Component {
+  state = {
+    dateInput: ''
+
+  }
+
+  dateLimit() {
   let date1 = new Date();
   let date2 = new Date();
   let minLimit = (date1.getDate() + 1) 
   date1.setDate(minLimit)
-  let maxLimit = (date2.getDate() + 31)
+  let maxLimit = (date2.getDate() + 62)
   date2.setDate(maxLimit)
   return {
     minDate: (date1.toISOString().split("T")[0]),
@@ -41,46 +43,50 @@ function dateLimit() {
   }
 }
   
-function onDateInput(value) {
-  if (value < dateLimit().minDate || value > dateLimit().maxDate ) {
-    alert('The date must be within 30-day period starting with tomorrow')
+  onDateInput(value) {
+  if (value < this.dateLimit().minDate || value > this.dateLimit().maxDate ) {
+    alert('The date must be within 60-day period starting with tomorrow')
   } else {
-    let id = value.slice(-2) + value.slice(5,7) + value.slice(2,4)
-    console.log(value, dateLimit().minDate, dateLimit().maxDate)
+    let id = "date:" + value.slice(-2) + value.slice(5,7) + value.slice(2,4)
     let distance = document.getElementById(id).offsetTop
     window.scrollBy(0, distance)
   }
-  
 }
 
-function ButtonAppBarBooking(props) {
-  const { classes } = props;
-
-  function signOut(){
-    props.history.push('/login')
+  signOut(){
+    this.props.history.push('/login')
     sessionStorage.removeItem('LoggedIn');
     sessionStorage.removeItem('chosenSlots');
   }
   
-  return (
-    <div className={classes.root}>
-      <AppBar position="static">
-        <Toolbar>
-          <div className="ui input" style={{ paddingRight: '1em' }}>
-            <input type='date' min={dateLimit().minDate} max={dateLimit().maxDate} onChange={(e)=>onDateInput(e.target.value)} style={{ padding: 0, lineHeight: '1em', background: '#FBFBFF' }} />
-          </div>
+  render() {
+    const { classes } = this.props;
 
-          <div className={classes.grow} />
-          <Button className={classes.loginButton} style={{color: "#15cda8", fontWeight: "bold"}} onClick={props.confirm}>
-              Payment
-            </Button>
-            <Button className={classes.loginButton} onClick={()=> {signOut()}}>
-              Log out
-            </Button>
-        </Toolbar>
-      </AppBar>
-    </div>
-  );
+    return (
+      <div className={classes.root}>
+        <AppBar position="static">
+          <Toolbar>
+            <div className="ui input" style={{ paddingRight: '1em' }}>
+            <input type='date' min={this.dateLimit().minDate} max={this.dateLimit().maxDate} value={this.state.dateInput} onChange={(e)=>this.setState({dateInput: e.target.value})} style={{ padding: 0, lineHeight: '1em', background: '#FBFBFF' }} />
+              <div style={{ display: "flex", justifyContent: "flex-start", alignItems: "center", paddingLeft: "0.5em" }} >
+                <i className={"search icon " + classes.loginButton} onClick={() => {
+                  this.onDateInput(this.state.dateInput)
+                 }
+                }></i>
+              </div>
+            </div>
+            <div className={classes.grow} />
+            <Button className={classes.loginButton} style={{color: "#15cda8", fontWeight: "bold"}} onClick={this.props.confirm}>
+                Payment
+              </Button>
+              <Button className={classes.loginButton} onClick={()=> {this.signOut()}}>
+                Log out
+              </Button>
+          </Toolbar>
+        </AppBar>
+      </div>
+    );
+  }
 }
 
 ButtonAppBarBooking.propTypes = {
