@@ -119,6 +119,9 @@ export default class Booking extends Component {
         }
     }
 
+    // CONVERTING RESERVED TICKETS INTO SEPARATE HOUR AND ROOM SLOTS:
+
+
     convertTimeIntoSlotID(fullRecord) {
         let date = fullRecord.getDate()
         let fullDate = date.toString().length === 2 ? date : "0" + date;
@@ -135,9 +138,6 @@ export default class Booking extends Component {
         datehour = new Date(datehour.setMinutes(0))
         return datehour
     }
-
-
-// CONVERTING RESERVED TICKETS INTO SEPARATE HOUR AND ROOM SLOTS:
 
     addColourToID(hall_id) {
         let arraysHallsID = this.state.halls.map(i => i._id)
@@ -391,6 +391,9 @@ export default class Booking extends Component {
     }
 
 
+
+
+    
     componentDidMount() {
 
         Promise.all([
