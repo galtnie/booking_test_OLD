@@ -25,8 +25,7 @@ const styles = {
         paddingBottom: '1em',
         marginLeft: "0.5em",
         marginRight: "0.5em",
-		},
-
+	},
 }
 
 export default class Booking extends Component {
@@ -40,10 +39,10 @@ export default class Booking extends Component {
         reservedSlots: [],
         halls: [],
         colours: ['bro', 'gre', 'red', 'blu', 'vio'],
-				displayDayCards: false,
-				ordersListForTickets: '',
-				ordersListForRendering: '',
-				paymentQuestion: false
+		displayDayCards: false,
+        ordersListForTickets: '',
+		ordersListForRendering: '',
+		paymentQuestion: false
     }
 
     chooseSlot(slotID) {
@@ -146,7 +145,6 @@ export default class Booking extends Component {
             }
             OrdersListForRendering.push(orderForRendering)
         }
-
 				this.setState({ordersListForTickets: OrdersListForTickets})
 				this.setState({ordersListForRendering: OrdersListForRendering})
 				this.setState({paymentQuestion: true})
@@ -184,8 +182,7 @@ export default class Booking extends Component {
     //                ReservationsToSave = [...alreadySavedReservations, ...chosenHalls]
     //            }
     //            localStorage.setItem('bookedSlots', JSON.stringify(ReservationsToSave))
-    //            sessionStorage.removeItem('chosenSlots')
-    //            this.setState({ chosenSlots: [] })
+               
     //            this.setState({ reservedSlots: JSON.parse(localStorage.getItem('bookedSlots')) })
     //        }
     //        else { console.log('no') }
@@ -318,12 +315,108 @@ export default class Booking extends Component {
         this.props.history.push('/login')
     }
 
-		issueTicket() {
-			console.log('write a ticket')
-			this.setState({paymentQuestion: false})
-		}
- 
+    issueTickets(ticketsArray){
+        
+    }
 
+
+    uniteAdjacentTickets(ticketsHallsArray) {
+        let doItAgain = false
+
+        ticketsHallsArray.forEach((ticketsArrayOfSameHall) => {
+        
+            for (let i = 0; i < ticketsArrayOfSameHall.length; i++) {
+                for (let j = 0; j < ticketsArrayOfSameHall.length; j++ ) {
+
+                    if((ticketsArrayOfSameHall[j].from - ticketsArrayOfSameHall[i].to) < 300000 && 
+                       (ticketsArrayOfSameHall[j].from - ticketsArrayOfSameHall[i].to) > 0) {
+
+                        let newTicket = {
+                            from: ticketsArrayOfSameHall[i].from,
+                            to: ticketsArrayOfSameHall[j].to,
+                            hall_id: ticketsArrayOfSameHall[i].hall_id,
+                        }
+
+                        if (i > j) {
+                            ticketsArrayOfSameHall.splice(i, 1)
+                            ticketsArrayOfSameHall.splice(j, 1, newTicket) 
+                        }
+                        else {
+                            ticketsArrayOfSameHall.splice(j, 1)
+                            ticketsArrayOfSameHall.splice(i, 1, newTicket) 
+                        }
+                        doItAgain = true
+                        break;
+                    }
+                    else if ((ticketsArrayOfSameHall[i].from - ticketsArrayOfSameHall[j].to) < 300000 &&
+                             (ticketsArrayOfSameHall[i].from - ticketsArrayOfSameHall[j].to) > 0) {
+
+                        let newTicket = {
+                            from: ticketsArrayOfSameHall[j].from,
+                            to: ticketsArrayOfSameHall[i].to,
+                            hall_id: ticketsArrayOfSameHall[i].hall_id,
+                        }
+
+                        if (i > j) {
+                            ticketsArrayOfSameHall.splice(i, 1)
+                            ticketsArrayOfSameHall.splice(j, 1, newTicket) 
+                        }
+                        else {
+                            ticketsArrayOfSameHall.splice(j, 1)
+                            ticketsArrayOfSameHall.splice(i, 1, newTicket) 
+                        }
+                        doItAgain = true
+                        break;
+                    }    
+                }
+            }
+        })
+
+        if (doItAgain) {
+            this.uniteAdjacentTickets(ticketsHallsArray)
+        } else {
+            let arrayWithUnitedAdjacentTickets = []
+            ticketsHallsArray.forEach(i=>i.forEach(ii=>arrayWithUnitedAdjacentTickets.push(ii)))
+            console.log(arrayWithUnitedAdjacentTickets)
+            this.issueTickets(arrayWithUnitedAdjacentTickets)
+        }  
+    }
+
+    uniteTicketsWithSameHallIDs() {
+        let ticketsHallsArray = []
+     
+        for (let i = 0; i < this.state.ordersListForTickets.length; i++) {
+            let ifNewHallArrayIsNeeded = true
+
+            if (ticketsHallsArray.length === 0) {
+                let sameHallTicketsArray = []                                           //no hallarrays in ticketsHallsArray
+                sameHallTicketsArray.push(this.state.ordersListForTickets[i])           // adds first hallarray into tickets HallsArray
+                ticketsHallsArray.push(sameHallTicketsArray)
+                ifNewHallArrayIsNeeded = false
+            } else {
+                for (let j = 0; j < ticketsHallsArray.length; j++) {
+                    if (ticketsHallsArray[j][0].hall_id === this.state.ordersListForTickets[i].hall_id) {       //if hallarray with the same hall_id exists
+                        ticketsHallsArray[j].push(this.state.ordersListForTickets[i])                           // adds ticket into that array
+                        ifNewHallArrayIsNeeded = false
+                    }
+                }       
+            } 
+            if (ifNewHallArrayIsNeeded) { 
+                let sameHallTicketsArray = []                                           //if no hallarray with the same hall_id
+                sameHallTicketsArray.push(this.state.ordersListForTickets[i])           // adds new hallarray into tickets HallsArray
+                ticketsHallsArray.push(sameHallTicketsArray)
+            }
+        }
+        this.uniteAdjacentTickets(ticketsHallsArray)
+    }
+
+    handleConfirm() {
+        this.setState({paymentQuestion: false})
+        sessionStorage.removeItem('chosenSlots')
+        this.setState({ chosenSlots: [] })
+        this.uniteTicketsWithSameHallIDs()
+	}
+ 
 
     render() {
         return (
@@ -377,8 +470,9 @@ export default class Booking extends Component {
 
 														?
 
-														<div className="ui fluid container" style={{position:"fixed", background: "blue", color:"white", top: "1em", padding: "2em", marginRight: "2em", marginLeft: "2em", borderRadius: "1em"}}>
-																<p>Do you confirm the following order?</p>
+														<div className="ui fluid container" style={{position:"fixed", background: "#3f51b5", color:"white", top: "1em", padding: "2em", marginRight: "2em", marginLeft: "2em", borderRadius: "1em", overflowY: "auto",
+                                                        maxHeight: "90%"}}>
+																<p><h2>Do you confirm the following order?</h2></p>
 																{this.state.ordersListForRendering.map((i, index) => {
 																				return (
 																					<div key={index}>
@@ -393,7 +487,7 @@ export default class Booking extends Component {
 																	})		
 																}
 																<div style={{width:"100%", display:"flex", flexDirection:"row", justifyContent: "space-between"}}>
-																	<button className="ui primary button" onClick={()=>{this.issueTicket()}}>
+																	<button className="ui primary button" onClick={()=>{this.handleConfirm()}}>
 																		Confirm
 																	</button>
 																	<button className="ui button" onClick={()=>{this.setState({paymentQuestion: false})}}>
