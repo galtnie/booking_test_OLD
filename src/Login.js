@@ -62,8 +62,8 @@ class SignIn extends React.Component {
 		this.setState({ loginInputted: '' })
 		this.setState({ passInputted: '' })
 		sessionStorage.setItem('LoggedIn', username)
-		localStorage.setItem('user_id', user_id)
-		localStorage.setItem('token', token)
+		// localStorage.setItem('user_id', user_id)
+		// localStorage.setItem('token', token)
 		this.props.history.push('/booking')
 	}
 

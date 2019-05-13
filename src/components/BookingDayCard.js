@@ -4,7 +4,26 @@ import '../css/HomeDayCard.css';
 import { RedFree, RedBusy, RedChosen, BlueFree, BlueBusy, BlueChosen, GreenFree, GreenBusy, GreenChosen, VioletFree, VioletBusy, VioletChosen, BrownFree, BrownBusy, BrownChosen } from './Rooms'
 
 export default class BookingDayCard extends Component {
-    state = {}
+
+
+    constructor(props) {
+        super(props);
+        this.getAlert = this.getAlert.bind(this);
+        this.rerender = false
+        
+     }
+     componentDidMount() {
+        this.props.setClick(this.getAlert);
+        this.setState({rerender: false})
+        
+     }
+
+     getAlert() {
+        this.setState({rerender: true})
+        console.log('child rerenders')
+        console.log(this.state.rerender)
+        this.forceUpdate()
+     }
 
     renderHour(hour) {
         return <div style={{ paddingLeft: "0.38em" }}>{hour}"</div>
@@ -68,6 +87,7 @@ export default class BookingDayCard extends Component {
 
             hours.push(
                 <div id={this.props.id + hourForIdName} key={`${this.id}${hourForIdName}`} className='home-one-hour-countainer'>
+                    {this.renderHour(i)}
                     <div>
                         {this.renderRooms(this.props.id, hourForIdName, 'blue')}
                     </div>
@@ -90,7 +110,10 @@ export default class BookingDayCard extends Component {
     }
 
 
+
+
     render() {
+
         return (
             <div id={this.props.id}>
                 <HomeDayBar date={this.props.date} />
