@@ -25,26 +25,31 @@ const styles = {
         paddingBottom: '1em',
         marginLeft: "0.5em",
         marginRight: "0.5em",
-	},
+    },
 }
 
 export default class Booking extends Component {
 
     state = {
-        user_id: '',
-        token: '',
         myClasses: styles,
         dayCardsID: "initial",
         chosenSlots: [],
         reservedSlots: [],
         halls: [],
         colours: ['bro', 'gre', 'red', 'blu', 'vio'],
-		displayDayCards: false,
-        ordersListForTickets: '',
-		ordersListForRendering: '',
+        displayDayCards: false,
+        newOrdersListForTickets: '',
+        newOrdersListForRendering: '',
+        priorOrdersListForRendering: '',
         paymentQuestion: false,
-        
-    }
+        priorOrdersList: null,
+
+        editReservation: false
+    };
+
+    // constructor(props) {
+    //     super(props);        
+    // } 
 
     chooseSlot(slotID) {
         sessionStorage.setItem('chosenSlots', JSON.stringify([...this.state.chosenSlots, slotID]))
@@ -69,8 +74,18 @@ export default class Booking extends Component {
         this.setState({ chosenSlots: arrayToAlter })
     }
 
-    checkReservation(slotID) {                                  //MOVE IT TO CHILD
-        return this.state.reservedSlots.includes(slotID)
+    checkReservation(slotID) {
+
+
+        let newArrayWithoutTitles = this.state.reservedSlots.map(e => e.slice(0, 28))
+        let newArrayOfTitles = this.state.reservedSlots.map(e => e.slice(28))
+
+        return newArrayWithoutTitles.includes(slotID)
+            ?
+            newArrayOfTitles[newArrayWithoutTitles.findIndex(e => e === slotID)]
+            :
+            false
+
     }
 
     calculateDate(fullDate, counter) {
@@ -108,7 +123,7 @@ export default class Booking extends Component {
                 checkSlot={this.checkSlot.bind(this)}
                 deselect={this.deselect.bind(this)}
                 checkReservation={this.checkReservation.bind(this)}
-                
+
                 setClick={click => this.clickChild = click}
             />)
             IDs.push(cardKey)
@@ -145,28 +160,32 @@ export default class Booking extends Component {
         return `colour:${this.state.colours[hallNumber]}`
     }
 
-    addSlotToReservationList(time, hall_id) {
+    addSlotToReservationList(time, hall_id, title) {
         let slotIdTimeHour = this.convertTimeIntoSlotID(time)
         let slotIdColour = this.addColourToID(hall_id)
-        let slotId = slotIdTimeHour + slotIdColour
+        let slotTitle = `title:${title}`
+        let slotId = slotIdTimeHour + slotIdColour + slotTitle
         let newReservedSlotsList = this.state.reservedSlots.slice();
         newReservedSlotsList.push(slotId)
         this.setState({ reservedSlots: newReservedSlotsList })
     }
 
-    addingHoursIntoReservation(time1, time2, hall_id) {
+    addingHoursIntoReservation(time1, time2, hall_id, title) {
 
-        this.addSlotToReservationList(time1, hall_id)
+
+        this.addSlotToReservationList(time1, hall_id, title)
 
         let firstHour = time1.getHours()
         let secondHour = time2.getHours()
         if (firstHour < secondHour) {
             let nextHour = new Date(time1.setTime(time1.getTime() + (60 * 60 * 1000)))
-            this.addingHoursIntoReservation(nextHour, time2, hall_id)
+            this.addingHoursIntoReservation(nextHour, time2, hall_id, title)
         }
     }
 
-    addingDaysIntoReservation(time1, time2, hall_id) {
+    addingDaysIntoReservation(time1, time2, hall_id, title) {
+
+
 
         if (time1 < time2 &&
             (time1.getDate() !== time2.getDate() ||
@@ -176,12 +195,12 @@ export default class Booking extends Component {
 
             let sameDayLastHour = new Date(time1.getTime())
             sameDayLastHour = new Date(sameDayLastHour.setHours(23))
-            this.addingHoursIntoReservation(time1, sameDayLastHour, hall_id)
+            this.addingHoursIntoReservation(time1, sameDayLastHour, hall_id, title)
             let tomorrow = this.calculateDate(time1, 1).dateObject
             tomorrow = new Date(tomorrow.setHours(0))
-            this.addingDaysIntoReservation(tomorrow, time2, hall_id)
+            this.addingDaysIntoReservation(tomorrow, time2, hall_id, title)
         } else {
-            this.addingHoursIntoReservation(time1, time2, hall_id)
+            this.addingHoursIntoReservation(time1, time2, hall_id, title)
         }
     }
 
@@ -195,22 +214,23 @@ export default class Booking extends Component {
             else if (fromTime !== toTime && fromTime < toTime) {
                 fromTime = this.deleteMinutesSecondsMilisecs(fromTime)
                 toTime = this.deleteMinutesSecondsMilisecs(toTime)
-                this.addingDaysIntoReservation(fromTime, toTime, this.state.tickets[i].hall_id)
+
+                this.addingDaysIntoReservation(fromTime, toTime, this.state.tickets[i].hall_id, this.state.tickets[i].title)
             }
         }
     }
 
 
-// AFTER CLICKING PAYMENT BUTTON 
-// TILL SHOWING PAYMENT QUESTION
-// IT CAN BE REWRITTEN INTO PROMISE
+    // AFTER CLICKING PAYMENT BUTTON 
+    // TILL SHOWING PAYMENT QUESTION
+    // IT CAN BE REWRITTEN INTO PROMISE
 
     confirmReservation() {
         if (sessionStorage.getItem('chosenSlots') === null || JSON.parse(sessionStorage.getItem('chosenSlots')).length === 0) {
             alert('There is nothing to confirm. Please choose rooms you like to book first.')
         } else if (JSON.parse(sessionStorage.getItem('chosenSlots').length > 0)) {
             let chosenHalls = JSON.parse(sessionStorage.getItem('chosenSlots')) // I CAN MAKE A LIST AS A MESSAGE FOR CONFIRMATION IF I HAVE TIME
-    		this.convertSlotIDsToTimeAndHalls(chosenHalls)
+            this.convertSlotIDsToTimeAndHalls(chosenHalls)
         }
     }
 
@@ -225,10 +245,10 @@ export default class Booking extends Component {
             }
             orderListToUniteAdjacent.push(order)
         }
-            this.uniteTicketsWithSameHallIDs(orderListToUniteAdjacent) 
+        this.uniteTicketsWithSameHallIDs(orderListToUniteAdjacent)
     }
 
-    uniteTicketsWithSameHallIDs(orderList) {   
+    uniteTicketsWithSameHallIDs(orderList) {
         let ticketsHallsArray = []
 
         for (let i = 0; i < orderList.length; i++) {
@@ -245,9 +265,9 @@ export default class Booking extends Component {
                         ticketsHallsArray[j].push(orderList[i])                           // adds ticket into that array
                         ifNewHallArrayIsNeeded = false
                     }
-                }       
-            } 
-            if (ifNewHallArrayIsNeeded) { 
+                }
+            }
+            if (ifNewHallArrayIsNeeded) {
                 let sameHallTicketsArray = []                                           //if no hallarray with the same hall_id
                 sameHallTicketsArray.push(orderList[i])           // adds new hallarray into tickets HallsArray
                 ticketsHallsArray.push(sameHallTicketsArray)
@@ -258,14 +278,14 @@ export default class Booking extends Component {
 
     uniteAdjacentTickets(ticketsHallsArray) {
         let doItAgain = false
-      
-        ticketsHallsArray.forEach((ticketsArrayOfSameHall) => {
-        
-            for (let i = 0; i < ticketsArrayOfSameHall.length; i++) {
-                for (let j = 0; j < ticketsArrayOfSameHall.length; j++ ) {
 
-                    if((ticketsArrayOfSameHall[j].from - ticketsArrayOfSameHall[i].to) < 300000 && 
-                       (ticketsArrayOfSameHall[j].from - ticketsArrayOfSameHall[i].to) > 0) {
+        ticketsHallsArray.forEach((ticketsArrayOfSameHall) => {
+
+            for (let i = 0; i < ticketsArrayOfSameHall.length; i++) {
+                for (let j = 0; j < ticketsArrayOfSameHall.length; j++) {
+
+                    if ((ticketsArrayOfSameHall[j].from - ticketsArrayOfSameHall[i].to) < 300000 &&
+                        (ticketsArrayOfSameHall[j].from - ticketsArrayOfSameHall[i].to) > 0) {
 
                         let newTicket = {
                             from: ticketsArrayOfSameHall[i].from,
@@ -275,17 +295,17 @@ export default class Booking extends Component {
 
                         if (i > j) {
                             ticketsArrayOfSameHall.splice(i, 1)
-                            ticketsArrayOfSameHall.splice(j, 1, newTicket) 
+                            ticketsArrayOfSameHall.splice(j, 1, newTicket)
                         }
                         else {
                             ticketsArrayOfSameHall.splice(j, 1)
-                            ticketsArrayOfSameHall.splice(i, 1, newTicket) 
+                            ticketsArrayOfSameHall.splice(i, 1, newTicket)
                         }
                         doItAgain = true
                         break;
                     }
                     else if ((ticketsArrayOfSameHall[i].from - ticketsArrayOfSameHall[j].to) < 300000 &&
-                             (ticketsArrayOfSameHall[i].from - ticketsArrayOfSameHall[j].to) > 0) {
+                        (ticketsArrayOfSameHall[i].from - ticketsArrayOfSameHall[j].to) > 0) {
 
                         let newTicket = {
                             from: ticketsArrayOfSameHall[j].from,
@@ -295,15 +315,15 @@ export default class Booking extends Component {
 
                         if (i > j) {
                             ticketsArrayOfSameHall.splice(i, 1)
-                            ticketsArrayOfSameHall.splice(j, 1, newTicket) 
+                            ticketsArrayOfSameHall.splice(j, 1, newTicket)
                         }
                         else {
                             ticketsArrayOfSameHall.splice(j, 1)
-                            ticketsArrayOfSameHall.splice(i, 1, newTicket) 
+                            ticketsArrayOfSameHall.splice(i, 1, newTicket)
                         }
                         doItAgain = true
                         break;
-                    }    
+                    }
                 }
             }
         })
@@ -312,16 +332,18 @@ export default class Booking extends Component {
             this.uniteAdjacentTickets(ticketsHallsArray)
         } else {
             let arrayWithUnitedAdjacentTickets = []
-            ticketsHallsArray.forEach(i=>i.forEach(ii=>arrayWithUnitedAdjacentTickets.push(ii)))
-            //this.setState({ordersListForTickets: [...arrayWithUnitedAdjacentTickets]})
-            this.setState({ordersListForTickets: arrayWithUnitedAdjacentTickets})
-            
-            this.convertOrdersToRender(arrayWithUnitedAdjacentTickets)
-        }  
+            ticketsHallsArray.forEach(i => i.forEach(ii => {
+                ii.event_title = "untitled"
+                arrayWithUnitedAdjacentTickets.push(ii)
+            }))
+            //this.setState({newOrdersListForTickets: [...arrayWithUnitedAdjacentTickets]})
+            this.setState({ newOrdersListForTickets: arrayWithUnitedAdjacentTickets })
+            this.convertNewOrdersToRender(arrayWithUnitedAdjacentTickets)
+        }
     }
 
-    convertOrdersToRender(orders) {
-        let OrdersListForRendering = []
+    convertNewOrdersToRender(orders) {
+        let newOrdersListForRendering = []
         const timeOptionsForRendering = {
             day: 'numeric',
             weekday: 'long',
@@ -331,69 +353,133 @@ export default class Booking extends Component {
             minute: 'numeric',
         }
         for (let i = 0; i < orders.length; i++) {
+            let hall = this.state.halls.find(e => {
+                return e._id === orders[i].hall_id
+            })
+
             let orderForRendering = {
-                hall_title: orders[i].hall_title,
+                hall_title: hall.title,
                 from: new Intl.DateTimeFormat('en-GB', timeOptionsForRendering).format(orders[i].from),
                 to: new Intl.DateTimeFormat('en-GB', timeOptionsForRendering).format(orders[i].to),
             }
-            OrdersListForRendering.push(orderForRendering)       
-        }           
-            this.setState({ordersListForRendering: OrdersListForRendering})
-            this.setState({paymentQuestion: true})
+            newOrdersListForRendering.push(orderForRendering)
+        }
+
+        this.setState({ newOrdersListForRendering: newOrdersListForRendering })
+        this.setState({ paymentQuestion: true })
     }
 
+    convertPriorOrdersToRender(orders) {
+
+        let ordersListForRendering = []
+        const timeOptionsForRendering = {
+            day: 'numeric',
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            hour: 'numeric',
+            minute: 'numeric',
+        }
+
+        for (let i = 0; i < orders.length; i++) {
+            let hall = this.state.halls.find(e => {
+                return e._id === orders[i].hall_id
+            })
+
+            let orderForRendering = {
+                hall_title: hall.title,
+                from: new Intl.DateTimeFormat('en-GB', timeOptionsForRendering).format(orders[i].from),
+                to: new Intl.DateTimeFormat('en-GB', timeOptionsForRendering).format(orders[i].to),
+                event: orders[i].title
+            }
+            ordersListForRendering.push(orderForRendering)
+        }
+        return ordersListForRendering
+    }
+
+
     handleClickedConfirm() {
-        this.setState({paymentQuestion: false})
+        this.setState({ paymentQuestion: false })
         sessionStorage.removeItem('chosenSlots')
         this.setState({ chosenSlots: [] })
-        this.setState({ordersListForRendering: ''})
+        this.setState({ newOrdersListForRendering: '' })
         this.issueTickets()
 
 
-        
-	}
- 
-    issueTickets(){
+
+    }
+
+    issueTickets() {
 
         let axiosRequests = []
+        console.log(this.state.newOrdersListForTickets)
+        for (let i = 0; i < this.state.newOrdersListForTickets.length; i++) {
+            console.log(this.state.newOrdersListForTickets[i].event_title)
 
-        for (let i = 0; i < this.state.ordersListForTickets.length; i++) {
             let request = axios({
                 method: 'post',
                 url: 'http://ec2-3-84-16-108.compute-1.amazonaws.com:4000/tickets',
                 data: {
-                    hall_id: this.state.ordersListForTickets[i].hall_id,
+                    hall_id: this.state.newOrdersListForTickets[i].hall_id,
                     user_id: localStorage.getItem('user_id'),
-                    title: "default",
-                    from: this.state.ordersListForTickets[i].from,
-                    to: this.state.ordersListForTickets[i].to,
+                    title: this.state.newOrdersListForTickets[i].event_title,
+                    from: this.state.newOrdersListForTickets[i].from,
+                    to: this.state.newOrdersListForTickets[i].to,
                 },
-                headers: {      
-                    ContentType: "application/x-www-form-urlencoded",              
+                headers: {
+                    ContentType: "application/x-www-form-urlencoded",
                     Authorization: localStorage.getItem('token'),
                 }
             })
-            
             axiosRequests.push(request)
         }
 
-        
         Promise.all(axiosRequests)
-        //.then(res => console.log(res))
-        .then(()=> this.setState({ordersListForTickets: ''}))
-        .then(()=> {
-            this.forceUpdate()
-            this.setState({rerenderDays: true})
-            
-        })
-        .then(() => this.clickChild())
-        .catch(error => console.log(error.message))
+            .then(() => this.setState({ newOrdersListForTickets: '' }))
+            .then(() => {
+                //this.forceUpdate()
+                //this.setState({rerenderDays: true})
+                window.location.reload()
+            })
+            .catch(error => console.log(error.message))
     }
 
+    deleteTicket(e) {
+        let itemIndex = e.target.id
+        let ticketToDelete = this.state.priorOrdersList[itemIndex]
+        axios({
+            method: 'delete',
+            url: `http://ec2-3-84-16-108.compute-1.amazonaws.com:4000/tickets/${ticketToDelete._id}`,
+            headers: {
+                ContentType: "application/x-www-form-urlencoded",
+                Authorization: localStorage.getItem('token'),
+            }
+        })
+            .then(() => {
+                let newArray = this.state.priorOrdersList
+                newArray.splice(itemIndex, 1)
+                this.setState({ priorOrdersList: newArray })
+
+                let newArray2 = this.state.priorOrdersListForRendering
+                newArray2.splice(itemIndex, 1)
+                this.setState({ priorOrdersListForRendering: newArray2 })
+
+                // this.forceUpdate()
+            })
+            .catch((e) => console.log(e))
+    }
+
+    editTicket(e) {
+        console.log(e)
+        console.log(e.target.id)
+        let index = e.target.id
+        console.log(this.state.priorOrdersList[index])
+        console.log(this.state.priorOrdersListForRendering[index])
+        this.setState({editReservation: true})
 
 
+    }
 
-    
     componentDidMount() {
 
         Promise.all([
@@ -407,9 +493,23 @@ export default class Booking extends Component {
             .then(() => {
                 this.calculateSlotsReserved()
             })
-            .then(() => this.setState({ displayDayCards: true }))
+            .then(() => {
+                let usersTickets = []
+                let user_id = localStorage.getItem('user_id')
+                usersTickets = this.state.tickets.filter(i => {
+                    return i.user_id === user_id
+                })
+                if (usersTickets.length > 0) {
+                    this.setState({ priorOrdersList: usersTickets })
+                }
+            })
+            .then(() => {
+                this.setState({ priorOrdersListForRendering: this.convertPriorOrdersToRender(this.state.priorOrdersList) })
+            })
+            .then(() => {
+                this.setState({ displayDayCards: true })
+            })
             .catch((e) => console.log(e))
-
 
         this.setState({ dayCardsID: [...this.renderDayCards().dayCardsID] })
         if (sessionStorage.getItem('chosenSlots') !== null) {
@@ -436,6 +536,8 @@ export default class Booking extends Component {
                             </h1>
                         </div>
                     </div>
+
+
                     <div className="manual">
                         <div>
                             <p className="manual-par">
@@ -465,64 +567,237 @@ export default class Booking extends Component {
                                 <RedChosen /> <span className="manual-par"> The red room is selected at this time, but not yet reserved. </span>
                             </div>
                         </div>
-												{
-													this.state.paymentQuestion
-
-														?
-
-														<div className="ui fluid container" style={{position:"fixed", background: "#3f51b5", color:"white", top: "1em", padding: "2em", marginRight: "2em", marginLeft: "2em", borderRadius: "1em", overflowY: "auto",
-                                                        maxHeight: "90%"}}>
-																<h2>Do you confirm the following order?</h2>
-																{this.state.ordersListForRendering.map((i, index) => {
-																				return (
-																					<div key={index}>
-																						<p>
-																							HALL: {this.state.ordersListForRendering[index].hall_title} <br /> 
-																							FROM: {this.state.ordersListForRendering[index].from} <br />
-																							TO: {this.state.ordersListForRendering[index].to}
-																						</p>
-																						<p></p>
-																					</div>																																			
-																				 ); 																
-																	})		
-																}
-																<div style={{width:"100%", display:"flex", flexDirection:"row", justifyContent: "space-between"}}>
-																	<button className="ui primary button" onClick={()=>{this.handleClickedConfirm()}}>
-																		Confirm
-																	</button>
-																	<button className="ui button" onClick={()=>{this.setState({paymentQuestion: false})}}>
-																		Cancel
-																	</button>
-																</div>	
-														</div>
-
-														:
-
-														null
-												}
-													
-
-                        {
-                            this.state.halls.length > 0
-
-                                ?
-
-                                <div style={{ display: 'flex', flexDirection: 'row', flexFlow: 'wrap', justifyConter: "space-between" }}>
-                                    {this.state.halls.map((i, index) => {
-                                        return (
-                                            <div key={index} >
-                                                <HallCard  image={i.imageURL} title={i.title} description={i.description} cssClass={`${this.state.colours[index]}-hall`} />
-                                            </div>
-                                        )
-                                    })}
-                                </div>
-                                :
-
-                                <div> </div>
-                        }
                     </div>
+                    {
+                        this.state.priorOrdersListForRendering.length > 0
+                            ?
 
-                    {   
+                            <div className="ui container"
+                                style={{
+                                    color: "#945600",
+                                    border: "1em solid #2185D0",
+                                    background: '#E8F1F2',
+                                    borderRadius: "2em",
+                                    marginBottom: "2em",
+                                    marginTop: "2em"
+                                }}
+                            >
+
+                                <div style={{ display: 'flex', flexDirection: "column", alignItems: 'center' }}>
+                                    <h3 style={{ color: "#945600", marginTop: "1em" }}>
+                                        LIST OF YOUR PRIOR RESERVATIONS:
+                                    </h3>
+                                </div>
+
+                                <div style={{ marginLeft: "1em" }}>
+                                    {this.state.priorOrdersListForRendering.map((i, index) => {
+                                        return (
+                                            <div key={index}
+                                                style={{
+                                                    marginTop: "1em",
+                                                    color: "#13293D",
+                                                    fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif',
+                                                    fontSize: "1em",
+                                                    display: "flex",
+                                                    flexDirection: "column",
+                                                    alignItems: "stretch"
+                                                }}>
+
+                                                <div style={{
+                                                    display: "flex",
+                                                    flexDirection: "row",
+                                                    alignItems: "flex-start",
+                                                    justifyContent: "space-between",
+                                                }}>
+                                                    <table>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    HALL:
+                                                                        </td>
+                                                                <td>
+                                                                    {i.hall_title}
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    EVENT:
+                                                                        </td>
+                                                                <td>
+                                                                    {i.event}
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    FROM:
+                                                                        </td>
+                                                                <td>
+                                                                    {i.from}
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    TO:
+                                                                        </td>
+                                                                <td>
+                                                                    {i.to}
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <div style={{ marginRight: "1em" }}>
+                                                        <button className="ui olive button" id={index} onClick={(e) => this.editTicket(e)} style={{ marginRight: "1em", marginBottom: "1em" }}>
+                                                            EDIT
+                                                                </button>
+                                                        <button id={index} className="ui red button" onClick={(e) => this.deleteTicket(e)}>
+                                                            DELETE
+                                                                </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        );
+                                    })
+                                    }
+                                </div>
+
+                            </div>
+
+                            :
+
+                            null
+                    }
+
+                    {
+                        this.state.editReservation
+                            ?
+                            <div className="ui fluid container"
+                                style={{
+                                    position: "fixed",
+                                    background: "linear-gradient(0deg, rgba(9,9,121,1) 0%, rgba(63,81,181,1) 50%, rgba(33,33,105,0.9654236694677871) 100%)",
+                                    color: "#13293D",
+                                    top: "2em",
+                                    padding: "2em",
+                                    marginRight: "2em",
+                                    marginLeft: "2em",
+                                    overflowY: "auto",
+                                    maxHeight: "90%",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    alignItems: "stretch",
+                                }}>
+                                    <div style={{
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        alignItems: "space-between",
+                                        color: "white",
+                                    }}>
+                                        
+                                        <div style={{paddingTop: "0.5em"}}> 
+                                            HALL: 
+                                        </div>
+                                            
+                                        <div>
+                                            <input type="text" placeholder="Search..." style={{border:0, padding: "0.5em", borderRadius:"1em"}} />
+                                            <i className="large times circle icon" style={{color: "red", height: "1em", size:"+2"}}></i>
+                                            <i className="large thumbs up outline icon" style={{color: "white", height: "1em"}}></i>
+                                        </div>                  
+
+                                        
+                                    </div>
+
+                                                    
+
+
+
+                                <div style={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+                                    <button className="ui purple button" style={{background: "#574AE2"}} onClick={() => {   }}>
+                                        Confirm
+									</button>
+                                    <button className="ui button" style={{background: "#222A68", color:"white"}} onClick={() => { this.setState({ editReservation: false }) }}>
+                                        Cancel
+									</button>
+                                </div>
+                            </div>
+                            :
+                            null
+                    }
+
+
+
+                    {
+                        this.state.paymentQuestion
+
+                            ?
+
+                            <div className="ui fluid container" style={{
+                                position: "fixed", background: '#E8F1F2', color: "#13293D", top: "2em", padding: "2em", marginRight: "2em", marginLeft: "2em", borderRadius: "1em", overflowY: "auto",
+                                maxHeight: "90%", border: "1em solid #2185D0"
+                            }}>
+                                <h2 style={{ color: "#945600" }}>Please enter a title of the event for each reservation prior to order confirmation.</h2>
+                                {this.state.newOrdersListForRendering.map((i, index) => {
+                                    return (
+                                        <div key={index} style={{ display: "flex", flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", width: "50%" }} >
+                                            <p>
+
+                                                HALL: {this.state.newOrdersListForRendering[index].hall_title} <br />
+                                                FROM: {this.state.newOrdersListForRendering[index].from} <br />
+                                                TO: {this.state.newOrdersListForRendering[index].to}
+                                            </p>
+                                            <div className="ui input">
+                                                <input type="text"
+                                                    placeholder="Event title"
+                                                    style={{
+                                                        background: '#E8F1F2',
+                                                        color: "#13293D",
+                                                        border: "0.1em solid #2185D0",
+                                                        lineHeight: "18px"
+                                                    }}
+                                                    onChange={(e) => {
+                                                        let newArray = this.state.newOrdersListForTickets
+                                                        newArray[index].event_title = e.target.value
+                                                        this.setState({ newOrdersListForTickets: newArray })
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+                                    );
+                                })
+                                }
+                                <h3 style={{ color: "#945600" }}>
+                                    Once you entitled each of the events, please confirm the order for its processing.
+                         </h3>
+                                <div style={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+                                    <button className="ui primary button" onClick={() => { this.handleClickedConfirm() }}>
+                                        Confirm
+																	          </button>
+                                    <button className="ui button" onClick={() => { this.setState({ paymentQuestion: false }) }}>
+                                        Cancel
+																	          </button>
+                                </div>
+                            </div>
+
+                            :
+
+                            null
+                    }
+
+                    {
+                        this.state.halls.length > 0
+                            ?
+                            <div style={{ display: 'flex', flexDirection: 'row', flexFlow: 'wrap', justifyConter: "space-between" }}>
+                                {this.state.halls.map((i, index) => {
+                                    return (
+                                        <div key={index} >
+                                            <HallCard image={i.imageURL} title={i.title} description={i.description} cssClass={`${this.state.colours[index]}-hall`} />
+                                        </div>
+                                    )
+                                })
+                                }
+                            </div>
+                            :
+                            null
+                    }
+                    {
                         this.state.displayDayCards
 
                             ?

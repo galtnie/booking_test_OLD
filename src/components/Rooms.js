@@ -40,36 +40,36 @@ export class BrownFreeHome extends Component {
 
 export class RedBusy extends Component {
     state = {}
-    render() {
-        return <div className="red-room-reserved" id={this.props.id}>R</div>;
+    render() {       
+        return <div className="red-room-reserved" id={this.props.id} data-tooltip={this.props.id ? this.props.id.slice(34): null} >R</div>;
     }
 }
 
 export class BlueBusy extends Component {
     state = {}
     render() {
-        return <div className="blue-room-reserved" id={this.props.id}>R</div>;
+        return <div className="blue-room-reserved" id={this.props.id} data-tooltip={this.props.id ? this.props.id.slice(34): null}>R</div>;
     }
 }
 
 export class GreenBusy extends Component {
     state = {}
     render() {
-        return <div className="green-room-reserved" id={this.props.id}>R</div>;
+        return <div className="green-room-reserved" id={this.props.id} data-tooltip={this.props.id ? this.props.id.slice(34): null} >R</div>;
     }
 }
 
 export class VioletBusy extends Component {
     state = {}
     render() {
-        return <div className="violet-room-reserved" id={this.props.id}>R</div>;
+        return <div className="violet-room-reserved" id={this.props.id} data-tooltip={this.props.id ? this.props.id.slice(34): null} >R</div>;
     }
 }
 
 export class BrownBusy extends Component {
     state = {}
     render() {
-        return <div className="brown-room-reserved" id={this.props.id}>R</div>;
+        return <div className="brown-room-reserved" id={this.props.id} data-tooltip={this.props.id ? this.props.id.slice(34): null}>R</div>;
     }
 }
 
