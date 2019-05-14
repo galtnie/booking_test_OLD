@@ -521,7 +521,7 @@ export default class Booking extends Component {
         this.props.history.push('/login')
     }
 
-    render() {
+    render() {https://github.com/galtnie/booking_test.git
         return (
             (typeof sessionStorage.getItem('LoggedIn') === "string" && sessionStorage.getItem('LoggedIn').length > 2)
 
