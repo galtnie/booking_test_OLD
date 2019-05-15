@@ -192,19 +192,20 @@ export default class Home extends Component {
   }
 
   handleDateInput() {
-
     let today = new Date()
-    if (this.state.dateInput < today ) {
-      alert('The searched date cannot be erenow ')
-    } else {    
     let time = new Date(this.state.dateInput)
-    if(time.getDate() === today.getDate()) {
+
+    if (time < today ) {
+      alert('The searched date cannot be erenow ')
+      this.setState({dateInput: ''})
+    } else if(time.getDate() === today.getDate()) {
       this.setState({backwardClick: "inactive"})
+      this.setState({dayChosen: time})
     } else if (time.getDate() > today.getDate()) {
       this.setState({backwardClick: "active"})
-    }
-    this.setState({dayChosen: time})
-  }}
+      this.setState({dayChosen: time})
+    } 
+  }
 
   controlDateInput(value){
       this.setState({dateInput: value})

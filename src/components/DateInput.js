@@ -18,10 +18,9 @@ export default class DateInput extends Component {
         date1.setDate(minLimit)
         //let maxLimit = (date2.getDate() + 62)
         //date2.setDate(maxLimit)
-        return {
-          minDate: (date1.toISOString().split("T")[0]),
+        return (date1.toISOString().split("T")[0])
           //maxDate: (date2.toISOString().split("T")[0])
-        }
+        
       }
       
       // onDateInput(value) {
@@ -42,7 +41,7 @@ export default class DateInput extends Component {
  
         return (
             <div className="ui input" style={{ paddingRight: '1em' }}>
-              <input type='date' min={this.dateLimit().minDate} value={this.props.dateInput} onChange={(e)=> this.props.controlDateInput(e.target.value)} style={{ padding: 0, lineHeight: '1em', background: '#FBFBFF' }} />
+              <input type='date' min={this.dateLimit()} value={this.props.dateInput} onChange={(e)=> this.props.controlDateInput(e.target.value)} style={{ padding: 0, lineHeight: '1em', background: '#FBFBFF' }} />
               <div style={{ display: "flex", justifyContent: "flex-start", alignItems: "center", paddingLeft: "0.5em" }} >
                 <i className={"search icon "} style={{color: '#FBFBFF',
                                                       cursor: 'pointer',}} 

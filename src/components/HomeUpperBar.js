@@ -6,7 +6,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
 import DateInput from './DateInput';
-import Typography from '@material-ui/core/Typography';
+
 import '../css/HomeUpperBar.css';
 
 const styles = {
@@ -58,6 +58,7 @@ class ButtonAppBar extends Component {
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
+              alignItems: "center",
               flexWrap: "wrap",
             }}> 
               <i className={`${this.props.back}-previous-day big caret left icon`} onClick={(e)=>{
@@ -68,12 +69,13 @@ class ButtonAppBar extends Component {
                 }
               }}>
               </i>
-              <Typography variant="h6" className='grow'>
-                {this.props.date}
-              </Typography> 
+              <div style={{fontFamily: "sans-serif", fontSize: "1.2em" }}>
+              {this.props.date} 
+              </div>
               <i className={"next-day big caret right icon"} onClick={()=>{this.props.handleDayChange(true)}}>
               </i>
             </div>
+
 
             <div>
               <Link to="/signup">
