@@ -7,6 +7,7 @@ import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
 import DateInput from './DateInput';
 import Typography from '@material-ui/core/Typography';
+import '../css/HomeUpperBar.css';
 
 const styles = {
   root: {
@@ -32,29 +33,6 @@ class ButtonAppBar extends Component {
 
   }
 
-  // dateLimit() {
-  //   let date1 = new Date();
-  //   //let date2 = new Date();
-  //   let minLimit = (date1.getDate())
-  //   date1.setDate(minLimit)
-  //   //let maxLimit = (date2.getDate() + 62)
-  //   //date2.setDate(maxLimit)
-  //   return {
-  //     minDate: (date1.toISOString().split("T")[0]),
-  //     //maxDate: (date2.toISOString().split("T")[0])
-  //   }
-  // }
-  
-  // onDateInput(value) {
-  //   if (value < this.dateLimit().minDate || value > this.dateLimit().maxDate) {
-  //     alert('The date must be within 60-day period starting with today')
-  //   } else {
-  //     let id = "date:" + value.slice(-2) + value.slice(5, 7) + value.slice(2, 4)
-  //     let distance = document.getElementById(id).offsetTop
-  //     window.scrollBy(0, distance)
-  //   }
-  // }
-
   render() {
     const { classes } = this.props;
 
@@ -66,19 +44,14 @@ class ButtonAppBar extends Component {
             justifyContent: "space-between",
             paddingTop: "1em",
             paddingBottom: "1em",}}>
-            {/* <div className="ui input" style={{ paddingRight: '1em' }}>
-              <input type='date' min={this.dateLimit().minDate} value={this.state.dateInput} onChange={(e)=>this.setState({dateInput: e.target.value})} style={{ padding: 0, lineHeight: '1em', background: '#FBFBFF' }} />
-              <div style={{ display: "flex", justifyContent: "flex-start", alignItems: "center", paddingLeft: "0.5em" }} >
-                <i className={"search icon " + classes.loginButton} onClick={() => {
-                  this.onDateInput(this.state.dateInput)
-                 }
-                }></i>
-              </div>
-            </div> */}
+
             <DateInput handleDateInput={this.props.handleDateInput}
                         dateInput = {this.props.dateInput}
                         controlDateInput = {this.props.controlDateInput}
              />
+
+
+
 
 
             <div style={{
@@ -102,11 +75,6 @@ class ButtonAppBar extends Component {
               </i>
             </div>
 
-
-
-
-
-            {/* <div className={classes.grow} /> */}
             <div>
               <Link to="/signup">
                 <Button className={classes.loginButton}>

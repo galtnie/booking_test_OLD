@@ -4,8 +4,9 @@ import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
-
-
+import DateInput from './DateInput';
+import Typography from '@material-ui/core/Typography';
+import '../css/BookingUpperBar.css';
 
 const styles = {
   root: {
@@ -26,7 +27,7 @@ const styles = {
 
 class ButtonAppBarBooking extends Component {
   state = {
-    dateInput: ''
+
 
   }
 
@@ -43,15 +44,15 @@ class ButtonAppBarBooking extends Component {
   }
 }
   
-  onDateInput(value) {
-  if (value < this.dateLimit().minDate || value > this.dateLimit().maxDate ) {
-    alert('The date must be within 60-day period starting with tomorrow')
-  } else {
-    let id = "date:" + value.slice(-2) + value.slice(5,7) + value.slice(2,4)
-    let distance = document.getElementById(id).offsetTop
-    window.scrollBy(0, distance)
-  }
-}
+//   onDateInput(value) {
+//   if (value < this.dateLimit().minDate || value > this.dateLimit().maxDate ) {
+//     alert('The date must be within 60-day period starting with tomorrow')
+//   } else {
+//     let id = "date:" + value.slice(-2) + value.slice(5,7) + value.slice(2,4)
+//     let distance = document.getElementById(id).offsetTop
+//     window.scrollBy(0, distance)
+//   }
+// }
 
   signOut(){
     sessionStorage.removeItem('LoggedIn');
@@ -68,7 +69,18 @@ class ButtonAppBarBooking extends Component {
     return (
       <div className={classes.root}>
         <AppBar position="static">
-          <Toolbar>
+        <Toolbar style={{display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            paddingTop: "1em",
+            paddingBottom: "1em",}}>
+
+            <DateInput handleDateInput={this.props.handleDateInput}
+                        dateInput = {this.props.dateInput}
+                        controlDateInput = {this.props.controlDateInput}
+             />
+
+{/* 
             <div className="ui input" style={{ paddingRight: '1em' }}>
             <input type='date' min={this.dateLimit().minDate} max={this.dateLimit().maxDate} value={this.state.dateInput} onChange={(e)=>this.setState({dateInput: e.target.value})} style={{ padding: 0, lineHeight: '1em', background: '#FBFBFF' }} />
               <div style={{ display: "flex", justifyContent: "flex-start", alignItems: "center", paddingLeft: "0.5em" }} >
@@ -78,13 +90,38 @@ class ButtonAppBarBooking extends Component {
                 }></i>
               </div>
             </div>
-            <div className={classes.grow} />
-            <Button className={classes.loginButton} style={{color: "#15cda8", fontWeight: "bold"}} onClick={this.props.confirm}>
+            <div className={classes.grow} /> */}
+
+
+            <div style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+            }}> 
+              <i className={`${this.props.back}-previous-day big caret left icon`} onClick={(e)=>{
+                if (this.props.back === "inactive") {
+                  e.preventDefault()
+                } else {
+                  this.props.handleDayChange(false)
+                }
+              }}>
+              </i>
+              <Typography variant="h6" className='grow' >
+               {this.props.date} 
+              </Typography> 
+              <i className={"next-day big caret right icon"} onClick={()=>{this.props.handleDayChange(true)}}>
+              </i>
+            </div>
+
+            <div>
+              <Button className={classes.loginButton} style={{color: "#15cda8", fontWeight: "bold"}} onClick={this.props.confirm}>
                 Payment
               </Button>
               <Button className={classes.loginButton} onClick={()=> {this.signOut()}}>
                 Log out
               </Button>
+            </div>
           </Toolbar>
         </AppBar>
       </div>

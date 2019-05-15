@@ -43,7 +43,19 @@ export default class Booking extends Component {
         priorOrdersListForRendering: '',
         paymentQuestion: false,
         priorOrdersList: [],
-        editReservation: false
+        editReservation: false,
+        dayChosen: new Date(), 
+        dateInput: '',
+        
+        titleToEdit: '',
+        fromToEdit: '',
+        untilToEdit: '',
+
+        newTitle: null,
+        newFrom: null,
+        newTo: null,
+        
+        alteredTicketIndex: null
     };
 
     // constructor(props) {
@@ -107,30 +119,47 @@ export default class Booking extends Component {
         });
     }
 
-    renderDayCards() {
-        let days = [];
-        let IDs = [];
-        for (let i = 0; i < 62; i++) {
-            const cardDate = this.calculateDate(new Date(), i).date;
-            const cardKey = this.calculateDate(new Date(), i).key;
-            days.push(<BookingDayCard
-                date={cardDate}
-                key={cardKey}
-                anchor={cardKey}
-                id={"date:" + cardKey}
-                chooseSlot={this.chooseSlot.bind(this)}
-                checkSlot={this.checkSlot.bind(this)}
-                deselect={this.deselect.bind(this)}
-                checkReservation={this.checkReservation.bind(this)}
+    initialRenderDayCard() {
+        let day
+        let dateCalculation
+        
+        
+          day = this.state.dayChosen // ? this.state.dayChosen : new Date()
+          dateCalculation = this.calculateDate(day, 0)  
+        
+    
+        const cardDate = dateCalculation.date;
+        const cardId = dateCalculation.key;
+        return ({
+          card:  <BookingDayCard
+          date={cardDate}    
+            id={"date:" + cardId}
+            checkReservation={this.checkReservation.bind(this)}
+            chooseSlot={this.chooseSlot.bind(this)}
+            checkSlot={this.checkSlot.bind(this)}
+            deselect={this.deselect.bind(this)}
+            setClick={click => this.clickChild = click}
 
-                setClick={click => this.clickChild = click}
-            />)
-            IDs.push(cardKey)
+            />,
+          date:   cardDate
         }
-        return {
-            days: days,
-            dayCardsID: IDs
+        );
+    }
+
+    renderDayCard(where) {
+        if (where==="forth"){
+        this.setState({backwardClick: "active"})
+        this.calculateDate(this.state.dayChosen, 1)
+          
+      } else if (where === "back") {
+  
+        let today = new Date()
+        this.calculateDate(this.state.dayChosen, -1)
+        if(this.state.dayChosen.getDate() === today.getDate()) {
+          this.setState({backwardClick: "inactive"})
+          this.forceUpdate();
         }
+      }
     }
 
     // CONVERTING RESERVED TICKETS INTO SEPARATE HOUR AND ROOM SLOTS:
@@ -470,15 +499,28 @@ export default class Booking extends Component {
             .catch((e) => console.log(e))
     }
 
-    editTicket(e) {
-        console.log(e)
-        console.log(e.target.id)
+    editTicket(e) {                                             //STOPPED HERE
+        // console.log(e)
+        // console.log(e.target.id)
         let index = e.target.id
-        console.log(this.state.priorOrdersList[index])
-        console.log(this.state.priorOrdersListForRendering[index])
+        // console.log(this.state.priorOrdersList[index])
+        // console.log(this.state.priorOrdersListForRendering[index])
+        this.setState({alteredTicketIndex: index})
+        console.log(this.state.priorOrdersList[this.state.alteredTicketIndex].to)
+
+
+
+        this.setState({titleToEdit: this.state.priorOrdersListForRendering[index].event })
+        this.setState({fromToEdit: this.state.priorOrdersListForRendering[index].from })
+        this.setState({untilToEdit: this.state.priorOrdersListForRendering[index].to})
+
+        // this.setState({newTitle: this.state.priorOrdersList[index].title })
+        // this.setState({newFrom: this.state.priorOrdersList[index].from })
+        // this.setState({newTo: this.state.priorOrdersList[index].to})
+
+        
+        this.setState({alteredTicketIndex: index})
         this.setState({editReservation: true})
-
-
     }
 
     componentDidMount() {
@@ -503,7 +545,7 @@ export default class Booking extends Component {
                 })
                 // if (usersTickets) {
                     if (usersTickets.length > 0) {
-                        this.setState({ priorOrdersList: usersTickets })
+                        this.setState({ priorOrdersList: usersTickets.reverse() })
                     }
                 // }
             })
@@ -519,7 +561,7 @@ export default class Booking extends Component {
             })
             .catch((e) => console.log(e))
 
-        this.setState({ dayCardsID: [...this.renderDayCards().dayCardsID] })
+        //this.setState({ dayCardsID: [...this.renderDayCards().dayCardsID] })
         if (sessionStorage.getItem('chosenSlots') !== null) {
             this.setState({ chosenSlots: JSON.parse(sessionStorage.getItem('chosenSlots')) })
         }
@@ -529,6 +571,43 @@ export default class Booking extends Component {
         this.props.history.push('/login')
     }
 
+
+
+    handleDateInput() {
+
+        let today = new Date()
+        if (this.state.dateInput < today ) {
+          alert('The searched date cannot be erenow ')
+        } else {    
+        let time = new Date(this.state.dateInput)
+        if(time.getDate() === today.getDate()) {
+          this.setState({backwardClick: "inactive"})
+        } else if (time.getDate() > today.getDate()) {
+          this.setState({backwardClick: "active"})
+        }
+        this.setState({dayChosen: time})
+    }}
+    
+    controlDateInput(value){
+        this.setState({dateInput: value})
+    }
+    
+    handleDayChange(forth){
+        this.setState({dateInput:""})
+        if (forth) {
+            this.renderDayCard('forth')
+        } else {
+            this.renderDayCard('back')
+        }   
+    }
+
+
+
+
+
+
+
+
     render() {
         
         return (
@@ -537,7 +616,17 @@ export default class Booking extends Component {
                 ?
 
                 <div className={this.state.myClasses.main}>
-                    <ButtonAppBarBooking history={this.props.history} confirm={this.confirmReservation.bind(this)} />
+                    <ButtonAppBarBooking 
+                        history={this.props.history} 
+                        confirm={this.confirmReservation.bind(this)} 
+                        date={this.initialRenderDayCard().date} 
+                        handleDateInput={this.handleDateInput.bind(this)} 
+                        handleDayChange={this.handleDayChange.bind(this)}
+                        dateInput = {this.state.dateInput}
+                        back={this.state.backwardClick}
+                        controlDateInput = {this.controlDateInput.bind(this)}
+                    />                    
+                    
                     <div style={this.state.myClasses.title}>
                         <div>
                             <h1 className="ui header" style={{ color: 'inherit' }}>
@@ -549,10 +638,10 @@ export default class Booking extends Component {
 
                     <div className="manual">
                         <div>
-                            <p className="manual-par">
+                            {/* <p className="manual-par">
                                 Enter a date or scroll down the page.
                                 Only logged in users can make reservations.
-                                </p>
+                                </p> */}
                             <p className="manual-par">
                                 9" means 9:00-10:00; 10" means 10:00-11:00.
                                 </p>
@@ -577,6 +666,28 @@ export default class Booking extends Component {
                             </div>
                         </div>
                     </div>
+
+
+{/* THIS IS DAY'S RESERVATIONS RENDERING */}
+
+
+{
+    this.state.displayDayCards
+
+        ?
+
+        this.initialRenderDayCard(this.chosenSlot).card
+
+        :
+
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between", paddingTop: "3em" }}>
+            <CircularProgress />
+        </div>
+}
+
+
+{/* THIS RENDERS THE CUSTOMER'S PRIOR ORDERS  */}
+
                     {
                         this.state.priorOrdersListForRendering.length > 0
                             ?
@@ -676,6 +787,8 @@ export default class Booking extends Component {
                             null
                     }
 
+{/* THIS RENDERS EDITION OF PRIOR RESERVATION */}
+
                     {
                         this.state.editReservation
                             ?
@@ -683,7 +796,9 @@ export default class Booking extends Component {
                                 style={{
                                     position: "fixed",
                                     background: "linear-gradient(0deg, rgba(9,9,121,1) 0%, rgba(63,81,181,1) 50%, rgba(33,33,105,0.9654236694677871) 100%)",
-                                    color: "#13293D",
+                                    // color: "#13293D",
+
+                                    color:"white",
                                     top: "2em",
                                     padding: "2em",
                                     marginRight: "2em",
@@ -693,39 +808,116 @@ export default class Booking extends Component {
                                     display: "flex",
                                     flexDirection: "column",
                                     alignItems: "stretch",
-                                }}>
+                                    justifyContent: "flex-start",
+                                    flexWrap: "wrap"
+                            }}>
+                                    <div>
+                                        <h3> 
+                                            INPUT DATA YOU WISH TO AMEND.  
+                                        </h3>
+                                    </div> 
                                     <div style={{
                                         display: "flex",
                                         flexDirection: "row",
-                                        alignItems: "space-between",
+                                        justifyContent: "space-between",
                                         color: "white",
+                                        alignItems: "center",
+                                        flexWrap: "wrap",
+                                        marginBottom: "2em"
                                     }}>
                                         
-                                        <div style={{paddingTop: "0.5em"}}> 
-                                            HALL: 
+                                        <div style={{paddingTop: "0.5em", marginRight: "1em"}}> 
+                                            EVENT TITLE: 
+                                        </div>
+
+                                        <div>
+                                            {this.state.titleToEdit}
                                         </div>
                                             
                                         <div>
-                                            <input type="text" placeholder="Search..." style={{border:0, padding: "0.5em", borderRadius:"1em"}} />
-                                            <i className="large times circle icon" style={{color: "red", height: "1em", size:"+2"}}></i>
-                                            <i className="large thumbs up outline icon" style={{color: "white", height: "1em"}}></i>
-                                        </div>                  
-
-                                        
+                                            <input type="text" placeholder="Disregard to keep unaltered" size="21" style={{border:0, padding: "0.5em", borderRadius:"1em", margin:"1em"}} 
+                                                value={this.state.newTitle} onChange={e=>this.setState({newTitle: e.target.value})}
+                                            />
+                                            {/* <i className="large times circle icon" style={{color: "red", height: "1em", size:"+2"}}></i> */}
+                                            {/* <i className="large thumbs up outline icon" style={{color: "white", height: "1em"}}></i> */}
+                                        </div>                                                         
                                     </div>
 
+                                    <div style={{
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        justifyContent: "space-between",
+                                        color: "white",
+                                        alignItems: "center",
+                                        flexWrap: "wrap",
+                                        marginBottom: "2em"
+                                    }}>
+                                        
+                                        <div style={{paddingTop: "0.5em", marginRight: "1em"}}> 
+                                            COMMENCES at: 
+                                        </div>
+
+                                        <div>
+                                            {this.state.fromToEdit}
+                                        </div>
+                                            
+                                        <div>
+                                            <input type="datetime-local" placeholder="Disregard to keep unaltered" size="21" style={{border:0, padding: "0.5em", borderRadius:"1em", margin:"1em"}} 
+                                                // value={this.state.newFrom}
+                                                value= {this.state.priorOrdersList[this.state.alteredTicketIndex].from}
+                                                onChange={e=>this.setState({newFrom: e.target.value})} />
+                                            {/* <i className="large times circle icon" style={{color: "red", height: "1em", size:"+2"}}></i> */}
+                                            {/* <i className="large thumbs up outline icon" style={{color: "white", height: "1em"}}></i> */}
+                                        </div>                                                         
+                                    </div>
+
+                                    <div style={{
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        justifyContent: "space-between",
+                                        color: "white",
+                                        alignItems: "center",
+                                        flexWrap: "wrap",
+                                        marginBottom: "2em"
+                                    }}>
+                                        
+                                        <div style={{paddingTop: "0.5em", marginRight: "1em"}}> 
+                                            TERMINATES at: 
+                                        </div>
+
+                                        <div>
+                                            {this.state.untilToEdit}
+                                        </div>
+                                            
+                                        <div>
+                                            <input type="datetime-local" placeholder="Disregard to keep unaltered" size="21" style={{border:0, margin:"1em",  padding: "0.5em", borderRadius:"1em"}}
+                                                // value={this.state.newTo} 
+                                                value={this.state.priorOrdersList[this.state.alteredTicketIndex].to}
+                                                onChange={e=>this.setState({newTo: e.target.value})} />
+                                            {/* <i className="large times circle icon" style={{color: "red", height: "1em", size:"+2"}}></i> */}
+                                            {/* <i className="large thumbs up outline icon" style={{color: "white", height: "1em"}}></i> */}
+                                        </div>                                                         
+                                    </div>
                                                     
 
 
 
-                                <div style={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-                                    <button className="ui purple button" style={{background: "#574AE2"}} onClick={() => {   }}>
-                                        Confirm
-									</button>
-                                    <button className="ui button" style={{background: "#222A68", color:"white"}} onClick={() => { this.setState({ editReservation: false }) }}>
-                                        Cancel
-									</button>
-                                </div>
+                                    <div style={{ 
+                                        width: "100%",
+                                        display: "flex", 
+                                        flexDirection: "row", 
+                                        justifyContent: "space-between",
+                                        flexWrap: "wrap",
+                                        alignItems: "center",
+                                        marginBottom: "2em"
+                                        }}>
+                                        <button className="ui purple button" style={{background: "#574AE2"}} onClick={() => {   }}>
+                                            Confirm
+                                        </button>
+                                        <button className="ui button" style={{background: "#222A68", color:"white"}} onClick={() => { this.setState({ editReservation: false }) }}>
+                                            Cancel
+                                        </button>
+                                    </div>
                             </div>
                             :
                             null
@@ -806,19 +998,7 @@ export default class Booking extends Component {
                             :
                             null
                     }
-                    {
-                        this.state.displayDayCards
-
-                            ?
-
-                            this.renderDayCards(this.chosenSlot).days
-
-                            :
-
-                            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between", paddingTop: "3em" }}>
-                                <CircularProgress />
-                            </div>
-                    }
+                    
                 </div>
 
                 :
