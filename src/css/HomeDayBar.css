@@ -25,3 +25,27 @@
     color: #F5F3F5 !important;
     cursor: pointer;
 }
+.active-previous-day {
+    padding-top: 0.05em;
+    color: rgb(21, 205, 168);
+    cursor: pointer;
+}
+.active-previous-day:hover  {
+    color: orange;
+    
+}
+
+.inactive-previous-day {
+    padding-top: 0.05em;
+    color: lightgrey;
+}
+
+.next-day {
+    padding-top: 0.05em;
+    color: rgb(21, 205, 168);
+    cursor: pointer;
+}
+.next-day:hover  {
+    color: orange;
+    
+}

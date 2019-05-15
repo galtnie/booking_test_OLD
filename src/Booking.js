@@ -183,8 +183,6 @@ export default class Booking extends Component {
 
     addingDaysIntoReservation(time1, time2, hall_id, title) {
 
-
-
         if (time1 < time2 &&
             (time1.getDate() !== time2.getDate() ||
                 time1.getMonth() !== time2.getMonth() ||

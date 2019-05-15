@@ -35,16 +35,22 @@ export default class Home extends Component {
     reservedSlots: [],
     halls: [],
     colours: ['bro', 'gre', 'red', 'blu', 'vio'],
-    displayDayCards: false
+    displayDayCards: false,
+    // dayToRender: null,
+    dayChosen: new Date(), 
+    backwardClick: "inactive",
+    dateInput: '',
   }
 
-  calculateDate(fullDate, counter) {
+  calculateDate(fullDate, counter) {      //i will need this function to calculate next and previous date
     let nextDate = fullDate.getDate() + counter;
+    
     fullDate.setDate(nextDate);
     const tomorrow = fullDate
     const monthOption = { month: 'long' };
     const weekdayOption = { weekday: 'long' };
     const date = fullDate.getDate()
+
     const month = new Intl.DateTimeFormat('en-GB', monthOption).format(fullDate)
     const weekday = new Intl.DateTimeFormat('en-GB', weekdayOption).format(fullDate)
     const keyDate = date.toString().length === 2 ? date : "0" + date;
@@ -58,24 +64,42 @@ export default class Home extends Component {
     });
   }
 
-  renderDayCards() {
-    let days = [];
-    let IDs = [];
-    for (let i = 0; i < 62; i++) {
-      const cardDate = this.calculateDate(new Date(), i).date;
-      const cardKey = this.calculateDate(new Date(), i).key;
-      days.push(<HomeDayCard
-        date={cardDate}
-        key={cardKey}
-        anchor={cardKey}
-        id={"date:" + cardKey}
+  initialRenderDayCard() {
+    let day
+    let dateCalculation
+    
+    
+      day = this.state.dayChosen // ? this.state.dayChosen : new Date()
+      dateCalculation = this.calculateDate(day, 0)  
+    
+
+    const cardDate = dateCalculation.date;
+    const cardId = dateCalculation.key;
+    return ({
+      card:  <HomeDayCard
+      date={cardDate}    
+        id={"date:" + cardId}
         checkReservation={this.checkReservation.bind(this)}
-      />)
-      IDs.push(cardKey)
+        />,
+      date:   cardDate
     }
-    return {
-      days: days,
-      dayCardsID: IDs
+    );
+  }
+
+
+  renderDayCard(where) {
+      if (where==="forth"){
+      this.setState({backwardClick: "active"})
+      this.calculateDate(this.state.dayChosen, 1)
+        
+    } else if (where === "back") {
+
+      let today = new Date()
+      this.calculateDate(this.state.dayChosen, -1)
+      if(this.state.dayChosen.getDate() === today.getDate()) {
+        this.setState({backwardClick: "inactive"})
+        this.forceUpdate();
+      }
     }
   }
 
@@ -113,6 +137,8 @@ export default class Home extends Component {
     let newReservedSlotsList = this.state.reservedSlots.slice();
     newReservedSlotsList.push(slotId)
     this.setState({ reservedSlots: newReservedSlotsList })
+    
+
   }
 
   addingHoursIntoReservation(time1, time2, hall_id) {
@@ -144,6 +170,7 @@ export default class Home extends Component {
     } else {
       this.addingHoursIntoReservation(time1, time2, hall_id)
     }
+
   }
 
   calculateSlotsReserved() {
@@ -157,13 +184,42 @@ export default class Home extends Component {
         fromTime = this.deleteMinutesSecondsMilisecs(fromTime)
         toTime = this.deleteMinutesSecondsMilisecs(toTime)
         this.addingDaysIntoReservation(fromTime, toTime, this.state.tickets[i].hall_id)
+
+
+        
       }
     }
   }
 
+  handleDateInput() {
+
+    let today = new Date()
+    if (this.state.dateInput < today ) {
+      alert('The searched date cannot be erenow ')
+    } else {    
+    let time = new Date(this.state.dateInput)
+    if(time.getDate() === today.getDate()) {
+      this.setState({backwardClick: "inactive"})
+    } else if (time.getDate() > today.getDate()) {
+      this.setState({backwardClick: "active"})
+    }
+    this.setState({dayChosen: time})
+  }}
+
+  controlDateInput(value){
+      this.setState({dateInput: value})
+  }
+
+  handleDayChange(forth){
+      this.setState({dateInput:""})
+      if (forth) {
+        this.renderDayCard('forth')
+      } else {
+        this.renderDayCard('back')
+      }   
+  }
+
   componentDidMount() {
-
-
 
     Promise.all([
       axios.get('http://ec2-3-84-16-108.compute-1.amazonaws.com:4000/halls'),         // to get all halls
@@ -172,11 +228,6 @@ export default class Home extends Component {
       .then(res => {
         this.setState({ halls: res[0].data.halls })
         this.setState({ tickets: res[1].data })
-        //for (let i = 0; i < res[1].data.length; i++) {
-        //console.log(res[1].data[i]._id)               // REVEALS THE TICKETS' TIME
-        //console.log(new Date(res[1].data[i].from))
-        //console.log(new Date(res[1].data[i].to))
-        //}
       })
       .then(() => {
         this.calculateSlotsReserved()
@@ -184,22 +235,26 @@ export default class Home extends Component {
       .then(() => this.setState({ displayDayCards: true }))
       // .then(() => console.log(this.state.reservedSlots))
       .catch((e) => console.log(e))
-
-    this.setState({ dayCardsID: [...this.renderDayCards().dayCardsID] })
   }
 
+
   render() {
-
-    // localStorage.removeItem("token")
-    // localStorage.removeItem('user_id')
-
-
-
+  
     return (
       (typeof sessionStorage.getItem('LoggedIn') !== "string")
         ?
         <div className={this.state.myClasses.main}>
-          <ButtonAppBar />
+
+          <ButtonAppBar date={this.initialRenderDayCard().date} 
+            handleDateInput={this.handleDateInput.bind(this)} 
+            handleDayChange={this.handleDayChange.bind(this)}
+            dateInput = {this.state.dateInput}
+            back={this.state.backwardClick}
+            controlDateInput = {this.controlDateInput.bind(this)}
+          />
+
+
+
           <div style={this.state.myClasses.title}>
             <div>
               <h1 className="ui header" style={{ color: 'inherit' }}>Conference Venue Booking</h1>
@@ -207,9 +262,9 @@ export default class Home extends Component {
           </div>
           <div className="manual">
             <div>
-              <p className="manual-par">
+              {/* <p className="manual-par">
                 Enter a date or scroll down the page.
-                            </p>
+                            </p> */}
               <p className="manual-par">
                 Only logged in users can make reservations.
                             </p>
@@ -221,17 +276,37 @@ export default class Home extends Component {
               <div className="manual-div">
                 <RedFree />
                 <span className="manual-par">
-                  The red room is free at this time
+                  The red room is <b>free</b> at this time
                                 </span>
               </div>
               <div className="manual-div">
                 <RedBusy />
                 <span className="manual-par">
-                  The red room is reserved at this time
+                  The red room is <b> reserved </b> at this time
                                 </span>
               </div>
             </div>
-            
+            </div> 
+
+
+{/* THIS IS DAY'S RESERVATIONS RENDERING */}
+
+
+{this.state.displayDayCards
+
+  ?
+
+  this.initialRenderDayCard().card
+
+  :
+
+  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between", paddingTop: "3em" }}>
+    <CircularProgress />
+  </div>
+}
+
+
+            {/* THIS IS HALLS RENDERING */}
               {
                 this.state.halls.length > 0
 
@@ -251,21 +326,12 @@ export default class Home extends Component {
                   <div> </div>
               }
             
-          </div>
+          
 
-          {this.state.displayDayCards
 
-            ?
 
-            this.renderDayCards().days
 
-            :
-
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between", paddingTop: "3em" }}>
-              <CircularProgress />
-            </div>
-          }
-
+          
         </div>
         :
         <Redirect to='/booking' />
