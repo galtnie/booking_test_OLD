@@ -11,24 +11,7 @@ import './css/App.css';
 
 
 function App() {
-  localStorage.setItem('loginDetails', JSON.stringify(
-    [
-      {
-        username: 'Mike@nowhere.net',
-        password: '1111',
-      },
-      {
-        username: 'Pete@nowhere.net',
-        password: '2222',
-      },
-      {
-        username: 'linda@nowhere.net',
-        password: '3333',
-      },
-    ]
-  ))
-
-//  let loginDetailsList = JSON.parse(localStorage.getItem('loginDetails'))
+  
 
 
 
@@ -54,18 +37,3 @@ export default App;
 
 
 
-
-
-// import React from 'react';
-// import ReactDOM from 'react-dom';
-// import Button from '@material-ui/core/Button';
-
-// function App() {
-//   return (
-//     <Button variant="contained" color="primary">
-//       Hello World
-//     </Button>
-//   );
-// }
-
-// export default App;

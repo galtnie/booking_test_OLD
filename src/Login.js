@@ -16,6 +16,7 @@ import Typography from '@material-ui/core/Typography';
 import { withStyles } from "@material-ui/core/styles";
 // import ls from 'local-storage'
 import axios from 'axios';
+import { Redirect } from 'react-router-dom';
 
 const styles = theme => ({
 	main: {
@@ -62,8 +63,8 @@ class SignIn extends React.Component {
 		this.setState({ loginInputted: '' })
 		this.setState({ passInputted: '' })
 		sessionStorage.setItem('LoggedIn', username)
-		// localStorage.setItem('user_id', user_id)
-		// localStorage.setItem('token', token)
+		sessionStorage.setItem('user_id', user_id)
+		sessionStorage.setItem('token', token)
 		this.props.history.push('/booking')
 	}
 
@@ -73,8 +74,7 @@ class SignIn extends React.Component {
 			{ data: { email: this.state.loginInputted, password: this.state.passInputted } }
 			)
 			.then(res => {
-				localStorage.setItem('user_id', res.data._id)
-				localStorage.setItem('token', res.data.token)
+				
 				this.getInsideBooking(this.state.loginInputted.toLocaleLowerCase(), res.data._id, res.data.token)
 			})
 			.catch(res => {
@@ -87,74 +87,83 @@ class SignIn extends React.Component {
 	}
 
 	render() {
+
+		
+
+
 		const { classes } = this.props;
-		return (
-			<main className={classes.main}>
-				<CssBaseline />
-				<Paper className={classes.paper} >
-					<Avatar className={classes.avatar}>
-						<LockOutlinedIcon />
-					</Avatar>
-					<Typography component="h1" variant="h5">
-						Sign in
-        </Typography>
-					<form className={classes.form}>
-						<FormControl margin="normal" required fullWidth>
-							<InputLabel htmlFor="email">Email Address</InputLabel>
-							<Input id="email" name="email" autoComplete="email" autoFocus
-								value={this.state.loginInputted}
-								onChange={
+			return (
+			(!sessionStorage.getItem('user_id'))
+
+				?
+
+
+				<main className={classes.main}>
+					<CssBaseline />
+					<Paper className={classes.paper} >
+						<Avatar className={classes.avatar}>
+							<LockOutlinedIcon />
+						</Avatar>
+						<Typography component="h1" variant="h5">
+							Sign in
+			</Typography>
+						<form className={classes.form}>
+							<FormControl margin="normal" required fullWidth>
+								<InputLabel htmlFor="email">Email Address</InputLabel>
+								<Input id="email" name="email" autoComplete="email" autoFocus
+									value={this.state.loginInputted}
+									onChange={
+										(e) => {
+											this.setState({ loginInputted: e.target.value })
+											this.setState({ errorDisplay: "none" });
+										}
+									} />
+							</FormControl>
+							<FormControl margin="normal" required fullWidth>
+								<InputLabel htmlFor="password">Password</InputLabel>
+								<Input name="password" type="password" id="password" autoComplete="current-password" onChange={
 									(e) => {
-										this.setState({ loginInputted: e.target.value })
+										this.setState({ passInput: e.target })
+										this.setState({ passInputted: e.target.value })
 										this.setState({ errorDisplay: "none" });
 									}
 								} />
-						</FormControl>
-						<FormControl margin="normal" required fullWidth>
-							<InputLabel htmlFor="password">Password</InputLabel>
-							<Input name="password" type="password" id="password" autoComplete="current-password" onChange={
-								(e) => {
-									this.setState({ passInput: e.target })
-									this.setState({ passInputted: e.target.value })
-									this.setState({ errorDisplay: "none" });
-								}
-							} />
-						</FormControl>
-						<FormControlLabel
-							control={<Checkbox value="remember" color="primary" />}
-							label="Remember me"
-						/>
-						<div style={{ display: "flex", justifyContent: "center", margin: 0, padding: 0, height: "1em" }} >
-							<div style={{ color: "red", display: this.state.errorDisplay, }}> The login or password is wrong. </div>
-						</div>
+							</FormControl>
+							<FormControlLabel
+								control={<Checkbox value="remember" color="primary" />}
+								label="Remember me"
+							/>
+							<div style={{ display: "flex", justifyContent: "center", margin: 0, padding: 0, height: "1em" }} >
+								<div style={{ color: "red", display: this.state.errorDisplay, }}> The login or password is wrong. </div>
+							</div>
 
-						<Button
-							type="submit"
-							fullWidth
-							variant="contained"
-							color="primary"
-							className={classes.submit}
-							onClick={(e) => {
-								e.preventDefault()
-								this.checkLoginDetails()
-							}}
-						>
-							Sign in
-          </Button>
-					</form>
-					<Link to="/">
-						<p style={{ marginTop: "1.5em", color: 'darkblue', textDecoration: 'underline' }} >Return to Home page</p>
-					</Link>
-				</Paper>
-			</main>
-		);
+							<Button
+								type="submit"
+								fullWidth
+								variant="contained"
+								color="primary"
+								className={classes.submit}
+								onClick={(e) => {
+									e.preventDefault()
+									this.checkLoginDetails()
+								}}
+							>
+								Sign in
+			</Button>
+						</form>
+						<Link to="/">
+							<p style={{ marginTop: "1.5em", color: 'darkblue', textDecoration: 'underline' }} >Return to Home page</p>
+						</Link>
+					</Paper>
+				</main>
+
+			:
+
+		<Redirect to='/booking' />
+
+			);
 	}
 
 }
-
-
-// SignIn.propTypes = {
-//   classes: PropTypes.object.isRequired,
-// };
 
 export default withStyles(styles)(SignIn);

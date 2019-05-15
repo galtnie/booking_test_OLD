@@ -56,9 +56,9 @@ class ButtonAppBarBooking extends Component {
   signOut(){
     sessionStorage.removeItem('LoggedIn');
     sessionStorage.removeItem('chosenSlots');
-    localStorage.removeItem('user_id');
-    localStorage.removeItem('token');
-    localStorage.removeItem('loginDetails');
+    sessionStorage.removeItem('user_id');
+    sessionStorage.removeItem('token');
+   
     this.props.history.push('/login')
   }
   

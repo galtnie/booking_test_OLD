@@ -42,8 +42,7 @@ export default class Booking extends Component {
         newOrdersListForRendering: '',
         priorOrdersListForRendering: '',
         paymentQuestion: false,
-        priorOrdersList: null,
-
+        priorOrdersList: [],
         editReservation: false
     };
 
@@ -172,7 +171,6 @@ export default class Booking extends Component {
 
     addingHoursIntoReservation(time1, time2, hall_id, title) {
 
-
         this.addSlotToReservationList(time1, hall_id, title)
 
         let firstHour = time1.getHours()
@@ -200,7 +198,9 @@ export default class Booking extends Component {
             tomorrow = new Date(tomorrow.setHours(0))
             this.addingDaysIntoReservation(tomorrow, time2, hall_id, title)
         } else {
+            
             this.addingHoursIntoReservation(time1, time2, hall_id, title)
+
         }
     }
 
@@ -214,7 +214,7 @@ export default class Booking extends Component {
             else if (fromTime !== toTime && fromTime < toTime) {
                 fromTime = this.deleteMinutesSecondsMilisecs(fromTime)
                 toTime = this.deleteMinutesSecondsMilisecs(toTime)
-
+                
                 this.addingDaysIntoReservation(fromTime, toTime, this.state.tickets[i].hall_id, this.state.tickets[i].title)
             }
         }
@@ -412,23 +412,23 @@ export default class Booking extends Component {
     issueTickets() {
 
         let axiosRequests = []
-        console.log(this.state.newOrdersListForTickets)
+        //console.log(this.state.newOrdersListForTickets)
         for (let i = 0; i < this.state.newOrdersListForTickets.length; i++) {
-            console.log(this.state.newOrdersListForTickets[i].event_title)
+            //console.log(this.state.newOrdersListForTickets[i].event_title)
 
             let request = axios({
                 method: 'post',
                 url: 'http://ec2-3-84-16-108.compute-1.amazonaws.com:4000/tickets',
                 data: {
                     hall_id: this.state.newOrdersListForTickets[i].hall_id,
-                    user_id: localStorage.getItem('user_id'),
+                    user_id: sessionStorage.getItem('user_id'),
                     title: this.state.newOrdersListForTickets[i].event_title,
                     from: this.state.newOrdersListForTickets[i].from,
                     to: this.state.newOrdersListForTickets[i].to,
                 },
                 headers: {
                     ContentType: "application/x-www-form-urlencoded",
-                    Authorization: localStorage.getItem('token'),
+                    Authorization: sessionStorage.getItem('token'),
                 }
             })
             axiosRequests.push(request)
@@ -441,7 +441,10 @@ export default class Booking extends Component {
                 //this.setState({rerenderDays: true})
                 window.location.reload()
             })
-            .catch(error => console.log(error.message))
+            .catch(error => {
+                console.log(error)
+                console.log(error.message)
+            })
     }
 
     deleteTicket(e) {
@@ -452,7 +455,7 @@ export default class Booking extends Component {
             url: `http://ec2-3-84-16-108.compute-1.amazonaws.com:4000/tickets/${ticketToDelete._id}`,
             headers: {
                 ContentType: "application/x-www-form-urlencoded",
-                Authorization: localStorage.getItem('token'),
+                Authorization: sessionStorage.getItem('token'),
             }
         })
             .then(() => {
@@ -481,12 +484,13 @@ export default class Booking extends Component {
     }
 
     componentDidMount() {
-
+        
         Promise.all([
             axios.get('http://ec2-3-84-16-108.compute-1.amazonaws.com:4000/halls'),         // to get all halls
             axios.get('http://ec2-3-84-16-108.compute-1.amazonaws.com:4000/tickets')        // to get all tickets
         ])
             .then(res => {
+                
                 this.setState({ halls: res[0].data.halls })
                 this.setState({ tickets: res[1].data })
             })
@@ -495,16 +499,22 @@ export default class Booking extends Component {
             })
             .then(() => {
                 let usersTickets = []
-                let user_id = localStorage.getItem('user_id')
+                let user_id = sessionStorage.getItem('user_id')
                 usersTickets = this.state.tickets.filter(i => {
                     return i.user_id === user_id
                 })
-                if (usersTickets.length > 0) {
-                    this.setState({ priorOrdersList: usersTickets })
-                }
+                // if (usersTickets) {
+                    if (usersTickets.length > 0) {
+                        this.setState({ priorOrdersList: usersTickets })
+                    }
+                // }
             })
             .then(() => {
-                this.setState({ priorOrdersListForRendering: this.convertPriorOrdersToRender(this.state.priorOrdersList) })
+                // if (this.state.priorOrdersList) {
+                    if (this.state.priorOrdersList.length > 0) {
+                        this.setState({ priorOrdersListForRendering: this.convertPriorOrdersToRender(this.state.priorOrdersList) })
+                    }
+                // }
             })
             .then(() => {
                 this.setState({ displayDayCards: true })
@@ -521,7 +531,8 @@ export default class Booking extends Component {
         this.props.history.push('/login')
     }
 
-    render() {https://github.com/galtnie/booking_test.git
+    render() {
+        
         return (
             (typeof sessionStorage.getItem('LoggedIn') === "string" && sessionStorage.getItem('LoggedIn').length > 2)
 

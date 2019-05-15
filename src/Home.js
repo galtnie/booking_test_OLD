@@ -163,6 +163,8 @@ export default class Home extends Component {
 
   componentDidMount() {
 
+
+
     Promise.all([
       axios.get('http://ec2-3-84-16-108.compute-1.amazonaws.com:4000/halls'),         // to get all halls
       axios.get('http://ec2-3-84-16-108.compute-1.amazonaws.com:4000/tickets')        // to get all tickets
@@ -187,6 +189,12 @@ export default class Home extends Component {
   }
 
   render() {
+
+    // localStorage.removeItem("token")
+    // localStorage.removeItem('user_id')
+
+
+
     return (
       (typeof sessionStorage.getItem('LoggedIn') !== "string")
         ?
