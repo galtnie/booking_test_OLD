@@ -36,13 +36,12 @@ export default class Home extends Component {
     halls: [],
     colours: ['bro', 'gre', 'red', 'blu', 'vio'],
     displayDayCards: false,
-    // dayToRender: null,
     dayChosen: new Date(), 
     backwardClick: "inactive",
     dateInput: '',
   }
 
-  calculateDate(fullDate, counter) {      //i will need this function to calculate next and previous date
+  calculateDate(fullDate, counter) {     
     let nextDate = fullDate.getDate() + counter;
     
     fullDate.setDate(nextDate);
@@ -69,7 +68,7 @@ export default class Home extends Component {
     let dateCalculation
     
     
-      day = this.state.dayChosen // ? this.state.dayChosen : new Date()
+      day = this.state.dayChosen 
       dateCalculation = this.calculateDate(day, 0)  
     
 
@@ -174,7 +173,6 @@ export default class Home extends Component {
   }
 
   calculateSlotsReserved() {
-
     for (let i = 0; i < this.state.tickets.length; i++) {
       let fromTime = new Date(this.state.tickets[i].from)
       let toTime = new Date(this.state.tickets[i].to)
@@ -184,9 +182,6 @@ export default class Home extends Component {
         fromTime = this.deleteMinutesSecondsMilisecs(fromTime)
         toTime = this.deleteMinutesSecondsMilisecs(toTime)
         this.addingDaysIntoReservation(fromTime, toTime, this.state.tickets[i].hall_id)
-
-
-        
       }
     }
   }
@@ -223,8 +218,8 @@ export default class Home extends Component {
   componentDidMount() {
 
     Promise.all([
-      axios.get('http://ec2-3-84-16-108.compute-1.amazonaws.com:4000/halls'),         // to get all halls
-      axios.get('http://ec2-3-84-16-108.compute-1.amazonaws.com:4000/tickets')        // to get all tickets
+      axios.get('http://ec2-3-84-16-108.compute-1.amazonaws.com:4000/halls'),         
+      axios.get('http://ec2-3-84-16-108.compute-1.amazonaws.com:4000/tickets')        
     ])
       .then(res => {
         this.setState({ halls: res[0].data.halls })
@@ -234,7 +229,6 @@ export default class Home extends Component {
         this.calculateSlotsReserved()
       })
       .then(() => this.setState({ displayDayCards: true }))
-      // .then(() => console.log(this.state.reservedSlots))
       .catch((e) => console.log(e))
   }
 
@@ -263,14 +257,11 @@ export default class Home extends Component {
           </div>
           <div className="manual">
             <div>
-              {/* <p className="manual-par">
-                Enter a date or scroll down the page.
-                            </p> */}
               <p className="manual-par">
-                Only logged in users can make reservations.
+                Only <b>logged in users</b> can <b>make reservations</b>.
                             </p>
               <p className="manual-par">
-                9" means 9:00-10:00; 10" means 10:00-11:00.
+              <b>9"</b> means <b>9:00-10:00</b>; 10" means 10:00-11:00.
                             </p>
             </div>
             <div>
@@ -290,9 +281,6 @@ export default class Home extends Component {
             </div> 
 
 
-{/* THIS IS DAY'S RESERVATIONS RENDERING */}
-
-
 {this.state.displayDayCards
 
   ?
@@ -306,8 +294,6 @@ export default class Home extends Component {
   </div>
 }
 
-
-            {/* THIS IS HALLS RENDERING */}
               {
                 this.state.halls.length > 0
 
@@ -326,13 +312,7 @@ export default class Home extends Component {
 
                   <div> </div>
               }
-            
-          
-
-
-
-
-          
+             
         </div>
         :
         <Redirect to='/booking' />

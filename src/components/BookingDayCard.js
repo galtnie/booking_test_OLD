@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-//import HomeDayBar from './HomeDayBar';
 import '../css/HomeDayCard.css';
 import { RedFree, RedBusy, RedChosen, BlueFree, BlueBusy, BlueChosen, GreenFree, GreenBusy, GreenChosen, VioletFree, VioletBusy, VioletChosen, BrownFree, BrownBusy, BrownChosen } from './Rooms'
 export default class BookingDayCard extends Component {
@@ -10,15 +9,12 @@ export default class BookingDayCard extends Component {
 
         this.state = {
             
-            rerender : false,
-            reservedSlots : [],   // moved from parent
             halls : [],
             tickets : [],
             colours : ['bro', 'gre', 'red', 'blu', 'vio'],
 
         }
     }
-
 
     renderHour(hour) {
         return <div style={{ paddingLeft: "0.38em" }}>{hour}"</div>
@@ -104,16 +100,10 @@ export default class BookingDayCard extends Component {
         return hours
     }
 
-    componentDidMount() {
-
-    }
-
-
     render() {
 
         return (
             <div id={this.props.id}>
-                {/* <HomeDayBar date={this.props.date} /> */}
                 <div className="home-hours-card">{this.renderOneHourContainer()}</div>
             </div>
         );

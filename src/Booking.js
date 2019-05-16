@@ -7,7 +7,7 @@ import './css/Home.css'
 import axios from 'axios';
 import CircularProgress from './components/CircularProgress'
 import HallCard from './components/HallCard'
-
+import './css/Booking.css'
 
 const styles = {
     main: {
@@ -38,15 +38,19 @@ export default class Booking extends Component {
         halls: [],
         colours: ['bro', 'gre', 'red', 'blu', 'vio'],
         displayDayCards: false,
+
         newOrdersListForTickets: '',
         newOrdersListForRendering: '',
         priorOrdersListForRendering: '',
+
         paymentQuestion: false,
         priorOrdersList: [],
+
         editReservation: false,
         dayChosen: new Date(), 
         dateInput: '',
         backwardClick: "inactive",
+
         titleToEdit: '',
         fromToEdit: '',
         untilToEdit: '',
@@ -54,7 +58,6 @@ export default class Booking extends Component {
         newTitle: null,
         newFrom: null,
         newTo: null,
-        
         alteredTicketIndex: null
     };
 
@@ -115,7 +118,7 @@ export default class Booking extends Component {
         let day
         let dateCalculation      
         
-          day = this.state.dayChosen // ? this.state.dayChosen : new Date()
+          day = this.state.dayChosen 
           dateCalculation = this.calculateDate(day, 0)          
     
         const cardDate = dateCalculation.date;
@@ -147,8 +150,6 @@ export default class Booking extends Component {
         }
       }
     }
-
-    // CONVERTING RESERVED TICKETS INTO SEPARATE HOUR AND ROOM SLOTS:
 
     convertTimeIntoSlotID(fullRecord) {
         let date = fullRecord.getDate()
@@ -225,14 +226,11 @@ export default class Booking extends Component {
         }
     }
 
-    // AFTER CLICKING PAYMENT BUTTON 
-    // TILL SHOWING PAYMENT QUESTION
-    // IT CAN BE REWRITTEN INTO PROMISE
     confirmReservation() {
         if (sessionStorage.getItem('chosenSlots') === null || JSON.parse(sessionStorage.getItem('chosenSlots')).length === 0) {
             alert('There is nothing to confirm. Please choose rooms you like to book first.')
         } else if (JSON.parse(sessionStorage.getItem('chosenSlots').length > 0)) {
-            let chosenHalls = JSON.parse(sessionStorage.getItem('chosenSlots')) // I CAN MAKE A LIST AS A MESSAGE FOR CONFIRMATION IF I HAVE TIME
+            let chosenHalls = JSON.parse(sessionStorage.getItem('chosenSlots')) 
             this.convertSlotIDsToTimeAndHalls(chosenHalls)
         }
     }
@@ -258,21 +256,21 @@ export default class Booking extends Component {
             let ifNewHallArrayIsNeeded = true
 
             if (ticketsHallsArray.length === 0) {
-                let sameHallTicketsArray = []                                           //no hallarrays in ticketsHallsArray
-                sameHallTicketsArray.push(orderList[i])           // adds first hallarray into tickets HallsArray
+                let sameHallTicketsArray = []                                           
+                sameHallTicketsArray.push(orderList[i])           
                 ticketsHallsArray.push(sameHallTicketsArray)
                 ifNewHallArrayIsNeeded = false
             } else {
                 for (let j = 0; j < ticketsHallsArray.length; j++) {
-                    if (ticketsHallsArray[j][0].hall_id === orderList[i].hall_id) {       //if hallarray with the same hall_id exists
-                        ticketsHallsArray[j].push(orderList[i])                           // adds ticket into that array
+                    if (ticketsHallsArray[j][0].hall_id === orderList[i].hall_id) {       
+                        ticketsHallsArray[j].push(orderList[i])                        
                         ifNewHallArrayIsNeeded = false
                     }
                 }
             }
             if (ifNewHallArrayIsNeeded) {
-                let sameHallTicketsArray = []                                           //if no hallarray with the same hall_id
-                sameHallTicketsArray.push(orderList[i])           // adds new hallarray into tickets HallsArray
+                let sameHallTicketsArray = []                                         
+                sameHallTicketsArray.push(orderList[i])          
                 ticketsHallsArray.push(sameHallTicketsArray)
             }
         }
@@ -457,31 +455,16 @@ export default class Booking extends Component {
                 let newArray2 = this.state.priorOrdersListForRendering
                 newArray2.splice(itemIndex, 1)
                 this.setState({ priorOrdersListForRendering: newArray2 })
-                // this.forceUpdate()
             })
+            .then(()=> {window.location.reload()})            
             .catch((e) => console.log(e))
     }
 
-    editTicket(e) {                                             //STOPPED HERE
-        // console.log(e)
-        // console.log(e.target.id)
-        // let index = e.target.id
-        // console.log(this.state.priorOrdersList[index])
-        // console.log(this.state.priorOrdersListForRendering[index])
-        // this.setState({alteredTicketIndex: index})
-        // console.log(this.state.priorOrdersList[this.state.alteredTicketIndex].to)
-
-        // this.setState({titleToEdit: this.state.priorOrdersListForRendering[index].event })
-        // this.setState({fromToEdit: this.state.priorOrdersListForRendering[index].from })
-        // this.setState({untilToEdit: this.state.priorOrdersListForRendering[index].to})
-
-        // this.setState({newTitle: this.state.priorOrdersList[index].title })
-        // this.setState({newFrom: this.state.priorOrdersList[index].from })
-        // this.setState({newTo: this.state.priorOrdersList[index].to})
+    editTicket(e) {                                            
+        
         let index = e.target.id
 
         return new Promise(function(resolve) {
-           // console.log(index)
             resolve (index)        
         })
         .then(index=>{
@@ -489,17 +472,16 @@ export default class Booking extends Component {
             return index
         })
         .then(index=>{
-            //console.log(this.state.priorOrdersList[this.state.alteredTicketIndex].to)
-            //console.log(String(new Date(this.state.priorOrdersList[this.state.alteredTicketIndex].to + 10800000).toISOString()).slice(0, -8)   )
-            //new Date(this.state.priorOrdersList[this.state.alteredTicketIndex].from).toISOString
             return index
         })
         .then(index=>{
             this.setState({titleToEdit: this.state.priorOrdersListForRendering[index].event })
             this.setState({fromToEdit: this.state.priorOrdersListForRendering[index].from })
             this.setState({untilToEdit: this.state.priorOrdersListForRendering[index].to})
+
             this.setState({newFrom: String(new Date(this.state.priorOrdersList[this.state.alteredTicketIndex].from + 10800000).toISOString()).slice(0, -8)})
             this.setState({newTo: String(new Date(this.state.priorOrdersList[this.state.alteredTicketIndex].to + 10800000).toISOString()).slice(0, -8)})
+            this.setState({newTitle: this.state.priorOrdersList[this.state.alteredTicketIndex].title})
         })
         .then(()=>{
             this.setState({editReservation: true})
@@ -507,11 +489,40 @@ export default class Booking extends Component {
         .catch((e)=> console.log(e))  
     }
 
+    sendEditedTicket(){
+        axios({
+            method: 'put',
+            url: `http://ec2-3-84-16-108.compute-1.amazonaws.com:4000/ticket/${this.state.priorOrdersList[this.state.alteredTicketIndex]._id}`,
+            headers: {
+                ContentType: "application/x-www-form-urlencoded",
+                Authorization: sessionStorage.getItem('token'),
+            },
+            data: {
+                title: this.state.newTitle,
+                from:  Date.parse(this.state.newFrom),
+                to: Date.parse(this.state.newTo),
+            }
+        })
+            .then(() => {
+                this.setState({titleToEdit: ''})
+                this.setState({fromToEdit: ''})
+                this.setState({untilToEdit: ''})
+        
+                this.setState({newTitle: null})
+                this.setState({newFrom: null})
+                this.setState({newTo: null})
+                this.setState({alteredTicketIndex: null})
+            })
+            .then(()=> window.location.reload())
+        .catch((e) => console.log(e))
+
+    }
+
     componentDidMount() {
         
         Promise.all([
-            axios.get('http://ec2-3-84-16-108.compute-1.amazonaws.com:4000/halls'),         // to get all halls
-            axios.get('http://ec2-3-84-16-108.compute-1.amazonaws.com:4000/tickets')        // to get all tickets
+            axios.get('http://ec2-3-84-16-108.compute-1.amazonaws.com:4000/halls'),         
+            axios.get('http://ec2-3-84-16-108.compute-1.amazonaws.com:4000/tickets')        
         ])
             .then(res => {
                 
@@ -527,25 +538,21 @@ export default class Booking extends Component {
                 usersTickets = this.state.tickets.filter(i => {
                     return i.user_id === user_id
                 })
-                // if (usersTickets) {
                     if (usersTickets.length > 0) {
                         this.setState({ priorOrdersList: usersTickets.reverse() })
                     }
-                // }
             })
             .then(() => {
-                // if (this.state.priorOrdersList) {
                     if (this.state.priorOrdersList.length > 0) {
                         this.setState({ priorOrdersListForRendering: this.convertPriorOrdersToRender(this.state.priorOrdersList) })
                     }
-                // }
+
             })
             .then(() => {
                 this.setState({ displayDayCards: true })
             })
             .catch((e) => console.log(e))
 
-        //this.setState({ dayCardsID: [...this.renderDayCards().dayCardsID] })
         if (sessionStorage.getItem('chosenSlots') !== null) {
             this.setState({ chosenSlots: JSON.parse(sessionStorage.getItem('chosenSlots')) })
         }
@@ -611,36 +618,32 @@ export default class Booking extends Component {
                         </div>
                     </div>
 
-
                     <div className="manual">
                         <div>
                             <p className="manual-par">
-                                9" means 9:00-10:00; 10" means 10:00-11:00.
+                                <b>9"</b> means <b>9:00-10:00</b>; 10" means 10:00-11:00.
                                 </p>
                             <p className='manual-par'>
                                 Once you have selected all the rooms you would like to book
-                                click payment button
+                                click <b>payment</b> button 
                                 </p>
                             <p className='manual-par'>
-                                in order to make reservation
-                                in the upper bar and confirm your order.
+                                in the <b>upper bar</b> and confirm your order
+                                in order to make reservation.
                                 </p>
                         </div>
                         <div>
                             <div className="manual-div">
-                                <RedFree />  <span className="manual-par"> The red room is free at this time </span>
+                                <RedFree />  <span className="manual-par"> The red room is <b>free</b> at this time </span>
                             </div>
                             <div className="manual-div">
-                                <RedBusy /> <span className="manual-par"> The red room is reserved at this time </span>
+                                <RedBusy /> <span className="manual-par"> The red room is <b>reserved</b> at this time </span>
                             </div>
                             <div className="manual-div">
-                                <RedChosen /> <span className="manual-par"> The red room is selected at this time, but not yet reserved. </span>
+                                <RedChosen /> <span className="manual-par"> The red room is <b>selected</b> at this time, but <b>not reserved</b> yet. </span>
                             </div>
                         </div>
                     </div>
-
-
-{/* THIS IS DAY'S RESERVATIONS RENDERING */}
 
 {
     this.state.displayDayCards
@@ -660,8 +663,6 @@ export default class Booking extends Component {
         </div>
 }
 
-{/* THIS RENDERS THE CUSTOMER'S PRIOR ORDERS  */}
-
                     {
                         this.state.priorOrdersListForRendering.length > 0
                             ?
@@ -673,7 +674,8 @@ export default class Booking extends Component {
                                     background: '#E8F1F2',
                                     borderRadius: "2em",
                                     marginBottom: "2em",
-                                    marginTop: "2em"
+                                    marginTop: "2em",
+                                    fontSize: "1.2em"
                                 }}
                             >
 
@@ -760,8 +762,6 @@ export default class Booking extends Component {
                             null
                     }
 
-{/* THIS RENDERS EDITION OF PRIOR RESERVATION */}
-
                     {
                         this.state.editReservation
                             ?
@@ -784,7 +784,7 @@ export default class Booking extends Component {
                             }}>
                                     <div>
                                         <h3> 
-                                            INPUT DATA YOU WISH TO AMEND. DISREGARD INPUTS NEXT TO THE ITEMS YOU DON'T INTEND TO ALTER.
+                                            INPUT DATA YOU WISH TO AMEND. DISREGARD INPUTS YOU DON'T INTEND TO ALTER.
                                         </h3>
                                     </div> 
                                     <div style={{
@@ -805,7 +805,7 @@ export default class Booking extends Component {
                                             {this.state.titleToEdit}
                                         </div>                                           
                                         <div>
-                                            <input type="text" placeholder="Disregard to keep unaltered" size="21" style={{border:0, padding: "0.5em", borderRadius:"1em", margin:"1em"}} 
+                                            <input type="text" value={this.state.newTitle} size="21" style={{border:0, padding: "0.5em", borderRadius:"1em", margin:"1em"}} 
                                                 onChange={e=>this.setState({newTitle: e.target.value})}
                                             />
                                         </div>                                                         
@@ -827,18 +827,22 @@ export default class Booking extends Component {
                                         </div>
                                         <div>
                                             <input type="datetime-local" placeholder="Disregard to keep unaltered" size="21" style={{border:0, padding: "0.5em", borderRadius:"1em", margin:"1em"}} 
-                                                // value={this.state.newFrom}
                                                 value= {this.state.newFrom}
                                                 onChange={e=>{
-                                                    //console.log(e.target.value)
-                                                    let a = new Date(e.target.value)
-                                                    let b = new Date(this.state.priorOrdersList[this.state.alteredTicketIndex].to + 10800000) //.toISOString()
-                                                    console.log(a)
-                                                    console.log(b)
-                                                    console.log(a > b)
-                                                    this.setState({newFrom: e.target.value})
-                                                
-                                                
+                                                    let value = e.target.value
+                                                    let start = Date.parse(value)
+                                                    let end = Date.parse(this.state.newTo)
+                                                    
+                                                    if (start > end) {
+                                                        let newToValue = String(new Date(new Date(start + 10800000).setMinutes(59)).toISOString()).slice(0, -8)
+                                                        this.setState({newTo: newToValue}) 
+                                                    }
+                                                    else if (start < end && (start + 3540000) > end) {
+                                                        
+                                                        let newToValue = String(new Date(new Date(start + 10800000).setMinutes(59)).toISOString()).slice(0, -8)
+                                                        this.setState({newTo: newToValue}) 
+                                                    }
+                                                    this.setState({newFrom: value})
                                                 }} />
                                         </div>                                                         
                                     </div>
@@ -861,10 +865,31 @@ export default class Booking extends Component {
                                             <input type="datetime-local" placeholder="Disregard to keep unaltered" size="21" style={{border:0, margin:"1em",  padding: "0.5em", borderRadius:"1em"}}
                                                 min={String(new Date(this.state.priorOrdersList[this.state.alteredTicketIndex].to + 10800000 + 3540000).toISOString()).slice(0, -8)}
                                                 value={this.state.newTo} 
-                                                //value={String(new Date(this.state.priorOrdersList[this.state.alteredTicketIndex].to + 10800000).toISOString()).slice(0, -8)}
-                                                onChange={e=>this.setState({newTo: e.target.value})} />
-                                            {/* <i className="large times circle icon" style={{color: "red", height: "1em", size:"+2"}}></i> */}
-                                            {/* <i className="large thumbs up outline icon" style={{color: "white", height: "1em"}}></i> */}
+                                                onChange={e=>{
+                                                    let value = e.target.value
+                                                    let end = Date.parse(value)
+                                                    let start = Date.parse(this.state.newFrom)
+                                                    this.setState({newTo: e.target.value})
+
+                                                    if (end < start) {              
+
+                                                        if (String(value).slice(-5, -4) === "0") {
+                                                            setTimeout(()=>{
+                                                                let end = Date.parse(this.state.newTo)
+                                                                let start = Date.parse(this.state.newFrom) 
+
+                                                                if (end < start) {
+                                                                    let newFromValue = String(new Date(new Date(end + 10800000).setMinutes(0)).toISOString()).slice(0, -8)
+                                                                    this.setState({newFrom: newFromValue}) 
+                                                                }
+                                                            }, 2000)
+                                                        } else {
+                                                            let newFromValue = String(new Date(new Date(end + 10800000).setMinutes(0)).toISOString()).slice(0, -8)
+                                                            this.setState({newFrom: newFromValue}) 
+                                                        }
+                                                    }                                        
+                                                }} />
+                                           
                                         </div>                                                         
                                     </div>
                                     <div style={{ 
@@ -876,11 +901,14 @@ export default class Booking extends Component {
                                         alignItems: "center",
                                         marginBottom: "2em"
                                         }}>
-                                        <button className="ui purple button" style={{background: "#574AE2"}} onClick={() => {   }}>
-                                            Confirm
+                                        <button className="edit-button ui purple button" style={{background: "#574AE2"}} onClick={() => { 
+                                            this.sendEditedTicket()
+                                            this.setState({ editReservation: false })
+                                          }}>
+                                            <span className="button-text">Confirm</span>
                                         </button>
-                                        <button className="ui button" style={{background: "#222A68", color:"white"}} onClick={() => { this.setState({ editReservation: false }) }}>
-                                            Cancel
+                                        <button className="edit-button ui button" style={{background: "#222A68", color:"white"}} onClick={() => { this.setState({ editReservation: false }) }}>
+                                        <span className="button-text"> Cancel</span>
                                         </button>
                                     </div>
                             </div>
@@ -935,7 +963,7 @@ export default class Booking extends Component {
                                         Confirm
 																	          </button>
                                     <button className="ui button" onClick={() => { this.setState({ paymentQuestion: false }) }}>
-                                        Cancel
+                                        Cancel 
 																	          </button>
                                 </div>
                             </div>

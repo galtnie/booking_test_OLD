@@ -10,13 +10,11 @@ import '../css/Home.css';
 const styles = theme => ({
   card: {
     maxWidth: 400,
-    //background: "yellow",
-    
-    margin: "0.5em"
+    margin: "0.2em"
   },
   media: {
     height: 0,
-    paddingTop: '56.25%', // 16:9
+    paddingTop: '56.25%', 
   },
   actions: {
     display: 'flex',
@@ -70,9 +68,7 @@ class HallCard extends React.Component {
           image={this.props.image}        
         />
         <CardContent className={this.props.cssClass}>
-          {/* <Typography component="p" className={this.props.cssClass}> */}
             {this.props.description}
-          {/* </Typography> */}
         </CardContent>
       </Card>
     );

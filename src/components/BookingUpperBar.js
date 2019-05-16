@@ -26,10 +26,7 @@ const styles = {
 };
 
 class ButtonAppBarBooking extends Component {
-  state = {
-
-
-  }
+  state = {}
 
   dateLimit() {
   let date1 = new Date();
@@ -43,16 +40,6 @@ class ButtonAppBarBooking extends Component {
     maxDate: (date2.toISOString().split("T")[0])
   }
 }
-  
-//   onDateInput(value) {
-//   if (value < this.dateLimit().minDate || value > this.dateLimit().maxDate ) {
-//     alert('The date must be within 60-day period starting with tomorrow')
-//   } else {
-//     let id = "date:" + value.slice(-2) + value.slice(5,7) + value.slice(2,4)
-//     let distance = document.getElementById(id).offsetTop
-//     window.scrollBy(0, distance)
-//   }
-// }
 
   signOut(){
     sessionStorage.removeItem('LoggedIn');
@@ -80,19 +67,6 @@ class ButtonAppBarBooking extends Component {
                         controlDateInput = {this.props.controlDateInput}
              />
 
-{/* 
-            <div className="ui input" style={{ paddingRight: '1em' }}>
-            <input type='date' min={this.dateLimit().minDate} max={this.dateLimit().maxDate} value={this.state.dateInput} onChange={(e)=>this.setState({dateInput: e.target.value})} style={{ padding: 0, lineHeight: '1em', background: '#FBFBFF' }} />
-              <div style={{ display: "flex", justifyContent: "flex-start", alignItems: "center", paddingLeft: "0.5em" }} >
-                <i className={"search icon " + classes.loginButton} onClick={() => {
-                  this.onDateInput(this.state.dateInput)
-                 }
-                }></i>
-              </div>
-            </div>
-            <div className={classes.grow} /> */}
-
-
             <div style={{
               display: "flex",
               flexDirection: "row",
@@ -108,7 +82,7 @@ class ButtonAppBarBooking extends Component {
                 }
               }}>
               </i>
-              <div style={{fontFamily: "sans-serif", fontSize: "1.2em" }}>
+              <div style={{fontFamily: "sans-serif", fontSize: "1.3em" }}>
               {this.props.date} 
               </div>
               <i className={"next-day big caret right icon"} onClick={()=>{this.props.handleDayChange(true)}}>

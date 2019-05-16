@@ -1,12 +1,8 @@
 import React from "react";
-// import PropTypes from "prop-types";
-// import classNames from "classnames";
 import { withStyles } from "@material-ui/core/styles";
-// import MenuItem from "@material-ui/core/MenuItem";
 import TextField from "@material-ui/core/TextField";
 import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
-// import { ListItemSecondaryAction } from "@material-ui/core";
 import Paper from '@material-ui/core/Paper';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { Link, Redirect } from 'react-router-dom';
@@ -100,8 +96,6 @@ class SignUpForm extends React.Component {
 	  this.setState({ errorValue: 'You password and confirmation password do not match'})
     } else {
 
-		// console.log(this.state.email)
-		// console.log(this.state.password)
 		e.preventDefault();
      	axios.post('http://ec2-3-84-16-108.compute-1.amazonaws.com:4000/signUp',
 			{ headers: { 'Content-Type': 'application/x-www-form-urlencoded' } },
@@ -109,10 +103,6 @@ class SignUpForm extends React.Component {
 			)
 			.then(res => {
 				this.props.history.push('/login')
-				// localStorage.setItem('user_id', res.data._id)
-				// localStorage.setItem('token', res.data.token)
-				// this.getInsideBooking(this.state.loginInputted.toLocaleLowerCase(), res.data._id, res.data.token)
-				//this.getInsideBooking(this.state.loginDetailsList[i].username.toLowerCase())
 			})
 			.catch(res => {
 				if (res.message === "Request failed with status code 500") {
@@ -140,7 +130,6 @@ class SignUpForm extends React.Component {
           <CssBaseline />
           <Paper className={classes.paper} >
             <form className={classes.container} autoComplete="off">
-              {/* noValidate */}
               <p style={{ fontSize: "1.25em" }}>
                 CREATE YOUR ACCOUNT
           </p>
@@ -220,9 +209,5 @@ class SignUpForm extends React.Component {
     }
   }
 }
-
-// SignUpForm.propTypes = {
-//   classes: PropTypes.object.isRequired
-// };
 
 export default withStyles(styles)(SignUpForm);

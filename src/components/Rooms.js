@@ -36,8 +36,6 @@ export class BrownFreeHome extends Component {
     }
 }
 
-// RESERVED SLOTS:
-
 export class RedBusy extends Component {
     state = {}
     render() {       
@@ -72,8 +70,6 @@ export class BrownBusy extends Component {
         return <div className="brown-room-reserved" id={this.props.id} data-tooltip={this.props.id ? this.props.id.slice(34): null}>R</div>;
     }
 }
-
-// BOOKING FREE CLASSES
 
 export class RedFree extends Component {
     state = {}
@@ -120,8 +116,6 @@ export class BrownFree extends Component {
         >F</div>;
     }
 }
-
-// BOOKING CHOSEN CLASSES
 
 export class RedChosen extends Component {
     state = {}

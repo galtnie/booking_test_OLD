@@ -5,15 +5,7 @@ import Login from './Login';
 import Booking from './Booking';
 import SignUpForm from './SignUp';
 
-//import logo from './logo.svg';
-import './css/App.css';
-
-
-
 function App() {
-  
-
-
 
   return (
     <div>

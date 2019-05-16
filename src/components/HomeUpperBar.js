@@ -50,10 +50,6 @@ class ButtonAppBar extends Component {
                         controlDateInput = {this.props.controlDateInput}
              />
 
-
-
-
-
             <div style={{
               display: "flex",
               flexDirection: "row",
@@ -69,7 +65,7 @@ class ButtonAppBar extends Component {
                 }
               }}>
               </i>
-              <div style={{fontFamily: "sans-serif", fontSize: "1.2em" }}>
+              <div style={{fontFamily: "sans-serif", fontSize: "1.3em" }}>
               {this.props.date} 
               </div>
               <i className={"next-day big caret right icon"} onClick={()=>{this.props.handleDayChange(true)}}>
