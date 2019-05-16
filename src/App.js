@@ -4,7 +4,7 @@ import Home from './Home';
 import Login from './Login';
 import Booking from './Booking';
 import SignUpForm from './SignUp';
-
+import './App.css'
 function App() {
 
   return (
