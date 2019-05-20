@@ -123,7 +123,7 @@ export class RedChosen extends Component {
     render() {
         return <div className="red-room-chosen" id={this.props.id}
             onClick={() => { this.props.deselect(this.props.id) }}
-        >C</div>;
+        >S</div>;
     }
 }
 
@@ -132,7 +132,7 @@ export class BlueChosen extends Component {
     render() {
         return <div className="blue-room-chosen" id={this.props.id}
             onClick={() => { this.props.deselect(this.props.id) }}
-        >C</div>;
+        >S</div>;
     }
 }
 
@@ -141,7 +141,7 @@ export class GreenChosen extends Component {
     render() {
         return <div className="green-room-chosen" id={this.props.id}
             onClick={() => { this.props.deselect(this.props.id) }}
-        >C</div>;
+        >S</div>;
     }
 }
 
@@ -150,7 +150,7 @@ export class VioletChosen extends Component {
     render() {
         return <div className="violet-room-chosen" id={this.props.id}
             onClick={() => { this.props.deselect(this.props.id) }}
-        >C</div>;
+        >S</div>;
     }
 }
 
@@ -159,6 +159,6 @@ export class BrownChosen extends Component {
     render() {
         return <div className="brown-room-chosen" id={this.props.id}
             onClick={() => { this.props.deselect(this.props.id) }}
-        >C</div>;
+        >S</div>;
     }
 }

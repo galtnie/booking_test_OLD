@@ -217,9 +217,10 @@ export default class Home extends Component {
 
   componentDidMount() {
 
+
     Promise.all([
-      axios.get('http://ec2-3-84-16-108.compute-1.amazonaws.com:4000/halls'),         
-      axios.get('http://ec2-3-84-16-108.compute-1.amazonaws.com:4000/tickets')        
+      axios.get('http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/halls'),         
+      axios.get('http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/tickets')        
     ])
       .then(res => {
         this.setState({ halls: res[0].data.halls })

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import '../css/HomeDayCard.css';
 import { RedFree, RedBusy, RedChosen, BlueFree, BlueBusy, BlueChosen, GreenFree, GreenBusy, GreenChosen, VioletFree, VioletBusy, VioletChosen, BrownFree, BrownBusy, BrownChosen } from './Rooms'
+import Button from '@material-ui/core/Button';
 export default class BookingDayCard extends Component {
 
 
@@ -80,7 +81,7 @@ export default class BookingDayCard extends Component {
                 <div id={this.props.id + hourForIdName} key={`${this.id}${hourForIdName}`} className='home-one-hour-countainer'>
                     {this.renderHour(i)}
                     <div>
-                        {this.renderRooms(this.props.id, hourForIdName, 'blue')}
+                        {this.renderRooms(this.props.id, hourForIdName, 'brown')}
                     </div>
                     <div>
                         {this.renderRooms(this.props.id, hourForIdName, 'green')}
@@ -89,11 +90,12 @@ export default class BookingDayCard extends Component {
                         {this.renderRooms(this.props.id, hourForIdName, 'red')}
                     </div>
                     <div>
-                        {this.renderRooms(this.props.id, hourForIdName, 'violet')}
+                        {this.renderRooms(this.props.id, hourForIdName, 'blue')}
                     </div>
                     <div>
-                        {this.renderRooms(this.props.id, hourForIdName, 'brown')}
+                        {this.renderRooms(this.props.id, hourForIdName, 'violet')}
                     </div>
+                    
                 </div>
             );
         }
@@ -103,8 +105,16 @@ export default class BookingDayCard extends Component {
     render() {
 
         return (
-            <div id={this.props.id}>
-                <div className="home-hours-card">{this.renderOneHourContainer()}</div>
+            <div id={this.props.id} style={{display:"flex", flexDirection:"column", justifyContent: "center", alignItems: "center"}}>
+                <div className="home-hours-card">
+                    {this.renderOneHourContainer()}
+                    
+                    <Button variant="contained" size="medium" color="primary" style={{width: "90%", marginTop: "1em"}} onClick={this.props.confirm}>
+                        Payment
+                    </Button>    
+                </div>
+                
+                
             </div>
         );
     }

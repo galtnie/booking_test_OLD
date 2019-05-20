@@ -14,6 +14,8 @@
     padding-top: 0.05em;
     color: rgb(21, 205, 168);
     cursor: pointer;
+    margin:0;
+    padding:0;
 }
 .active-previous-day:hover  {
     color: orange;
@@ -23,12 +25,16 @@
 .inactive-previous-day {
     padding-top: 0.05em;
     color: lightgrey;
+    margin:0;
+    padding:0;
 }
 
 .next-day {
     padding-top: 0.05em;
     color: rgb(21, 205, 168);
     cursor: pointer;
+    margin:0;
+    padding:0;
 }
 .next-day:hover  {
     color: orange;

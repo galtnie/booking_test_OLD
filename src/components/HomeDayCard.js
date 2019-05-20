@@ -56,7 +56,7 @@ export default class HomeDayCard extends Component {
                 <div id={this.props.id + hourForIdName} key={`${this.id}${hourForIdName}`} className='home-one-hour-countainer'>
                     {this.renderHour(i)}
                     <div>
-                        {this.renderRooms(this.props.id, hourForIdName, 'blue')}
+                        {this.renderRooms(this.props.id, hourForIdName, 'brown')}
                     </div>
                     <div>
                         {this.renderRooms(this.props.id, hourForIdName, 'green')}
@@ -65,10 +65,10 @@ export default class HomeDayCard extends Component {
                         {this.renderRooms(this.props.id, hourForIdName, 'red')}
                     </div>
                     <div>
-                        {this.renderRooms(this.props.id, hourForIdName, 'violet')}
+                        {this.renderRooms(this.props.id, hourForIdName, 'blue')}
                     </div>
                     <div>
-                        {this.renderRooms(this.props.id, hourForIdName, 'brown')}
+                        {this.renderRooms(this.props.id, hourForIdName, 'violet')}
                     </div>
                 </div>
             );

@@ -60,21 +60,32 @@ class ButtonAppBarBooking extends Component {
             flexDirection: "row",
             justifyContent: "space-between",
             paddingTop: "1em",
-            paddingBottom: "1em",}}>
+            paddingBottom: "1em",
+            flexWrap: "wrap",
+            alignContent: "flex-start",
+            width: "100%"
+            }}>
 
             <DateInput handleDateInput={this.props.handleDateInput}
                         dateInput = {this.props.dateInput}
                         controlDateInput = {this.props.controlDateInput}
              />
 
+
+
+
             <div style={{
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "center",
-              flexWrap: "wrap",
+              fontFamily: "sans-serif", 
+              fontSize: "1.3em",  
             }}> 
-              <i className={`${this.props.back}-previous-day big caret left icon`} onClick={(e)=>{
+
+
+              <i className={`${this.props.back}-previous-day big caret left icon`} style={{margin: 0, padding: 0, width:"0.6em"}}
+                onClick={(e)=>{
                 if (this.props.back === "inactive") {
                   e.preventDefault()
                 } else {
@@ -82,17 +93,15 @@ class ButtonAppBarBooking extends Component {
                 }
               }}>
               </i>
-              <div style={{fontFamily: "sans-serif", fontSize: "1.3em" }}>
               {this.props.date} 
-              </div>
-              <i className={"next-day big caret right icon"} onClick={()=>{this.props.handleDayChange(true)}}>
+              <i className={"next-day big caret right icon"} style={{margin: 0, padding: 0, width:"0.6em"}}
+                onClick={()=>{this.props.handleDayChange(true)}}>
               </i>
+
+
             </div>
 
             <div>
-              <Button className={classes.loginButton} style={{color: "#15cda8", fontWeight: "bold"}} onClick={this.props.confirm}>
-                Payment
-              </Button>
               <Button className={classes.loginButton} onClick={()=> {this.signOut()}}>
                 Log out
               </Button>

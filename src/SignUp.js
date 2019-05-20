@@ -97,7 +97,7 @@ class SignUpForm extends React.Component {
     } else {
 
 		e.preventDefault();
-     	axios.post('http://ec2-3-84-16-108.compute-1.amazonaws.com:4000/signUp',
+     	axios.post('http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/signUp',
 			{ headers: { 'Content-Type': 'application/x-www-form-urlencoded' } },
 			{ data: { email: this.state.email, password: this.state.password } }
 			)

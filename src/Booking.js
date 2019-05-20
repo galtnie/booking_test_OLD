@@ -132,6 +132,7 @@ export default class Booking extends Component {
             checkSlot={this.checkSlot.bind(this)}
             deselect={this.deselect.bind(this)}
             setClick={click => this.clickChild = click}
+            confirm={this.confirmReservation.bind(this)}
             />,
           date: cardDate
         });
@@ -409,7 +410,7 @@ export default class Booking extends Component {
         for (let i = 0; i < this.state.newOrdersListForTickets.length; i++) {
             let request = axios({
                 method: 'post',
-                url: 'http://ec2-3-84-16-108.compute-1.amazonaws.com:4000/tickets',
+                url: 'http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/tickets',
                 data: {
                     hall_id: this.state.newOrdersListForTickets[i].hall_id,
                     user_id: sessionStorage.getItem('user_id'),
@@ -441,7 +442,7 @@ export default class Booking extends Component {
         let ticketToDelete = this.state.priorOrdersList[itemIndex]
         axios({
             method: 'delete',
-            url: `http://ec2-3-84-16-108.compute-1.amazonaws.com:4000/tickets/${ticketToDelete._id}`,
+            url: `http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/tickets/${ticketToDelete._id}`,
             headers: {
                 ContentType: "application/x-www-form-urlencoded",
                 Authorization: sessionStorage.getItem('token'),
@@ -492,7 +493,7 @@ export default class Booking extends Component {
     sendEditedTicket(){
         axios({
             method: 'put',
-            url: `http://ec2-3-84-16-108.compute-1.amazonaws.com:4000/ticket/${this.state.priorOrdersList[this.state.alteredTicketIndex]._id}`,
+            url: `http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/ticket/${this.state.priorOrdersList[this.state.alteredTicketIndex]._id}`,
             headers: {
                 ContentType: "application/x-www-form-urlencoded",
                 Authorization: sessionStorage.getItem('token'),
@@ -521,8 +522,8 @@ export default class Booking extends Component {
     componentDidMount() {
         
         Promise.all([
-            axios.get('http://ec2-3-84-16-108.compute-1.amazonaws.com:4000/halls'),         
-            axios.get('http://ec2-3-84-16-108.compute-1.amazonaws.com:4000/tickets')        
+            axios.get('http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/halls'),         
+            axios.get('http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/tickets')        
         ])
             .then(res => {
                 
@@ -601,7 +602,6 @@ export default class Booking extends Component {
                 <div className={this.state.myClasses.main}>
                     <ButtonAppBarBooking 
                         history={this.props.history} 
-                        confirm={this.confirmReservation.bind(this)} 
                         date={this.initialRenderDayCard().date} 
                         handleDateInput={this.handleDateInput.bind(this)} 
                         handleDayChange={this.handleDayChange.bind(this)}
@@ -627,10 +627,7 @@ export default class Booking extends Component {
                                 Once you have selected all the rooms you would like to book
                                 click <b>payment</b> button 
                                 </p>
-                            <p className='manual-par'>
-                                in the <b>upper bar</b> and confirm your order
-                                in order to make reservation.
-                                </p>
+                            
                         </div>
                         <div>
                             <div className="manual-div">
@@ -827,7 +824,7 @@ export default class Booking extends Component {
                                         </div>
                                         <div>
                                             <input type="datetime-local" placeholder="Disregard to keep unaltered" size="21" style={{border:0, padding: "0.5em", borderRadius:"1em", margin:"1em"}} 
-                                                value= {this.state.newFrom}
+                                                value= {this.state.newFrom} 
                                                 min={String(new Date().toISOString()).slice(0, -8)}
                                                 onChange={e=>{
                                                     let value = e.target.value
@@ -847,7 +844,7 @@ export default class Booking extends Component {
                                                         this.setState({newTo: newToValue}) 
                                                     }
                                                     this.setState({newFrom: value})
-                                                }} />
+                                                }} required />
                                         </div>                                                         
                                     </div>
                                     <div style={{
@@ -877,12 +874,9 @@ export default class Booking extends Component {
                                                     let start = Date.parse(this.state.newFrom)
                                                     this.setState({newTo: e.target.value})
 
-                                                    console.log(String(new Date(this.state.priorOrdersList[this.state.alteredTicketIndex].to + 10800000 + 3540000).toISOString()).slice(0, -8))
-
-                                                    
-                                                    if (end < start) {              
-
-                                                        if (String(value).slice(-5, -4) === "0") {
+                                                    if (end < start) {            
+                                                        
+                                                        if (String(value).slice(8, 9) === "0" || String(value).slice(-5, -4) === "0") {
                                                             setTimeout(()=>{
                                                                 let end = Date.parse(this.state.newTo)
                                                                 let start = Date.parse(this.state.newFrom) 
@@ -892,16 +886,17 @@ export default class Booking extends Component {
                                                                     console.log(newFromValue)
                                                                     this.setState({newFrom: newFromValue}) 
                                                                 }
-                                                            }, 2000)
+                                                            }, 1000)
                                                         } else {
                                                             let newFromValue = String(new Date(new Date(end + 10800000).setMinutes(0)).toISOString()).slice(0, -8)
                                                             this.setState({newFrom: newFromValue}) 
                                                         }
                                                     }                                        
-                                                }} />
+                                                }} required />
                                            
                                         </div>                                                         
                                     </div>
+
                                     <div style={{ 
                                         width: "100%",
                                         display: "flex", 
@@ -911,11 +906,11 @@ export default class Booking extends Component {
                                         alignItems: "center",
                                         marginBottom: "2em"
                                         }}>
+
                                         <button className="edit-button ui purple button" style={{background: "#574AE2"}} onClick={(e) => { 
-                                            console.log(this.state.newFrom)
-                                            console.log(this.state.newTo)
-                                            if (this.state.newFrom < new Date()) {
-                                                //e.preventDeafult()
+
+                                            if (Date.parse(this.state.newFrom) < Date.parse(new Date())) {
+                                                e.preventDefault()
                                                 alert('NEW DATE CANNOT BE IN THE PAST!')
                                                 return null
                                             } else if (this.state.newTo < this.state.newFrom ){
@@ -930,10 +925,13 @@ export default class Booking extends Component {
                                           }}>
                                             <span className="button-text">Confirm</span>
                                         </button>
+
                                         <button className="edit-button ui button" style={{background: "#222A68", color:"white"}} onClick={() => { this.setState({ editReservation: false }) }}>
                                         <span className="button-text"> Cancel</span>
                                         </button>
+
                                     </div>
+
                             </div>
                             :
                             null
