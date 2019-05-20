@@ -39,6 +39,7 @@ export default class Home extends Component {
     dayChosen: new Date(), 
     backwardClick: "inactive",
     dateInput: '',
+    tickets: [],
   }
 
   calculateDate(fullDate, counter) {     
@@ -217,14 +218,28 @@ export default class Home extends Component {
 
   componentDidMount() {
 
+    // let axiosFrom = new Date (this.state.dayChosen).setHours(0)
+    // axiosFrom = new Date (axiosFrom).setMinutes(0)
+    // axiosFrom = new Date (axiosFrom).setSeconds(0)
+    // axiosFrom = new Date (axiosFrom).setMilliseconds(0)
+    // axiosFrom -= 5 
+
+    // let axiosTo = new Date (this.state.dayChosen).setHours(23)
+    // axiosTo = new Date (axiosTo).setMinutes(59)
+    // axiosTo = new Date (axiosTo).setSeconds(59)
+    // axiosTo = new Date (axiosTo).setMilliseconds(999)
+    // axiosTo += 5
+
 
     Promise.all([
-      axios.get('http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/halls'),         
-      axios.get('http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/tickets')        
+      axios.get('http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/halls'),       
+      axios.get(`http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/tickets`) 
+      //axios.get(`http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/ticketsparams/${axiosFrom}/${axiosTo}`)        
     ])
       .then(res => {
         this.setState({ halls: res[0].data.halls })
         this.setState({ tickets: res[1].data })
+        
       })
       .then(() => {
         this.calculateSlotsReserved()

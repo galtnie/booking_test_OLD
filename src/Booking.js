@@ -520,7 +520,7 @@ export default class Booking extends Component {
     }
 
     componentDidMount() {
-        
+      
         Promise.all([
             axios.get('http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/halls'),         
             axios.get('http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/tickets')        
@@ -772,7 +772,9 @@ export default class Booking extends Component {
                                     marginRight: "2em",
                                     marginLeft: "2em",
                                     overflowY: "auto",
+                                    overflowX: "auto",
                                     maxHeight: "90%",
+                                    maxWidth: "100%",
                                     display: "flex",
                                     flexDirection: "column",
                                     alignItems: "stretch",
@@ -807,6 +809,7 @@ export default class Booking extends Component {
                                             />
                                         </div>                                                         
                                     </div>
+
                                     <div style={{
                                         display: "flex",
                                         flexDirection: "row",
@@ -830,10 +833,6 @@ export default class Booking extends Component {
                                                     let value = e.target.value
                                                     let start = Date.parse(value)
                                                     let end = Date.parse(this.state.newTo)
-                                                    console.log(String(new Date().toISOString()).slice(0, -8))
-                                                    
-
-
                                                     if (start > end) {
                                                         let newToValue = String(new Date(new Date(start + 10800000).setMinutes(59)).toISOString()).slice(0, -8)
                                                         this.setState({newTo: newToValue}) 
@@ -847,6 +846,7 @@ export default class Booking extends Component {
                                                 }} required />
                                         </div>                                                         
                                     </div>
+
                                     <div style={{
                                         display: "flex",
                                         flexDirection: "row",
