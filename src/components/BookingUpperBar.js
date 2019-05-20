@@ -71,20 +71,15 @@ class ButtonAppBarBooking extends Component {
                         controlDateInput = {this.props.controlDateInput}
              />
 
-
-
-
             <div style={{
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "center",
               fontFamily: "sans-serif", 
-              fontSize: "1.3em",  
+              fontSize: "1em",  
             }}> 
-
-
-              <i className={`${this.props.back}-previous-day big caret left icon`} style={{margin: 0, padding: 0, width:"0.6em"}}
+              <i className={`${this.props.back}-previous-day big caret left icon`} style={{width:"0.6em"}} 
                 onClick={(e)=>{
                 if (this.props.back === "inactive") {
                   e.preventDefault()
@@ -93,12 +88,12 @@ class ButtonAppBarBooking extends Component {
                 }
               }}>
               </i>
+              <div style={{fontFamily: "sans-serif", fontSize: "1.3em" }}>
               {this.props.date} 
-              <i className={"next-day big caret right icon"} style={{margin: 0, padding: 0, width:"0.6em"}}
+              </div>
+              <i className={"next-day big caret right icon"} style={{width:"0.6em"}} 
                 onClick={()=>{this.props.handleDayChange(true)}}>
               </i>
-
-
             </div>
 
             <div>
