@@ -17,8 +17,7 @@ export default class DateInput extends Component {
             <div className="ui input" style={{ paddingRight: '1em', display: "flex", flexDirection: "row", justifyContent: "center" }}>
               <input type='date' min={this.dateLimit()} value={this.props.dateInput} onChange={(e)=> this.props.controlDateInput(e.target.value)} style={{ padding: 0, lineHeight: '1em', background: '#FBFBFF' }} />
               <div style={{ display: "flex", justifyContent: "flex-start", alignItems: "center", paddingLeft: "0.5em" }} >
-                <i className={"search icon "} style={{color: '#FBFBFF',
-                                                      cursor: 'pointer',}} 
+                <i className={"search icon "} style={{color: '#FBFBFF', cursor: 'pointer',}} 
                     onClick={() => {
                     this.props.handleDateInput()
                  }

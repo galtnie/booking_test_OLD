@@ -591,7 +591,7 @@ export default class Booking extends Component {
           .then(time=> this.setState({dayChosen: time}))
           .then(()=> this.calculateSlotsReserved())
     
-        } else if (time.getDate() > today.getDate()) {
+        } else if (time > today) {              
           this.setState({backwardClick: "active"})    
           
           return new Promise(resolve=>{

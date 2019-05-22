@@ -176,7 +176,7 @@ export default class Home extends Component {
   handleDateInput() {
     let today = new Date(new Date(new Date(new Date(new Date().setHours(0)).setMinutes(0)).setSeconds(0)).setMilliseconds(0))
     let time = new Date(this.state.dateInput)
-    
+
     if (time < today ) {
       alert('The searched date cannot be erenow ')
       this.setState({dateInput: ''})
@@ -189,9 +189,9 @@ export default class Home extends Component {
       .then(time=> this.setState({dayChosen: time}))
       .then(()=> this.calculateSlotsReserved())
 
-    } else if (time.getDate() > today.getDate()) {
+    } else if (time > today) {
       this.setState({backwardClick: "active"})    
-      
+
       return new Promise(resolve=>{
         resolve(time)
       })
@@ -216,7 +216,6 @@ export default class Home extends Component {
   }
 
   componentDidMount() {
-
     axios.get('http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/halls')
     .then(res => this.setState({ halls: res.data.halls }))
     .catch((e) => console.log(e))
@@ -229,6 +228,7 @@ export default class Home extends Component {
   }
 
   render() {
+    console.log('render')
     return (
       (typeof sessionStorage.getItem('LoggedIn') !== "string")
         ?
