@@ -42,15 +42,13 @@ export default class Home extends Component {
     tickets: [],
   }
 
-  calculateDate(fullDate, counter) {     
+  calculateDate(fullDate, counter) {    
     let nextDate = fullDate.getDate() + counter;
-    
     fullDate.setDate(nextDate);
     const tomorrow = fullDate
     const monthOption = { month: 'long' };
     const weekdayOption = { weekday: 'long' };
     const date = fullDate.getDate()
-
     const month = new Intl.DateTimeFormat('en-GB', monthOption).format(fullDate)
     const weekday = new Intl.DateTimeFormat('en-GB', weekdayOption).format(fullDate)
     const keyDate = date.toString().length === 2 ? date : "0" + date;
@@ -64,97 +62,76 @@ export default class Home extends Component {
     });
   }
 
-  initialRenderDayCard() {
-    let day
-    let dateCalculation
-    
-    
-      day = this.state.dayChosen 
-      dateCalculation = this.calculateDate(day, 0)  
-    
+  checkReservation(slotID) {
+    let newArrayWithoutTitles = this.state.reservedSlots.map(e => e.slice(0, 28))
+    let newArrayOfTitles = this.state.reservedSlots.map(e => e.slice(28))
 
+    return newArrayWithoutTitles.includes(slotID)
+        ?
+        newArrayOfTitles[newArrayWithoutTitles.findIndex(e => e === slotID)]
+        :
+        false
+}
+
+  initialRenderDayCard() {
+    let day  = this.state.dayChosen 
+    let dateCalculation = this.calculateDate(day, 0) 
     const cardDate = dateCalculation.date;
     const cardId = dateCalculation.key;
-    return ({
-      card:  <HomeDayCard
-      date={cardDate}    
-        id={"date:" + cardId}
-        checkReservation={this.checkReservation.bind(this)}
-        />,
-      date:   cardDate
-    }
-    );
-  }
 
+    return ({
+      card:  <HomeDayCard date={cardDate} id={"date:" + cardId} reservedSlots={this.state.reservedSlots} checkReservation={this.checkReservation.bind(this)} />, 
+      date:   cardDate
+    });
+  }
 
   renderDayCard(where) {
       if (where==="forth"){
       this.setState({backwardClick: "active"})
-      this.calculateDate(this.state.dayChosen, 1)
-        
+      return new Promise(resolve=>{
+        resolve()
+      })
+      .then(() => this.calculateDate(this.state.dayChosen, 1))
+      .then(()=> this.calculateSlotsReserved())
     } else if (where === "back") {
-
       let today = new Date()
-      this.calculateDate(this.state.dayChosen, -1)
-      if(this.state.dayChosen.getDate() === today.getDate()) {
-        this.setState({backwardClick: "inactive"})
-        this.forceUpdate();
-      }
+      return new Promise(resolve=>{
+        resolve()
+      })
+      .then(() => this.calculateDate(this.state.dayChosen, -1))
+      .then(()=> this.calculateSlotsReserved())
+      .then(()=>{
+        if(this.state.dayChosen.getDate() === today.getDate()) {
+          this.setState({backwardClick: "inactive"})
+          this.forceUpdate();
+        }
+      })
     }
   }
 
-  checkReservation(slotID) {
-    return this.state.reservedSlots.includes(slotID)
-  }
-
-  convertTimeIntoSlotID(fullRecord) {
-    let date = fullRecord.getDate()
+  addingHoursIntoReservation(time1, time2, hall_id, title) {
+    let date = time1.getDate()
     let fullDate = date.toString().length === 2 ? date : "0" + date;
-    let fullMonth = (fullRecord.getMonth() + 1).toString().length === 2 ? (fullRecord.getMonth() + 1) : "0" + (fullRecord.getMonth() + 1);
-    let fullYear = fullRecord.getYear().toString().slice(1)
-    let hour = fullRecord.getHours()
+    let fullMonth = (time1.getMonth() + 1).toString().length === 2 ? (time1.getMonth() + 1) : "0" + (time1.getMonth() + 1);
+    let fullYear = time1.getYear().toString().slice(1)
+    let hour = time1.getHours()
     let fullHour = String(hour).length === 1 ? "0" + hour : hour;
-    return `date:${fullDate}${fullMonth}${fullYear}hour:${fullHour}`
-  }
-
-  deleteMinutesSecondsMilisecs(time) {
-    let datehour = new Date(time.setMilliseconds(0))
-    datehour = new Date(datehour.setSeconds(0))
-    datehour = new Date(datehour.setMinutes(0))
-    return datehour
-  }
-
-  addColourToID(hall_id) {
     let arraysHallsID = this.state.halls.map(i => i._id)
     let hallNumber = arraysHallsID.indexOf(hall_id)
-    return `colour:${this.state.colours[hallNumber]}`
-  }
-
-  addSlotToReservationList(time, hall_id) {
-    let slotIdTimeHour = this.convertTimeIntoSlotID(time)
-    let slotIdColour = this.addColourToID(hall_id)
-    let slotId = slotIdTimeHour + slotIdColour
+    let slotId = `date:${fullDate}${fullMonth}${fullYear}hour:${fullHour}colour:${this.state.colours[hallNumber]}title:${title}` 
     let newReservedSlotsList = this.state.reservedSlots.slice();
     newReservedSlotsList.push(slotId)
     this.setState({ reservedSlots: newReservedSlotsList })
-    
-
-  }
-
-  addingHoursIntoReservation(time1, time2, hall_id) {
-
-    this.addSlotToReservationList(time1, hall_id)
 
     let firstHour = time1.getHours()
     let secondHour = time2.getHours()
     if (firstHour < secondHour) {
       let nextHour = new Date(time1.setTime(time1.getTime() + (60 * 60 * 1000)))
-      this.addingHoursIntoReservation(nextHour, time2, hall_id)
+      this.addingHoursIntoReservation(nextHour, time2, hall_id, title)
     }
   }
 
-  addingDaysIntoReservation(time1, time2, hall_id) {
-
+  addingDaysIntoReservation(time1, time2, hall_id, title) {
     if (time1 < time2 &&
       (time1.getDate() !== time2.getDate() ||
         time1.getMonth() !== time2.getMonth() ||
@@ -163,43 +140,64 @@ export default class Home extends Component {
 
       let sameDayLastHour = new Date(time1.getTime())
       sameDayLastHour = new Date(sameDayLastHour.setHours(23))
-      this.addingHoursIntoReservation(time1, sameDayLastHour, hall_id)
+      this.addingHoursIntoReservation(time1, sameDayLastHour, hall_id, title)
       let tomorrow = this.calculateDate(time1, 1).dateObject
       tomorrow = new Date(tomorrow.setHours(0))
-      this.addingDaysIntoReservation(tomorrow, time2, hall_id)
+      this.addingDaysIntoReservation(tomorrow, time2, hall_id, title)
     } else {
-      this.addingHoursIntoReservation(time1, time2, hall_id)
+      this.addingHoursIntoReservation(time1, time2, hall_id, title)
     }
-
   }
 
   calculateSlotsReserved() {
+
     for (let i = 0; i < this.state.tickets.length; i++) {
       let fromTime = new Date(this.state.tickets[i].from)
       let toTime = new Date(this.state.tickets[i].to)
+      let title = this.state.tickets[i].title
 
       if (toTime < new Date()) { continue }
       else if (fromTime !== toTime && fromTime < toTime) {
-        fromTime = this.deleteMinutesSecondsMilisecs(fromTime)
-        toTime = this.deleteMinutesSecondsMilisecs(toTime)
-        this.addingDaysIntoReservation(fromTime, toTime, this.state.tickets[i].hall_id)
+        fromTime = new Date (new Date(new Date(fromTime.setMilliseconds(0)).setSeconds(0)).setMinutes(0))
+        toTime = new Date (new Date(new Date(toTime.setMilliseconds(0)).setSeconds(0)).setMinutes(0))
+
+      let dayChosenStart = (new Date(new Date(new Date(new Date (this.state.dayChosen).setHours(0)).setMinutes(0)).setSeconds(0)).setMilliseconds(0))-5
+      let dayChosenEnd = (new Date(new Date(new Date(new Date (this.state.dayChosen).setHours(23)).setMinutes(59)).setSeconds(59)).setMilliseconds(999))+5
+
+      if ((fromTime <= dayChosenStart && toTime >= dayChosenStart) || 
+        (fromTime >= dayChosenStart && toTime <= dayChosenEnd) || 
+        (fromTime <= dayChosenEnd && toTime >= dayChosenEnd )) {
+          this.addingDaysIntoReservation(fromTime, toTime, this.state.tickets[i].hall_id, title)
+        }       
       }
     }
   }
-
+ 
   handleDateInput() {
-    let today = new Date()
+    let today = new Date(new Date(new Date(new Date(new Date().setHours(0)).setMinutes(0)).setSeconds(0)).setMilliseconds(0))
     let time = new Date(this.state.dateInput)
-
+    
     if (time < today ) {
       alert('The searched date cannot be erenow ')
       this.setState({dateInput: ''})
     } else if(time.getDate() === today.getDate()) {
       this.setState({backwardClick: "inactive"})
-      this.setState({dayChosen: time})
+      
+      return new Promise(resolve=>{
+        resolve(time)
+      })
+      .then(time=> this.setState({dayChosen: time}))
+      .then(()=> this.calculateSlotsReserved())
+
     } else if (time.getDate() > today.getDate()) {
-      this.setState({backwardClick: "active"})
-      this.setState({dayChosen: time})
+      this.setState({backwardClick: "active"})    
+      
+      return new Promise(resolve=>{
+        resolve(time)
+      })
+      .then(time=> this.setState({dayChosen: time}))
+      .then(()=> this.calculateSlotsReserved())
+
     } 
   }
 
@@ -210,6 +208,7 @@ export default class Home extends Component {
   handleDayChange(forth){
       this.setState({dateInput:""})
       if (forth) {
+
         this.renderDayCard('forth')
       } else {
         this.renderDayCard('back')
@@ -218,39 +217,18 @@ export default class Home extends Component {
 
   componentDidMount() {
 
-    // let axiosFrom = new Date (this.state.dayChosen).setHours(0)
-    // axiosFrom = new Date (axiosFrom).setMinutes(0)
-    // axiosFrom = new Date (axiosFrom).setSeconds(0)
-    // axiosFrom = new Date (axiosFrom).setMilliseconds(0)
-    // axiosFrom -= 5 
+    axios.get('http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/halls')
+    .then(res => this.setState({ halls: res.data.halls }))
+    .catch((e) => console.log(e))
 
-    // let axiosTo = new Date (this.state.dayChosen).setHours(23)
-    // axiosTo = new Date (axiosTo).setMinutes(59)
-    // axiosTo = new Date (axiosTo).setSeconds(59)
-    // axiosTo = new Date (axiosTo).setMilliseconds(999)
-    // axiosTo += 5
-
-
-    Promise.all([
-      axios.get('http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/halls'),       
-      axios.get(`http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/tickets`) 
-      //axios.get(`http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/ticketsparams/${axiosFrom}/${axiosTo}`)        
-    ])
-      .then(res => {
-        this.setState({ halls: res[0].data.halls })
-        this.setState({ tickets: res[1].data })
-        
-      })
-      .then(() => {
-        this.calculateSlotsReserved()
-      })
-      .then(() => this.setState({ displayDayCards: true }))
-      .catch((e) => console.log(e))
+    axios.get(`http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/tickets`)
+    .then(res => this.setState({ tickets: res.data }))
+    .then(() => {this.calculateSlotsReserved()
+      this.setState({ displayDayCards: true })})
+    .catch((e) => console.log(e))
   }
 
-
   render() {
-  
     return (
       (typeof sessionStorage.getItem('LoggedIn') !== "string")
         ?
@@ -263,9 +241,6 @@ export default class Home extends Component {
             back={this.state.backwardClick}
             controlDateInput = {this.controlDateInput.bind(this)}
           />
-
-
-
           <div style={this.state.myClasses.title}>
             <div>
               <h1 className="ui header" style={{ color: 'inherit' }}>Conference Venue Booking</h1>
@@ -296,25 +271,18 @@ export default class Home extends Component {
             </div>
             </div> 
 
-
 {this.state.displayDayCards
-
   ?
-
   this.initialRenderDayCard().card
-
   :
-
   <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between", paddingTop: "3em" }}>
     <CircularProgress />
   </div>
 }
-
               {
                 this.state.halls.length > 0
-
                   ?
-                  
+               
                   <div style={{ display: 'flex', flexDirection: 'row', flexFlow: 'wrap', justifyConter: "space-between" }}>
                     {this.state.halls.map((i, index) => {
                       return (

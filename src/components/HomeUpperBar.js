@@ -68,6 +68,7 @@ class ButtonAppBar extends Component {
                   e.preventDefault()
                 } else {
                   this.props.handleDayChange(false)
+
                 }
               }}>
               </i>
@@ -75,7 +76,8 @@ class ButtonAppBar extends Component {
               {this.props.date} 
               </div>
               <i className={"next-day big caret right icon"} style={{width:"0.6em"}} 
-                onClick={()=>{this.props.handleDayChange(true)}}>
+                onClick={()=>{
+                  this.props.handleDayChange(true)}}>
               </i>
             </div>
 
