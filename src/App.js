@@ -9,7 +9,8 @@ function App() {
 
   return (
     <div>
-      <BrowserRouter basename={undefined}>
+      {/* <BrowserRouter basename={process.env.PUBLIC_URL}>*/}
+      <BrowserRouter basename='/booking_test'>
         <Switch>
             <Route path="/login" component={Login} />
             <Route path="/" exact component={Home} />
