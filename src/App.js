@@ -9,13 +9,12 @@ function App() {
 
   return (
     <div>
-      <BrowserRouter basename='/venues'>
+      <BrowserRouter basename={process.env.PUBLIC_URL}>
         <div>
             <Route path="/login" component={Login} />
             <Route path="/" exact component={Home} />
             <Route path='/booking' component={Booking} />
             <Route path='/signup' component={SignUpForm} />
-
         </div>
       </BrowserRouter>
     </div>
