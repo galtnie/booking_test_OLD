@@ -229,6 +229,8 @@ export default class Home extends Component {
 
   render() {
     console.log('render')
+    console.log(this.props)
+    console.log(this.state)
     return (
       (typeof sessionStorage.getItem('LoggedIn') !== "string")
         ?
