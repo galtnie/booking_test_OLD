@@ -9,7 +9,7 @@ function App() {
 
   return (
     <div>
-      <BrowserRouter >
+      <BrowserRouter basename='/booking'>
         <div>
           
             <Route path="/login" component={Login} />
