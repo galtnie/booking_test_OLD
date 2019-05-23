@@ -27,19 +27,21 @@ const styles = {
   }
 }
 
+let a = 0
+
 export default class Home extends Component {
 
   state = {
     myClasses: styles,
     dayCardsID: "initial",
-    reservedSlots: [],
+    reservedSlots: null,
     halls: [],
     colours: ['bro', 'gre', 'red', 'blu', 'vio'],
     displayDayCards: false,
     dayChosen: new Date(), 
     backwardClick: "inactive",
     dateInput: '',
-    tickets: [],
+    tickets: null,
   }
 
   calculateDate(fullDate, counter) {    
@@ -92,7 +94,10 @@ export default class Home extends Component {
         resolve()
       })
       .then(() => this.calculateDate(this.state.dayChosen, 1))
-      .then(()=> this.calculateSlotsReserved())
+      .then(()=> {
+        debugger
+        this.calculateSlotsReserved()
+      })
     } else if (where === "back") {
       let today = new Date()
       return new Promise(resolve=>{
@@ -109,7 +114,7 @@ export default class Home extends Component {
     }
   }
 
-  addingHoursIntoReservation(time1, time2, hall_id, title) {
+  addingHoursIntoReservation(time1, time2, hall_id, title, newSlotsArray) {
     let date = time1.getDate()
     let fullDate = date.toString().length === 2 ? date : "0" + date;
     let fullMonth = (time1.getMonth() + 1).toString().length === 2 ? (time1.getMonth() + 1) : "0" + (time1.getMonth() + 1);
@@ -119,23 +124,18 @@ export default class Home extends Component {
     let arraysHallsID = this.state.halls.map(i => i._id)
     let hallNumber = arraysHallsID.indexOf(hall_id)
     let slotId = `date:${fullDate}${fullMonth}${fullYear}hour:${fullHour}colour:${this.state.colours[hallNumber]}title:${title}` 
-   // here i declare array of new reserved slots
-    let newReservedSlotsList = this.state.reservedSlots.slice();
-    newReservedSlotsList.push(slotId)
-    this.setState({ reservedSlots: newReservedSlotsList }) // this shall be deleted
-
+    newSlotsArray = [...newSlotsArray, slotId]
     let firstHour = time1.getHours()
     let secondHour = time2.getHours()
+
     if (firstHour < secondHour) {
       let nextHour = new Date(time1.setTime(time1.getTime() + (60 * 60 * 1000)))
-      this.addingHoursIntoReservation(nextHour, time2, hall_id, title)
+      newSlotsArray = [...newSlotsArray, ...this.addingHoursIntoReservation(nextHour, time2, hall_id, title, newSlotsArray)]
     }
-
-    // return of the array 
-
+    return newSlotsArray
   }
 
-  addingDaysIntoReservation(time1, time2, hall_id, title) {
+  addingDaysIntoReservation(time1, time2, hall_id, title, newSlotsArray) {
     if (time1 < time2 &&
       (time1.getDate() !== time2.getDate() ||
         time1.getMonth() !== time2.getMonth() ||
@@ -144,19 +144,20 @@ export default class Home extends Component {
 
       let sameDayLastHour = new Date(time1.getTime())
       sameDayLastHour = new Date(sameDayLastHour.setHours(23))
-      this.addingHoursIntoReservation(time1, sameDayLastHour, hall_id, title)
+      newSlotsArray = [...newSlotsArray, ...this.addingHoursIntoReservation(time1, sameDayLastHour, hall_id, title, newSlotsArray)]
 
       let tomorrow = this.calculateDate(time1, 1).dateObject
       tomorrow = new Date(tomorrow.setHours(0))
-      this.addingDaysIntoReservation(tomorrow, time2, hall_id, title)
-      // shall i put return here?
+      newSlotsArray = [...newSlotsArray, ...this.addingHoursIntoReservation(tomorrow, time2, hall_id, title, newSlotsArray)]
+      return newSlotsArray
     } else {
-      this.addingHoursIntoReservation(time1, time2, hall_id, title)
-      // shall i put return here?
+      newSlotsArray = [...newSlotsArray, ...this.addingHoursIntoReservation(time1, time2, hall_id, title, newSlotsArray)]
+      return newSlotsArray
     }
   }
 
   calculateSlotsReserved() {
+      let newReservedSlotsArray = this.state.slotsReserved === undefined ? [] :  this.state.slotsReserved
 
     for (let i = 0; i < this.state.tickets.length; i++) {
       let fromTime = new Date(this.state.tickets[i].from)
@@ -171,13 +172,18 @@ export default class Home extends Component {
       let dayChosenStart = (new Date(new Date(new Date(new Date (this.state.dayChosen).setHours(0)).setMinutes(0)).setSeconds(0)).setMilliseconds(0))-5
       let dayChosenEnd = (new Date(new Date(new Date(new Date (this.state.dayChosen).setHours(23)).setMinutes(59)).setSeconds(59)).setMilliseconds(999))+5
 
-      if ((fromTime <= dayChosenStart && toTime >= dayChosenStart) || 
+        if ((fromTime <= dayChosenStart && toTime >= dayChosenStart) || 
         (fromTime >= dayChosenStart && toTime <= dayChosenEnd) || 
         (fromTime <= dayChosenEnd && toTime >= dayChosenEnd )) {
-          this.addingDaysIntoReservation(fromTime, toTime, this.state.tickets[i].hall_id, title)      // it must return slots and here I need to add 'setstate' them
+          
+          newReservedSlotsArray = [...newReservedSlotsArray, ...this.addingDaysIntoReservation(fromTime, toTime, this.state.tickets[i].hall_id, title, newReservedSlotsArray)]            
         }       
-      }
+      }      
     }
+    
+    console.log('i change state of reservedSlots once')
+    this.setState({reservedSlots: [...newReservedSlotsArray]})
+    
   }
  
   handleDateInput() {
@@ -223,21 +229,28 @@ export default class Home extends Component {
   }
 
   componentDidMount() {
-    axios.get('http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/halls')
-    .then(res => this.setState({ halls: res.data.halls }))
-    .catch((e) => console.log(e))
+    
+    console.log(this.state.halls)
+    if (this.state.halls.length === 0) {
+      axios.get('http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/halls')
+      .then(res => this.setState({ halls: res.data.halls }))
+      .catch((e) => console.log(e))
+    }
 
-    axios.get(`http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/tickets`)
-    .then(res => this.setState({ tickets: res.data }))
-    .then(() => {this.calculateSlotsReserved()
-      this.setState({ displayDayCards: true })})
-    .catch((e) => console.log(e))
+    if (this.state.tickets === null) {
+      axios.get(`http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/tickets`)
+      .then(res => this.setState({ tickets: res.data }))
+      .then(() => {this.calculateSlotsReserved()
+        this.setState({ displayDayCards: true })})
+      .catch((e) => console.log(e))
+    }
   }
 
   render() {
+    console.log(a++)
     console.log('render')
-    console.log(this.props)
-    console.log(this.state)
+    // console.log(this.props)
+    // console.log(this.state)
     return (
       (typeof sessionStorage.getItem('LoggedIn') !== "string")
         ?
