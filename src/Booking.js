@@ -359,12 +359,7 @@ export default class Booking extends Component {
     convertNewOrdersToRender(orders) {
         let newOrdersListForRendering = []
         const timeOptionsForRendering = {
-            day: 'numeric',
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            hour: 'numeric',
-            minute: 'numeric',
+            day: 'numeric', weekday: 'long', year: 'numeric', month: 'long', hour: 'numeric', minute: 'numeric',
         }
         for (let i = 0; i < orders.length; i++) {
             let hall = this.state.halls.find(e => {
@@ -384,12 +379,7 @@ export default class Booking extends Component {
     convertPriorOrdersToRender(orders) {
         let ordersListForRendering = []
         const timeOptionsForRendering = {
-            day: 'numeric',
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            hour: 'numeric',
-            minute: 'numeric',
+            day: 'numeric', weekday: 'long', year: 'numeric', month: 'long', hour: 'numeric', minute: 'numeric',
         }
 
         for (let i = 0; i < orders.length; i++) {

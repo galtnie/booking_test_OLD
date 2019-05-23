@@ -119,9 +119,10 @@ export default class Home extends Component {
     let arraysHallsID = this.state.halls.map(i => i._id)
     let hallNumber = arraysHallsID.indexOf(hall_id)
     let slotId = `date:${fullDate}${fullMonth}${fullYear}hour:${fullHour}colour:${this.state.colours[hallNumber]}title:${title}` 
+   // here i declare array of new reserved slots
     let newReservedSlotsList = this.state.reservedSlots.slice();
     newReservedSlotsList.push(slotId)
-    this.setState({ reservedSlots: newReservedSlotsList })
+    this.setState({ reservedSlots: newReservedSlotsList }) // this shall be deleted
 
     let firstHour = time1.getHours()
     let secondHour = time2.getHours()
@@ -129,6 +130,9 @@ export default class Home extends Component {
       let nextHour = new Date(time1.setTime(time1.getTime() + (60 * 60 * 1000)))
       this.addingHoursIntoReservation(nextHour, time2, hall_id, title)
     }
+
+    // return of the array 
+
   }
 
   addingDaysIntoReservation(time1, time2, hall_id, title) {
@@ -141,11 +145,14 @@ export default class Home extends Component {
       let sameDayLastHour = new Date(time1.getTime())
       sameDayLastHour = new Date(sameDayLastHour.setHours(23))
       this.addingHoursIntoReservation(time1, sameDayLastHour, hall_id, title)
+
       let tomorrow = this.calculateDate(time1, 1).dateObject
       tomorrow = new Date(tomorrow.setHours(0))
       this.addingDaysIntoReservation(tomorrow, time2, hall_id, title)
+      // shall i put return here?
     } else {
       this.addingHoursIntoReservation(time1, time2, hall_id, title)
+      // shall i put return here?
     }
   }
 
@@ -167,7 +174,7 @@ export default class Home extends Component {
       if ((fromTime <= dayChosenStart && toTime >= dayChosenStart) || 
         (fromTime >= dayChosenStart && toTime <= dayChosenEnd) || 
         (fromTime <= dayChosenEnd && toTime >= dayChosenEnd )) {
-          this.addingDaysIntoReservation(fromTime, toTime, this.state.tickets[i].hall_id, title)
+          this.addingDaysIntoReservation(fromTime, toTime, this.state.tickets[i].hall_id, title)      // it must return slots and here I need to add 'setstate' them
         }       
       }
     }
