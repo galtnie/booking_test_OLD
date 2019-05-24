@@ -95,7 +95,6 @@ export default class Home extends Component {
       })
       .then(() => this.calculateDate(this.state.dayChosen, 1))
       .then(()=> {
-        debugger
         this.calculateSlotsReserved()
       })
     } else if (where === "back") {

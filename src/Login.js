@@ -66,7 +66,8 @@ class SignIn extends React.Component {
 	}
 
 	checkLoginDetails() {
-		axios.post('http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/signIn',
+		axios.post('https://web-ninjas.net/signIn',
+		//		axios.post('http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/signIn',
 			{ headers: { 'Content-Type': 'application/x-www-form-urlencoded' } },
 			{ data: { email: this.state.loginInputted, password: this.state.passInputted } }
 			)

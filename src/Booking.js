@@ -413,7 +413,7 @@ export default class Booking extends Component {
             let request = axios({
                 method: 'post',
                 url: 'https://web-ninjas.net/tickets',
-                //url: 'http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/tickets',
+                // url: 'http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/tickets',
                 data: {
                     hall_id: this.state.newOrdersListForTickets[i].hall_id,
                     user_id: sessionStorage.getItem('user_id'),
