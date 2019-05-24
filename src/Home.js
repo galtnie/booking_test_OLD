@@ -232,13 +232,15 @@ export default class Home extends Component {
     
     console.log(this.state.halls)
     if (this.state.halls.length === 0) {
-      axios.get('http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/halls')
+      axios.get('https://web-ninjas.net/halls')
+      //axios.get('http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/halls')
       .then(res => this.setState({ halls: res.data.halls }))
       .catch((e) => console.log(e))
     }
 
     if (this.state.tickets === null) {
-      axios.get(`http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/tickets`)
+      axios.get(`https://web-ninjas.net/tickets`)
+      //axios.get(`http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/tickets`)
       .then(res => this.setState({ tickets: res.data }))
       .then(() => {this.calculateSlotsReserved()
         this.setState({ displayDayCards: true })})

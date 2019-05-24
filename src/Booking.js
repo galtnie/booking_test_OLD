@@ -412,7 +412,8 @@ export default class Booking extends Component {
         for (let i = 0; i < this.state.newOrdersListForTickets.length; i++) {
             let request = axios({
                 method: 'post',
-                url: 'http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/tickets',
+                url: 'https://web-ninjas.net/tickets',
+                //url: 'http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/tickets',
                 data: {
                     hall_id: this.state.newOrdersListForTickets[i].hall_id,
                     user_id: sessionStorage.getItem('user_id'),
@@ -444,7 +445,8 @@ export default class Booking extends Component {
         let ticketToDelete = this.state.priorOrdersList[itemIndex]
         axios({
             method: 'delete',
-            url: `http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/tickets/${ticketToDelete._id}`,
+            url: `https://web-ninjas.net/tickets/${ticketToDelete._id}`,
+            //url: `http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/tickets/${ticketToDelete._id}`,
             headers: {
                 ContentType: "application/x-www-form-urlencoded",
                 Authorization: sessionStorage.getItem('token'),
@@ -495,7 +497,8 @@ export default class Booking extends Component {
     sendEditedTicket(){
         axios({
             method: 'put',
-            url: `http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/ticket/${this.state.priorOrdersList[this.state.alteredTicketIndex]._id}`,
+            url: `https://web-ninjas.net/ticket/${this.state.priorOrdersList[this.state.alteredTicketIndex]._id}`,
+            //url: `http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/ticket/${this.state.priorOrdersList[this.state.alteredTicketIndex]._id}`,
             headers: {
                 ContentType: "application/x-www-form-urlencoded",
                 Authorization: sessionStorage.getItem('token'),
@@ -524,8 +527,10 @@ export default class Booking extends Component {
     componentDidMount() {
       
         Promise.all([
-            axios.get('http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/halls'),         
-            axios.get('http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/tickets')        
+            axios.get('https://web-ninjas.net/halls'),         
+            axios.get('https://web-ninjas.net/tickets')   
+            // axios.get('http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/halls'),         
+            // axios.get('http://ec2-35-175-143-145.compute-1.amazonaws.com:4000/tickets')        
         ])
             .then(res => {
                 
